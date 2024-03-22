@@ -21,10 +21,10 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig{
     private final CustomAuth2UserService customAuth2UserService;
 
-//    @Bean
-//    public BCryptPasswordEncoder encoder(){
-//        return new BCryptPasswordEncoder();
-//    }
+    @Bean
+    public BCryptPasswordEncoder encoder(){
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
@@ -59,12 +59,9 @@ public class SecurityConfig{
                         // 로그인 폼이 제출될 url을 설정합니다. 이 url로 post 요청이 들어오면 시큐리티가 사용자 인증을 처리합니다. 설정된 url은 폼 액션에 명시해야합니다.ㄷ
                         .loginProcessingUrl("/login"))
                 // OAuth2 로그인을 활성화합니다.
-                .oauth2Login(oauth2Login -> oauth2Login.userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(customAuth2UserService)));
-//                .oauth2Login(oauth2 -> oauth2
-//                        // 로그인 프로세스 중 사용자 정보를 가져오기 위한 엔드포인트를 설정합니다. 이 부분에서 인증된 사용자의 새부 정보를 가져오기 위한 추가 설정 가능
-//                        .userInfoEndpoint()
-//                        .userService(customAuth2UserService));
-
+                .oauth2Login(oauth2Login
+                        -> oauth2Login.userInfoEndpoint(userInfoEndpointConfig
+                        -> userInfoEndpointConfig.userService(customAuth2UserService)));
         return http.build();
     }
 }

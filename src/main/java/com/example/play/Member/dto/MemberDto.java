@@ -1,10 +1,12 @@
 package com.example.play.Member.dto;
 
 import com.example.play.Member.role.Role;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 @NoArgsConstructor
+@Getter
 public class MemberDto {
     private String name;
     private String email;
