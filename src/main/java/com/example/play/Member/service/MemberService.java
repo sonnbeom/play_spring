@@ -2,6 +2,7 @@ package com.example.play.Member.service;
 
 import com.example.play.Member.dto.MemberDto;
 import com.example.play.Member.dto.MemberDtoByReadOne;
+import com.example.play.Member.dto.MemberUpdateDto;
 import com.example.play.Member.entity.Member;
 import com.example.play.Member.memberMapper.MemberMapper;
 import com.example.play.Member.repository.MemberRepository;
@@ -41,4 +42,6 @@ public class MemberService {
         return memberMapper.entityToDto(findMember);
     }
 
+    public void updateMember(Long memberId, MemberUpdateDto updateDto) {
+    }
 }

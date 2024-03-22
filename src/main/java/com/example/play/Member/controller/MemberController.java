@@ -2,6 +2,7 @@ package com.example.play.Member.controller;
 
 import com.example.play.Member.dto.MemberDto;
 import com.example.play.Member.dto.MemberDtoByReadOne;
+import com.example.play.Member.dto.MemberUpdateDto;
 import com.example.play.Member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,5 +35,9 @@ public class MemberController {
     public ResponseEntity<MemberDtoByReadOne> readMember(@PathVariable("memberId") Long memberId){
         MemberDtoByReadOne dto =  memberService.findMember(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
+    }
+    @PatchMapping("/api/vi/member/{id}")
+    public ResponseEntity<MemberDtoByReadOne> updateMember(@PathVariable Long memberId, MemberUpdateDto updateDto){
+        memberService.updateMember(memberId, updateDto);
     }
 }
