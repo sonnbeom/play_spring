@@ -74,4 +74,7 @@ public class Member extends BaseEntity {
     public void changeEmail(String email) {
         this.email = email;
     }
+    public void changeStatus(){
+        this.isActive = 0;
+    }
 }

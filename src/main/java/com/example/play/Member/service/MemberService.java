@@ -3,6 +3,7 @@ package com.example.play.Member.service;
 import com.example.play.Member.dto.MemberDto;
 import com.example.play.Member.dto.MemberDtoByReadOne;
 import com.example.play.Member.dto.MemberUpdateDto;
+import com.example.play.Member.dto.ResponseUpdatedMemberDto;
 import com.example.play.Member.entity.Member;
 import com.example.play.Member.memberMapper.MemberMapper;
 import com.example.play.Member.repository.MemberRepository;
@@ -12,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 
 @Service
@@ -38,14 +38,12 @@ public class MemberService {
     }
 
     public MemberDtoByReadOne findMember(Long memberId) {
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
-        Member findMember = optionalMember.orElseThrow(() -> new MemberNotFoundException(memberId+"로 ID를 가진 유저를 조회할 수 없습니다."));
+        Member findMember = findMemberById(memberId);
         return memberMapper.entityToDto(findMember);
     }
 
-    public void updateMember(Long memberId, MemberUpdateDto updateDto) {
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
-        Member updateMember = optionalMember.orElseThrow(() -> new MemberNotFoundException(memberId+"로 ID를 가진 유저를 조회할 수 없습니다."));
+    public ResponseUpdatedMemberDto updateMember(Long memberId, MemberUpdateDto updateDto) {
+        Member updateMember = findMemberById(memberId);
         if (updateDto.getNickname() != null && !updateDto.getNickname().isEmpty()){
             updateMember.changeNickname(updateMember.getNickname());
         }
@@ -56,8 +54,22 @@ public class MemberService {
             updateMember.changePicture(updateDto.getPicture());
         }
         if (updateDto.getEmail() != null && !updateDto.getEmail().isEmpty()){
-            updateMember.changeEmail(updateMember.getEmail());
+            updateMember.changeEmail(updateDto.getEmail());
         }
+        return updateSuccessCheck(updateMember);
     }
 
+    private ResponseUpdatedMemberDto updateSuccessCheck(Member updateMember) {
+        return memberMapper.updateMemberToDto(updateMember);
+    }
+
+    public int deleteMember(Long memberId){
+       Member member = findMemberById(memberId);
+       member.changeStatus();
+       return member.getIsActive();
+    }
+    private Member findMemberById(Long memberId){
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        return optionalMember.orElseThrow(() -> new MemberNotFoundException(memberId+"로 ID를 가진 유저를 조회할 수 없습니다."));
+    }
 }
