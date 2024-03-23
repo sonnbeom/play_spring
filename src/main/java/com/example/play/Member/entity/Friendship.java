@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 public class Friendship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "FriendShip_id")
+    @Column(name = "friendShip_id")
     private Long id;
-    @ManyToOne
-    @JoinColumn()
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
     @Column
     private FriendshipStatus status;

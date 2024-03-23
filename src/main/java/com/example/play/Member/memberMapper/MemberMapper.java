@@ -7,13 +7,17 @@ import com.example.play.Member.dto.ResponseUpdatedMemberDto;
 import com.example.play.Member.entity.Member;
 import com.example.play.Member.role.Role;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class MemberMapper {
-    PasswordEncoder passwordEncoder;
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
     public Member dtoToMember(MemberDto memberDto){
         return Member.builder()
                 .name(memberDto.getName())

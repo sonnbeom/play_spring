@@ -6,6 +6,7 @@ import com.example.play.Member.dto.MemberUpdateDto;
 import com.example.play.Member.dto.ResponseUpdatedMemberDto;
 import com.example.play.Member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member")
+@Slf4j
 public class MemberController {
     private final MemberService memberService;
 
@@ -29,7 +31,7 @@ public class MemberController {
     * */
 
     @PostMapping("/create")
-    public String createMember(MemberDto memberDto){
+    public String createMember(@RequestBody MemberDto memberDto){
         memberService.createMember(memberDto);
         return "ok";
     }
