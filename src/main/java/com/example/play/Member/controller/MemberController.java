@@ -3,14 +3,18 @@ package com.example.play.Member.controller;
 import com.example.play.Member.dto.MemberDto;
 import com.example.play.Member.dto.MemberDtoByReadOne;
 import com.example.play.Member.dto.MemberUpdateDto;
+import com.example.play.Member.dto.ResponseUpdatedMemberDto;
 import com.example.play.Member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/member")
+@Slf4j
 public class MemberController {
     private final MemberService memberService;
 
@@ -26,18 +30,30 @@ public class MemberController {
     *
     * */
 
-    @PostMapping("/api/vi/member/create")
-    public String createMember(MemberDto memberDto){
+    @PostMapping("/create")
+    public String createMember(@RequestBody MemberDto memberDto){
         memberService.createMember(memberDto);
         return "ok";
     }
-    @GetMapping("/api/v1/member/{id}")
+    @GetMapping("/{memberId}")
     public ResponseEntity<MemberDtoByReadOne> readMember(@PathVariable("memberId") Long memberId){
         MemberDtoByReadOne dto =  memberService.findMember(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
-    @PatchMapping("/api/vi/member/{id}")
-    public ResponseEntity<MemberDtoByReadOne> updateMember(@PathVariable Long memberId, MemberUpdateDto updateDto){
-        memberService.updateMember(memberId, updateDto);
+    @PatchMapping("/{memberId}")
+    public ResponseEntity<ResponseUpdatedMemberDto> updateMember(@PathVariable Long memberId, MemberUpdateDto updateDto){
+        ResponseUpdatedMemberDto updatedDto = memberService.updateMember(memberId, updateDto);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity deleteMember(@PathVariable Long memberId){
+        int deleteSuccess = memberService.deleteMember(memberId);
+        if (deleteSuccess == 0){
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
 }

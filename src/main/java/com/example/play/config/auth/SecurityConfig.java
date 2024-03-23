@@ -41,7 +41,7 @@ public class SecurityConfig{
                         // 루트(/) , css, 이미지 ,자바스크립트 파일, h2 콘솔 경로에 대한 요청은 인증 없이 접근을 허용
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
                         // 해당 경로로 들어오는 요청은 user 역할을 가진 사용자만 접근할 수 있음
-                        .requestMatchers("/api/v1/**").hasRole(Role.User.getKey())
+                        .requestMatchers("/api/v1/**").permitAll()
                         // 위에서 정의하지 않은 요청은 인증된 사용자만 접근할 수 있음
                         .anyRequest().authenticated())
                 .logout(logout -> logout
