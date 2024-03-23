@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,5 +60,18 @@ public class Member extends BaseEntity {
         this.name = name;
         this.picture = picture;
         return this;
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
+    public void changePassword(String password) {
+        this.password = password;
+    }
+    public void changePicture(String nickname) {
+        this.nickname = nickname;
+    }
+    public void changeEmail(String email) {
+        this.email = email;
     }
 }

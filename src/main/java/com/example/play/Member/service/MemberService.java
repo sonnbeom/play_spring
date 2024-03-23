@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 
 @Service
@@ -43,5 +44,20 @@ public class MemberService {
     }
 
     public void updateMember(Long memberId, MemberUpdateDto updateDto) {
+        Optional<Member> optionalMember = memberRepository.findById(memberId);
+        Member updateMember = optionalMember.orElseThrow(() -> new MemberNotFoundException(memberId+"로 ID를 가진 유저를 조회할 수 없습니다."));
+        if (updateDto.getNickname() != null && !updateDto.getNickname().isEmpty()){
+            updateMember.changeNickname(updateMember.getNickname());
+        }
+        if (updateDto.getPassword() != null && !updateDto.getPassword().isEmpty()){
+            updateMember.changePassword(updateDto.getPassword());
+        }
+        if (updateDto.getPicture() != null && !updateDto.getPicture().isEmpty()){
+            updateMember.changePicture(updateDto.getPicture());
+        }
+        if (updateDto.getEmail() != null && !updateDto.getEmail().isEmpty()){
+            updateMember.changeEmail(updateMember.getEmail());
+        }
     }
+
 }
