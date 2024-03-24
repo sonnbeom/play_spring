@@ -1,7 +1,7 @@
 package com.example.play.config.auth.service;
 
-import com.example.play.Member.entity.Member;
-import com.example.play.Member.repository.MemberRepository;
+import com.example.play.member.entity.Member;
+import com.example.play.member.repository.MemberRepository;
 import com.example.play.config.auth.dto.OAuthAttributes;
 import com.example.play.config.auth.dto.SessionMember;
 import jakarta.servlet.http.HttpSession;

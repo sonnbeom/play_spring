@@ -1,6 +1,5 @@
-package com.example.play.Member.dto;
+package com.example.play.member.dto;
 
-import com.example.play.Member.constant.FriendshipStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -8,9 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FriendDto {
+public class ResponseUpdatedMemberDto {
     private Long id;
     private String nickname;
-    private FriendshipStatus status;
-    private boolean isFrom;
 }

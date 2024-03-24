@@ -1,10 +1,10 @@
-package com.example.play.Member.controller;
+package com.example.play.member.controller;
 
-import com.example.play.Member.dto.MemberDto;
-import com.example.play.Member.dto.MemberDtoByReadOne;
-import com.example.play.Member.dto.MemberUpdateDto;
-import com.example.play.Member.dto.ResponseUpdatedMemberDto;
-import com.example.play.Member.service.MemberService;
+import com.example.play.member.dto.MemberDto;
+import com.example.play.member.dto.MemberDtoByReadOne;
+import com.example.play.member.dto.MemberUpdateDto;
+import com.example.play.member.dto.ResponseUpdatedMemberDto;
+import com.example.play.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
