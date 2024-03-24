@@ -1,11 +1,11 @@
-package com.example.play.Member.memberMapper;
+package com.example.play.member.memberMapper;
 
 
-import com.example.play.Member.dto.MemberDto;
-import com.example.play.Member.dto.MemberDtoByReadOne;
-import com.example.play.Member.dto.ResponseUpdatedMemberDto;
-import com.example.play.Member.entity.Member;
-import com.example.play.Member.role.Role;
+import com.example.play.member.dto.MemberDto;
+import com.example.play.member.dto.MemberDtoByReadOne;
+import com.example.play.member.dto.ResponseUpdatedMemberDto;
+import com.example.play.member.entity.Member;
+import com.example.play.member.role.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

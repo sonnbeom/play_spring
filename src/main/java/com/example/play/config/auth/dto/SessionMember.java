@@ -1,6 +1,6 @@
 package com.example.play.config.auth.dto;
 
-import com.example.play.Member.entity.Member;
+import com.example.play.member.entity.Member;
 import lombok.Getter;
 
 import java.io.Serializable;

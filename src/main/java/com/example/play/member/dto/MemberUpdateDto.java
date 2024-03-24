@@ -1,4 +1,4 @@
-package com.example.play.Member.dto;
+package com.example.play.member.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

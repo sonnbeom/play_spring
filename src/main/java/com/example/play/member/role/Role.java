@@ -1,4 +1,4 @@
-package com.example.play.Member.role;
+package com.example.play.member.role;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

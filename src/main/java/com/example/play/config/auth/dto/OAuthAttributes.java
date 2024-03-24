@@ -1,10 +1,9 @@
 package com.example.play.config.auth.dto;
 
-import com.example.play.Member.entity.Member;
-import com.example.play.Member.role.Role;
+import com.example.play.member.entity.Member;
+import com.example.play.member.role.Role;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.security.core.userdetails.User;
 
 import java.util.Map;
 

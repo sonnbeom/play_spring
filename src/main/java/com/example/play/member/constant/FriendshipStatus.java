@@ -1,4 +1,4 @@
-package com.example.play.Member.constant;
+package com.example.play.member.constant;
 
 public enum FriendshipStatus {
     WAITING,

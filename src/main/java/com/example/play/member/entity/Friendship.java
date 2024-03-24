@@ -1,6 +1,6 @@
-package com.example.play.Member.entity;
+package com.example.play.member.entity;
 
-import com.example.play.Member.constant.FriendshipStatus;
+import com.example.play.member.constant.FriendshipStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

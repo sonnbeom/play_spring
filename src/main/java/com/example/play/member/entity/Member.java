@@ -1,12 +1,11 @@
-package com.example.play.Member.entity;
+package com.example.play.member.entity;
 
-import com.example.play.Member.role.Role;
+import com.example.play.member.role.Role;
 import com.example.play.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;

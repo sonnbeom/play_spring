@@ -1,12 +1,12 @@
-package com.example.play.Member.service;
+package com.example.play.member.service;
 
-import com.example.play.Member.dto.MemberDto;
-import com.example.play.Member.dto.MemberDtoByReadOne;
-import com.example.play.Member.dto.MemberUpdateDto;
-import com.example.play.Member.dto.ResponseUpdatedMemberDto;
-import com.example.play.Member.entity.Member;
-import com.example.play.Member.memberMapper.MemberMapper;
-import com.example.play.Member.repository.MemberRepository;
+import com.example.play.member.dto.MemberDto;
+import com.example.play.member.dto.MemberDtoByReadOne;
+import com.example.play.member.dto.MemberUpdateDto;
+import com.example.play.member.dto.ResponseUpdatedMemberDto;
+import com.example.play.member.entity.Member;
+import com.example.play.member.memberMapper.MemberMapper;
+import com.example.play.member.repository.MemberRepository;
 import com.example.play.exception.MemberNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

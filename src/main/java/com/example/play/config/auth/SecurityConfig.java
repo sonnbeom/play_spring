@@ -1,6 +1,5 @@
 package com.example.play.config.auth;
 
-import com.example.play.Member.role.Role;
 import com.example.play.config.auth.service.CustomAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

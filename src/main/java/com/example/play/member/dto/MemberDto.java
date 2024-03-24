@@ -1,6 +1,5 @@
-package com.example.play.Member.dto;
+package com.example.play.member.dto;
 
-import com.example.play.Member.role.Role;
 import lombok.*;
 
 
