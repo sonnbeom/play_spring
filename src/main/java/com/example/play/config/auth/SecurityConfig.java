@@ -42,7 +42,7 @@ public class SecurityConfig{
                         // 해당 경로로 들어오는 요청은 user 역할을 가진 사용자만 접근할 수 있음
                         .requestMatchers("/api/v1/**").permitAll()
                         // 위에서 정의하지 않은 요청은 인증된 사용자만 접근할 수 있음
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .logout(logout -> logout
                         //로그아웃 기능을 활성화하고 로그 아웃 성공시 사용자를 해당 url로 리다이렉트한다
                         .logoutSuccessUrl("/"))

@@ -1,12 +1,12 @@
 package com.example.play.member.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class ResponseUpdatedMemberDto {
     private Long id;
     private String nickname;

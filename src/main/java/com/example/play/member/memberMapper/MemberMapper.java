@@ -24,6 +24,7 @@ public class MemberMapper {
                 .email(memberDto.getEmail())
                 .isActive(1)
                 .password(passwordEncoder.encode(memberDto.getPassword()))
+                .nickname(memberDto.getNickname())
                 .role(Role.User)
                 .picture(memberDto.getPicture())
                 .build();
