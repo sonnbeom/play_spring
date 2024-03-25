@@ -10,6 +10,7 @@ import com.example.play.member.repository.MemberRepository;
 import com.example.play.exception.MemberNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,10 +22,15 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
-    public void createMember(MemberDto memberDto) {
+    private final PasswordEncoder passwordEncoder;
+    public Long createMember(MemberDto memberDto) {
         if(duplicateCheck(memberDto)){
             Member member = memberMapper.dtoToMember(memberDto);
-            memberRepository.save(member);
+            Member saved = memberRepository.save(member);
+            return saved.getId();
+        }
+        else {
+            return 0L;
         }
     }
     private boolean duplicateCheck(MemberDto memberDto){
@@ -48,7 +54,7 @@ public class MemberService {
             updateMember.changeNickname(updateMember.getNickname());
         }
         if (updateDto.getPassword() != null && !updateDto.getPassword().isEmpty()){
-            updateMember.changePassword(updateDto.getPassword());
+            updateMember.changePassword(passwordEncoder.encode(updateMember.getPassword()));
         }
         if (updateDto.getPicture() != null && !updateDto.getPicture().isEmpty()){
             updateMember.changePicture(updateDto.getPicture());

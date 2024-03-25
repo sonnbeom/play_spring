@@ -4,6 +4,7 @@ import com.example.play.member.dto.MemberDto;
 import com.example.play.member.dto.MemberDtoByReadOne;
 import com.example.play.member.dto.MemberUpdateDto;
 import com.example.play.member.dto.ResponseUpdatedMemberDto;
+import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +33,13 @@ public class MemberController {
 
     @PostMapping("/create")
     public String createMember(@RequestBody MemberDto memberDto){
-        memberService.createMember(memberDto);
-        return "ok";
+        Long l = memberService.createMember(memberDto);
+        if (l != 0){
+            return "ok";
+        }
+        else {
+            return "not ok";
+        }
     }
     @GetMapping("/{memberId}")
     public ResponseEntity<MemberDtoByReadOne> readMember(@PathVariable("memberId") Long memberId){
@@ -41,7 +47,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
     @PatchMapping("/{memberId}")
-    public ResponseEntity<ResponseUpdatedMemberDto> updateMember(@PathVariable Long memberId, MemberUpdateDto updateDto){
+    public ResponseEntity<ResponseUpdatedMemberDto> updateMember(@PathVariable Long memberId, @RequestBody MemberUpdateDto updateDto){
         ResponseUpdatedMemberDto updatedDto = memberService.updateMember(memberId, updateDto);
         return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
@@ -53,7 +59,6 @@ public class MemberController {
         }else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
     }
 
 }
