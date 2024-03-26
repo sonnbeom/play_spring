@@ -6,10 +6,12 @@ import com.example.play.member.dto.MemberUpdateDto;
 import com.example.play.member.dto.ResponseUpdatedMemberDto;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,13 +34,17 @@ public class MemberController {
     * */
 
     @PostMapping("/create")
-    public String createMember(@RequestBody MemberDto memberDto){
+    public ResponseEntity<MemberDto> createMember(@Valid @RequestBody MemberDto memberDto,
+                               BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(memberDto);
+        }
         Long l = memberService.createMember(memberDto);
         if (l != 0){
-            return "ok";
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         }
         else {
-            return "not ok";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     @GetMapping("/{memberId}")

@@ -13,7 +13,6 @@ public class MemberDtoByReadOne {
     private String email;
     private String nickname;
     private String picture;
-    private List<FriendDto> friendList;
 
     @Builder
     public MemberDtoByReadOne(String name, String email, String nickname, String picture) {
