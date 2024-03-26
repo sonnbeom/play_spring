@@ -1,7 +1,8 @@
 package com.example.play.post.controller;
 
 import com.example.play.post.dto.CreatePostDto;
-import com.example.play.post.dto.ResponsePostDto;
+import com.example.play.post.dto.PostResponseOne;
+import com.example.play.post.dto.PostResponseDto;
 import com.example.play.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +35,18 @@ public class PostController {
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(postDto);
         }
-        ResponsePostDto response = postService.create(postDto);
+        PostResponseOne response = postService.create(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @GetMapping("/{postId}")
-    public ResponseEntity<ResponsePostDto> readOne(@PathVariable("postId") Long postId){
-        ResponsePostDto responsePostDto = postService.readOne(postId);
+    public ResponseEntity<PostResponseOne> readOne(@PathVariable("postId") Long postId){
+        PostResponseOne responsePostDto = postService.readOne(postId);
         return ResponseEntity.status(HttpStatus.OK).body(responsePostDto);
+    }
+    //최신순 페이징 정렬
+    @GetMapping("/sort")
+    public ResponseEntity<PostResponseDto> readByLatest(int page, String sortType){
+        PostResponseDto postResponseDto = postService.readBySort(page ,sortType);
+        return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
     }
 }

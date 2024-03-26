@@ -23,7 +23,7 @@ public class QMember extends EntityPathBase<Member> {
     public final com.example.play.global.QBaseEntity _super = new com.example.play.global.QBaseEntity(this);
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath email = createString("email");
 
@@ -34,7 +34,7 @@ public class QMember extends EntityPathBase<Member> {
     public final NumberPath<Integer> isActive = createNumber("isActive", Integer.class);
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
+    public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
     public final StringPath name = createString("name");
 
@@ -43,6 +43,8 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath password = createString("password");
 
     public final StringPath picture = createString("picture");
+
+    public final ListPath<com.example.play.post.entity.Post, com.example.play.post.entity.QPost> postList = this.<com.example.play.post.entity.Post, com.example.play.post.entity.QPost>createList("postList", com.example.play.post.entity.Post.class, com.example.play.post.entity.QPost.class, PathInits.DIRECT2);
 
     public final EnumPath<com.example.play.member.role.Role> role = createEnum("role", com.example.play.member.role.Role.class);
 

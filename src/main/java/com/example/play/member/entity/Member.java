@@ -3,6 +3,7 @@ package com.example.play.member.entity;
 import com.example.play.friendship.entity.Friendship;
 import com.example.play.member.role.Role;
 import com.example.play.global.BaseEntity;
+import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,6 +37,8 @@ public class Member extends BaseEntity {
     private Role role;
     @OneToMany(mappedBy = "member")
     private List<Friendship> friendshipList = new ArrayList<>();
+    @OneToMany
+    private List<Post> postList = new ArrayList<>();
     @Builder
     public Member(String name, String email, String picture, Role role, Integer isActive, String nickname, String password){
         this.name = name;

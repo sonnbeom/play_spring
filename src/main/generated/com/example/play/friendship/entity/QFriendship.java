@@ -25,14 +25,14 @@ public class QFriendship extends EntityPathBase<Friendship> {
     public final com.example.play.global.QBaseEntity _super = new com.example.play.global.QBaseEntity(this);
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> createDate = _super.createDate;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final BooleanPath isFrom = createBoolean("isFrom");
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
+    public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
     public final com.example.play.member.entity.QMember member;
 

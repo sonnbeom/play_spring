@@ -1,6 +1,7 @@
 package com.example.play.post.entity;
 
 import com.example.play.global.BaseEntity;
+import com.example.play.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,4 +28,7 @@ public class Post extends BaseEntity {
     private int isActive;
     @Column(name = "like_count")
     private int likeCount;
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 }
