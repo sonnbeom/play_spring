@@ -1,6 +1,8 @@
-package com.example.play.member.entity;
+package com.example.play.friendship.entity;
 
+import com.example.play.global.BaseEntity;
 import com.example.play.member.constant.FriendshipStatus;
+import com.example.play.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Friendship {
+public class Friendship extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "friendShip_id")
