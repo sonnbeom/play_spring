@@ -4,6 +4,7 @@ import com.example.play.post.constant.PageSize;
 import com.example.play.post.dto.CreatePostDto;
 import com.example.play.post.dto.PostResponseOne;
 import com.example.play.post.dto.PostResponseDto;
+import com.example.play.post.dto.PostUpdateDto;
 import com.example.play.post.entity.Post;
 import com.example.play.post.exception.PostNotFoundException;
 import com.example.play.post.postMapper.PostMapper;
@@ -47,5 +48,27 @@ public class PostService {
         Pageable pageable = PageRequest.of(page ,PageSize.size);
         Page<Post> postPage = postRepositoryCustom.findBySort(pageable, sortType);
         return postMapper.pageEntityToDto(postPage);
+    }
+
+    public PostResponseDto readBySearch(int page, String type, String keyword) {
+        Pageable pageable = PageRequest.of(page, PageSize.size);
+        Page<Post> postPage = postRepositoryCustom.findBySearch(pageable, type, keyword);
+        return postMapper.pageEntityToDto(postPage);
+    }
+
+    public PostResponseOne update(Long postId ,PostUpdateDto updateDto) {
+        Post post = findById(postId);
+        if (updateDto.getTitle() != null && !updateDto.getTitle().isEmpty()){
+            post.changeTitle(updateDto.getTitle());
+        }
+        if (updateDto.getContent() != null && !updateDto.getContent().isEmpty()){
+            post.changeContent(updateDto.getContent());
+        }
+        return postMapper.entityToDto(post);
+    }
+    public int delete(Long postId) {
+        Post post = findById(postId);
+        post.changeIsActive();
+        return post.getIsActive();
     }
 }

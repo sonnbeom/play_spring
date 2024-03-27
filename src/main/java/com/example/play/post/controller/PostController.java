@@ -3,6 +3,7 @@ package com.example.play.post.controller;
 import com.example.play.post.dto.CreatePostDto;
 import com.example.play.post.dto.PostResponseOne;
 import com.example.play.post.dto.PostResponseDto;
+import com.example.play.post.dto.PostUpdateDto;
 import com.example.play.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +46,27 @@ public class PostController {
     }
     //최신순 페이징 정렬
     @GetMapping("/sort")
-    public ResponseEntity<PostResponseDto> readByLatest(int page, String sortType){
+    public ResponseEntity<PostResponseDto> readBySort(int page, String sortType){
         PostResponseDto postResponseDto = postService.readBySort(page ,sortType);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<PostResponseDto> readBySearch(int page, String type, String keyword){
+        PostResponseDto postResponseDto = postService.readBySearch(page, type, keyword);
+        return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
+    }
+    @PatchMapping("/{postId}")
+    public ResponseEntity<PostResponseOne> update(@PathVariable("postId") Long postId, @RequestBody PostUpdateDto updateDto){
+        PostResponseOne responseOne = postService.update(postId ,updateDto);
+        return ResponseEntity.status(HttpStatus.OK).body(responseOne);
+    }
+    @DeleteMapping("/{postId}")
+    public ResponseEntity delete(@PathVariable("postId")Long postId){
+        int deleteSuccess = postService.delete(postId);
+        if (deleteSuccess == 0){
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
