@@ -31,4 +31,13 @@ public class Post extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+    public void changeTitle(String title){
+        this.title = title;
+    }
+    public void changeContent(String content){
+        this.content = content;
+    }
+    public void changeIsActive(){
+        isActive = 0;
+    }
 }
