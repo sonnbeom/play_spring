@@ -31,12 +31,12 @@ public class PostController {
     * 작성자
     * */
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid CreatePostDto postDto,
+    public ResponseEntity<?> create(@Valid @RequestBody CreatePostDto postDto,
                                                         BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(postDto);
         }
-        PostResponseOne response = postService.create(postDto);
+        PostResponseOne response = postService.create(postDto);;
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @GetMapping("/{postId}")
@@ -46,12 +46,12 @@ public class PostController {
     }
     //최신순 페이징 정렬
     @GetMapping("/sort")
-    public ResponseEntity<PostResponseDto> readBySort(int page, String sortType){
+    public ResponseEntity<PostResponseDto> readBySort(@RequestParam(defaultValue = "0")int page, @RequestParam String sortType){
         PostResponseDto postResponseDto = postService.readBySort(page ,sortType);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
     }
     @GetMapping("/search")
-    public ResponseEntity<PostResponseDto> readBySearch(int page, String type, String keyword){
+    public ResponseEntity<PostResponseDto> readBySearch(@RequestParam(defaultValue = "0") int page, @RequestParam String type, @RequestParam String keyword){
         PostResponseDto postResponseDto = postService.readBySearch(page, type, keyword);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
     }

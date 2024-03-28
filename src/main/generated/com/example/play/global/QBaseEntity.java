@@ -2,6 +2,7 @@ package com.example.play.global;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
+import com.example.play.global.common.entity.BaseEntity;
 import com.querydsl.core.types.dsl.*;
 
 import com.querydsl.core.types.PathMetadata;
