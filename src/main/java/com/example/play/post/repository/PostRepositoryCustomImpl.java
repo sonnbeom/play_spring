@@ -13,12 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static com.example.play.member.entity.QMember.*;
 import static com.example.play.post.entity.QPost.*;
 
+@Repository
 public class PostRepositoryCustomImpl implements PostRepositoryCustom{
     private final JPAQueryFactory jpaQueryFactory;
     @Autowired

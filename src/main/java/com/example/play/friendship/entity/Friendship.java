@@ -1,6 +1,6 @@
 package com.example.play.friendship.entity;
 
-import com.example.play.global.BaseEntity;
+import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.member.constant.FriendshipStatus;
 import com.example.play.member.entity.Member;
 import jakarta.persistence.*;

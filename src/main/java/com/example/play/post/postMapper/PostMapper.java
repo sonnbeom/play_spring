@@ -32,6 +32,7 @@ public class PostMapper {
                 .title(saved.getTitle())
                 .hit(saved.getHit())
                 .like(saved.getLikeCount())
+                .createdAt(saved.getCreatedAt())
                 .build();
     }
 
