@@ -33,11 +33,11 @@ public class PostController {
         PostResponseOne response = postService.create(postDto, fileList);;
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    @GetMapping("/{postId}")
-    public ResponseEntity<PostResponseOne> readOne(@PathVariable("postId") Long postId){
-        PostResponseOne responsePostDto = postService.readOne(postId);
-        return ResponseEntity.status(HttpStatus.OK).body(responsePostDto);
-    }
+//    @GetMapping("/{postId}")
+//    public ResponseEntity<PostResponseOne> readOne(@PathVariable("postId") Long postId){
+//        PostResponseOne responsePostDto = postService.readOne(postId);
+//        return ResponseEntity.status(HttpStatus.OK).body(responsePostDto);
+//    }
     //최신순 페이징 정렬
     @GetMapping("/sort")
     public ResponseEntity<PostResponseDto> readBySort(@RequestParam(defaultValue = "0")int page, @RequestParam String sortType){
@@ -49,11 +49,11 @@ public class PostController {
         PostResponseDto postResponseDto = postService.readBySearch(page, type, keyword);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
     }
-    @PatchMapping("/{postId}")
-    public ResponseEntity<PostResponseOne> update(@PathVariable("postId") Long postId, @RequestBody PostUpdateDto updateDto){
-        PostResponseOne responseOne = postService.update(postId ,updateDto);
-        return ResponseEntity.status(HttpStatus.OK).body(responseOne);
-    }
+//    @PatchMapping("/{postId}")
+//    public ResponseEntity<PostResponseOne> update(@PathVariable("postId") Long postId, @RequestBody PostUpdateDto updateDto){
+//        PostResponseOne responseOne = postService.update(postId ,updateDto);
+//        return ResponseEntity.status(HttpStatus.OK).body(responseOne);
+//    }
     @DeleteMapping("/{postId}")
     public ResponseEntity delete(@PathVariable("postId")Long postId){
         int deleteSuccess = postService.delete(postId);
