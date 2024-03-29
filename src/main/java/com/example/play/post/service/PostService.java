@@ -1,5 +1,6 @@
 package com.example.play.post.service;
 
+import com.example.play.image.service.PostImgService;
 import com.example.play.post.constant.PageSize;
 import com.example.play.post.dto.CreatePostDto;
 import com.example.play.post.dto.PostResponseOne;
@@ -17,7 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,17 +31,18 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final PostRepositoryCustom postRepositoryCustom;
+    private final PostImgService postImgService;
 
-    public PostResponseOne create(CreatePostDto postDto) {
+    public PostResponseOne create(CreatePostDto postDto, List<MultipartFile> fileList) {
         Post post = postMapper.dtoToEntity(postDto);
         Post saved = postRepository.save(post);
-        return postMapper.entityToDto(saved);
+        List<String> urls = postImgService.savePostImage(fileList, saved);
+        return postMapper.entityToDto(saved, urls);
     }
-
-    public PostResponseOne readOne(Long postId) {
-        Post post = findById(postId);
-        return postMapper.entityToDto(post);
-    }
+//    public PostResponseOne readOne(Long postId) {
+//        Post post = findById(postId);
+//        return postMapper.entityToDto(post);
+//    }
     private Post findById(Long postId){
         Optional<Post> optional = postRepository.findById(postId);
         return optional.orElseThrow(() -> new PostNotFoundException(postId+"로 ID를 가진 게시글을 조회할 수 없습니다."));
@@ -56,16 +60,16 @@ public class PostService {
         return postMapper.pageEntityToDto(postPage);
     }
 
-    public PostResponseOne update(Long postId ,PostUpdateDto updateDto) {
-        Post post = findById(postId);
-        if (updateDto.getTitle() != null && !updateDto.getTitle().isEmpty()){
-            post.changeTitle(updateDto.getTitle());
-        }
-        if (updateDto.getContent() != null && !updateDto.getContent().isEmpty()){
-            post.changeContent(updateDto.getContent());
-        }
-        return postMapper.entityToDto(post);
-    }
+//    public PostResponseOne update(Long postId ,PostUpdateDto updateDto) {
+//        Post post = findById(postId);
+//        if (updateDto.getTitle() != null && !updateDto.getTitle().isEmpty()){
+//            post.changeTitle(updateDto.getTitle());
+//        }
+//        if (updateDto.getContent() != null && !updateDto.getContent().isEmpty()){
+//            post.changeContent(updateDto.getContent());
+//        }
+//        return postMapper.entityToDto(post);
+//    }
     public int delete(Long postId) {
         Post post = findById(postId);
         post.changeIsActive();

@@ -3,6 +3,8 @@ package com.example.play.post.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,5 +17,6 @@ public class PostResponseOne {
     private String content;
     private int hit;
     private int like;
+    private List<String> urls = new ArrayList<>();
     private LocalDateTime createdAt;
 }

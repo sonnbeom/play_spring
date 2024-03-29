@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,24 +22,15 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class PostController {
     private final PostService postService;
-    /*
-    * 단일 게시글 읽기
-    * 리스트 보기
-    * -> 좋아요순
-    * -> 조회수
-    * -> 최신순
-    * 검색하기
-    * 제목
-    * 내용
-    * 작성자
-    * */
+
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody CreatePostDto postDto,
-                                                        BindingResult bindingResult){
+                                    BindingResult bindingResult,
+                                    @RequestBody List<MultipartFile> fileList){
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(postDto);
         }
-        PostResponseOne response = postService.create(postDto);;
+        PostResponseOne response = postService.create(postDto, fileList);;
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     @GetMapping("/{postId}")
