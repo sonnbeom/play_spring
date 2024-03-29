@@ -25,12 +25,13 @@ public class PostMapper {
                 .isActive(1).build();
     }
 
-    public PostResponseOne entityToDto(Post saved) {
+    public PostResponseOne entityToDto(Post saved, List<String> urls) {
         return PostResponseOne.builder()
                 .id(saved.getId())
                 .content(saved.getContent())
                 .title(saved.getTitle())
                 .hit(saved.getHit())
+                .urls(urls)
                 .like(saved.getLikeCount())
                 .createdAt(saved.getCreatedAt())
                 .build();

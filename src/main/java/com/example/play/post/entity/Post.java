@@ -1,12 +1,16 @@
 package com.example.play.post.entity;
 
 import com.example.play.global.common.entity.BaseEntity;
+import com.example.play.image.entity.PostImage;
 import com.example.play.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -31,6 +35,8 @@ public class Post extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+    @OneToMany(mappedBy = "post")
+    private List<PostImage> imageList = new ArrayList<>();
     public void changeTitle(String title){
         this.title = title;
     }
