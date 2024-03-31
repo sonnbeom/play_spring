@@ -24,20 +24,23 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestBody CreatePostDto postDto,
+    public ResponseEntity<?> create(@Valid @RequestPart("postDto") CreatePostDto postDto,
                                     BindingResult bindingResult,
-                                    @RequestBody List<MultipartFile> fileList){
+                                    @RequestPart("files") List<MultipartFile> files){
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(postDto);
         }
-        PostResponseOne response = postService.create(postDto, fileList);;
+        PostResponseOne response = postService.create(postDto ,files);;
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    @GetMapping("/{postId}")
-    public ResponseEntity<PostResponseOne> readOne(@PathVariable("postId") Long postId){
-        PostResponseOne responsePostDto = postService.readOne(postId);
-        return ResponseEntity.status(HttpStatus.OK).body(responsePostDto);
-    }
+    /*
+    * 방문 시에 조회수 올려주는 거 업데이트 필요
+    * */
+//    @GetMapping("/{postId}")
+//    public ResponseEntity<PostResponseOne> readOne(@PathVariable("postId") Long postId){
+//        PostResponseOne responsePostDto = postService.readOne(postId);
+//        return ResponseEntity.status(HttpStatus.OK).body(responsePostDto);
+//    }
     //최신순 페이징 정렬
     @GetMapping("/sort")
     public ResponseEntity<PostResponseDto> readBySort(@RequestParam(defaultValue = "0")int page, @RequestParam String sortType){
@@ -49,11 +52,11 @@ public class PostController {
         PostResponseDto postResponseDto = postService.readBySearch(page, type, keyword);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
     }
-    @PatchMapping("/{postId}")
-    public ResponseEntity<PostResponseOne> update(@PathVariable("postId") Long postId, @RequestBody PostUpdateDto updateDto){
-        PostResponseOne responseOne = postService.update(postId ,updateDto);
-        return ResponseEntity.status(HttpStatus.OK).body(responseOne);
-    }
+//    @PatchMapping("/{postId}")
+//    public ResponseEntity<PostResponseOne> update(@PathVariable("postId") Long postId, @RequestBody PostUpdateDto updateDto){
+//        PostResponseOne responseOne = postService.update(postId ,updateDto);
+//        return ResponseEntity.status(HttpStatus.OK).body(responseOne);
+//    }
     @DeleteMapping("/{postId}")
     public ResponseEntity delete(@PathVariable("postId")Long postId){
         int deleteSuccess = postService.delete(postId);

@@ -10,7 +10,7 @@ public class MinioConfig {
     @Value("${minio.accessKey}")
     private String accessKey;
 
-    @Value("$(minio.secretKey)")
+    @Value("${minio.secretKey}")
     private String secretKey;
 
     @Value("${minio.endpoint.url}")
@@ -23,6 +23,4 @@ public class MinioConfig {
                 .credentials(accessKey, secretKey)
                 .build();
     }
-
-
 }

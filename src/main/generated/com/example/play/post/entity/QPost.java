@@ -22,7 +22,7 @@ public class QPost extends EntityPathBase<Post> {
 
     public static final QPost post = new QPost("post");
 
-    public final com.example.play.global.QBaseEntity _super = new com.example.play.global.QBaseEntity(this);
+    public final com.example.play.global.common.entity.QBaseEntity _super = new com.example.play.global.common.entity.QBaseEntity(this);
 
     public final StringPath content = createString("content");
 
@@ -32,6 +32,8 @@ public class QPost extends EntityPathBase<Post> {
     public final NumberPath<Integer> hit = createNumber("hit", Integer.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final ListPath<com.example.play.image.entity.PostImage, com.example.play.image.entity.QPostImage> imageList = this.<com.example.play.image.entity.PostImage, com.example.play.image.entity.QPostImage>createList("imageList", com.example.play.image.entity.PostImage.class, com.example.play.image.entity.QPostImage.class, PathInits.DIRECT2);
 
     public final NumberPath<Integer> isActive = createNumber("isActive", Integer.class);
 

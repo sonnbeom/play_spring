@@ -22,7 +22,7 @@ public class QFriendship extends EntityPathBase<Friendship> {
 
     public static final QFriendship friendship = new QFriendship("friendship");
 
-    public final com.example.play.global.QBaseEntity _super = new com.example.play.global.QBaseEntity(this);
+    public final com.example.play.global.common.entity.QBaseEntity _super = new com.example.play.global.common.entity.QBaseEntity(this);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
