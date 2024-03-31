@@ -19,19 +19,29 @@ import java.util.stream.Collectors;
 public class PostMapper {
     public Post dtoToEntity(CreatePostDto postDto) {
         return Post.builder()
-                .hit(0)
+                .hit(1)
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
                 .isActive(1).build();
     }
 
-    public PostResponseOne entityToDto(Post saved, List<String> urls) {
+    public PostResponseOne entityToDtoWithImage(Post saved, List<String> urls) {
         return PostResponseOne.builder()
                 .id(saved.getId())
                 .content(saved.getContent())
                 .title(saved.getTitle())
                 .hit(saved.getHit())
                 .urls(urls)
+                .like(saved.getLikeCount())
+                .createdAt(saved.getCreatedAt())
+                .build();
+    }
+    public PostResponseOne entityToDto(Post saved) {
+        return PostResponseOne.builder()
+                .id(saved.getId())
+                .content(saved.getContent())
+                .title(saved.getTitle())
+                .hit(saved.getHit())
                 .like(saved.getLikeCount())
                 .createdAt(saved.getCreatedAt())
                 .build();

@@ -24,15 +24,18 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestBody CreatePostDto postDto,
+    public ResponseEntity<?> create(@Valid @RequestPart("postDto") CreatePostDto postDto,
                                     BindingResult bindingResult,
-                                    @RequestBody List<MultipartFile> fileList){
+                                    @RequestPart("files") List<MultipartFile> files){
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(postDto);
         }
-        PostResponseOne response = postService.create(postDto, fileList);;
+        PostResponseOne response = postService.create(postDto ,files);;
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    /*
+    * 방문 시에 조회수 올려주는 거 업데이트 필요
+    * */
 //    @GetMapping("/{postId}")
 //    public ResponseEntity<PostResponseOne> readOne(@PathVariable("postId") Long postId){
 //        PostResponseOne responsePostDto = postService.readOne(postId);

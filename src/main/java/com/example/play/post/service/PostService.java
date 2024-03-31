@@ -33,11 +33,16 @@ public class PostService {
     private final PostRepositoryCustom postRepositoryCustom;
     private final PostImgService postImgService;
 
-    public PostResponseOne create(CreatePostDto postDto, List<MultipartFile> fileList) {
+    public PostResponseOne create(CreatePostDto postDto, List<MultipartFile> files) {
         Post post = postMapper.dtoToEntity(postDto);
         Post saved = postRepository.save(post);
-        List<String> urls = postImgService.savePostImage(fileList, saved);
-        return postMapper.entityToDto(saved, urls);
+        if (!files.isEmpty()){
+            List<String> urlS = postImgService.savePostImage(files, saved);
+            return postMapper.entityToDtoWithImage(saved,urlS);
+        }
+        else {
+            return postMapper.entityToDto(saved);
+        }
     }
 //    public PostResponseOne readOne(Long postId) {
 //        Post post = findById(postId);

@@ -8,6 +8,7 @@ import com.example.play.image.exception.MinioUploadException;
 import com.example.play.image.repository.PostImgRepository;
 import com.example.play.post.entity.Post;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostImgService {
     private final PostImgRepository postImgRepository;
     private final MinioServiceProvider minioServiceProvider;
