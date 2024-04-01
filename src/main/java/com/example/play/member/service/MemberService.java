@@ -12,6 +12,7 @@ import com.example.play.member.memberMapper.MemberMapper;
 import com.example.play.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
@@ -31,7 +33,9 @@ public class MemberService {
         if(duplicateCheck(memberDto)){
             Member member = memberMapper.dtoToMember(memberDto);
             Member saved = memberRepository.save(member);
-            memberImgService.saveMemberImg(saved, profile);
+            if (profile != null && !profile.isEmpty()){
+                memberImgService.saveMemberImg(saved, profile);
+            }
             return saved.getId();
         }
         else {
@@ -54,7 +58,7 @@ public class MemberService {
         return memberMapper.entityToDto(findMember ,img);
     }
 
-    public ResponseUpdatedMemberDto updateMember(Long memberId, MemberUpdateDto updateDto) {
+    public MemberDtoByReadOne updateMember(Long memberId, MemberUpdateDto updateDto, MultipartFile profile, Long deleteFile) {
         Member updateMember = findMemberById(memberId);
         if (updateDto.getNickname() != null && !updateDto.getNickname().isEmpty()){
             updateMember.changeNickname(updateMember.getNickname());
@@ -68,11 +72,8 @@ public class MemberService {
         if (updateDto.getEmail() != null && !updateDto.getEmail().isEmpty()){
             updateMember.changeEmail(updateDto.getEmail());
         }
-        return updateSuccessCheck(updateMember);
-    }
-
-    private ResponseUpdatedMemberDto updateSuccessCheck(Member updateMember) {
-        return memberMapper.updateMemberToDto(updateMember);
+        ResponseMemberImg img = memberImgService.updateStatus(profile, deleteFile, updateMember);
+        return memberMapper.entityToDto(updateMember, img);
     }
 
     public int deleteMember(Long memberId){

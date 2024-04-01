@@ -36,11 +36,12 @@ public class MemberImgService {
                     .build();
         }
         else {
-            return memberImgMapper.entityToDto(img);
+            MemberImage memberImage = img.get(0);
+            return memberImgMapper.entityToDto(memberImage);
         }
     }
 
-    public void saveMemberImg(Member member, MultipartFile profile) {
+    public MemberImage saveMemberImg(Member member, MultipartFile profile) {
         ImageDto imageDto = minioServiceProvider.uploadImage(Bucket.MEMBER, profile);
         if (imageDto.getStatus().equals(ImageDto.Status.UPLOADED)){
             MemberImage memberImage = MemberImage.builder()
@@ -48,9 +49,42 @@ public class MemberImgService {
                     .member(member)
                     .url(imageDto.getPath())
                     .build();
-            memberImgRepository.save(memberImage);
+            return memberImgRepository.save(memberImage);
         }else {
             throw new MinioUploadException("멤버 이미지 업로드에 실패하였습니다");
+        }
+    }
+
+    /*
+    프로필 사진이 디폴트인 경우도 있다...!
+    1. 기본 프로필 -> 프로필 변경 x
+    2. 기본 프포필 -> 프로필 변경 o
+    3. 프로필 o -> 프로필 x
+    4. 프로필 o -> 프로필 o
+
+    * 1. deleteId = null 프로필을 바꾸지 않는다.
+    * 2. profile 존재할 시에! deleteId는 필수입니다!
+    * if profile 존재하고 deleteID가 존재하는 경우
+    * else if deleteId
+    * */
+    public ResponseMemberImg updateStatus(MultipartFile profile, Long deleteFileId, Member updateMember) {
+        // 2, 4
+        if (profile != null && !profile.isEmpty()){
+            MemberImage memberImage = saveMemberImg(updateMember, profile);
+            return memberImgMapper.entityToDto(memberImage);
+        }
+        if (deleteFileId != null){
+            changeStatus(deleteFileId, updateMember);
+        }
+        return new ResponseMemberImg().builder()
+                .status(ResponseMemberImg.Status.DEFAULT)
+                .build();
+    }
+    private void changeStatus(Long deleteFileId, Member updateMember){
+        List<MemberImage> deleteImgList = memberImgCustomRepository.findByIdAndMember(deleteFileId, updateMember);
+        if (!deleteImgList.isEmpty() && deleteImgList.size() == 1){
+            MemberImage deleteImg = deleteImgList.get(0);
+            deleteImg.changeStatus();
         }
     }
 }

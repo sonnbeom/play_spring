@@ -55,8 +55,11 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
     @PatchMapping("/{memberId}")
-    public ResponseEntity<ResponseUpdatedMemberDto> updateMember(@PathVariable Long memberId, @RequestBody MemberUpdateDto updateDto){
-        ResponseUpdatedMemberDto updatedDto = memberService.updateMember(memberId, updateDto);
+    public ResponseEntity<MemberDtoByReadOne> updateMember(@PathVariable Long memberId,
+                                                                 @RequestPart(value = "updateDto", required = false) MemberUpdateDto updateDto,
+                                                                 @RequestPart(value = "file", required = false)MultipartFile profile,
+                                                                 @RequestPart(value = "deleteFile", required = false) Long deleteFile){
+        MemberDtoByReadOne updatedDto = memberService.updateMember(memberId, updateDto, profile, deleteFile);
         return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
     @DeleteMapping("/{memberId}")
