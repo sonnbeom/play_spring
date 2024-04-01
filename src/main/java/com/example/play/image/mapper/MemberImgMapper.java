@@ -13,12 +13,11 @@ import java.util.List;
 @Component
 @Slf4j
 public class MemberImgMapper {
-    public ResponseMemberImg entityToDto(List<MemberImage> img) {
-            MemberImage memberImage = img.get(0);
+    public ResponseMemberImg entityToDto(MemberImage img) {
             return new ResponseMemberImg().builder()
                     .status(ResponseMemberImg.Status.NOT_DEFAULT)
-                    .id(memberImage.getId())
-                    .url(memberImage.getUrl())
+                    .id(img.getId())
+                    .url(img.getUrl())
                     .build();
     }
 }

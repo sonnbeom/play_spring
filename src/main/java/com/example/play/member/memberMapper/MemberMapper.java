@@ -32,6 +32,7 @@ public class MemberMapper {
 
     public MemberDtoByReadOne entityToDto(Member member, ResponseMemberImg img) {
         return MemberDtoByReadOne.builder()
+                .id(member.getId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .name(member.getName())
@@ -39,10 +40,4 @@ public class MemberMapper {
                 .build();
     }
 
-    public ResponseUpdatedMemberDto updateMemberToDto(Member updateMember) {
-        return ResponseUpdatedMemberDto.builder()
-                .id(updateMember.getId())
-                .nickname(updateMember.getNickname())
-                .build();
-    }
 }

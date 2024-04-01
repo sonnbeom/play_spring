@@ -26,4 +26,15 @@ public class MemberImgCustomRepositoryImpl implements MemberImgCustomRepository 
                         .and(memberImage.isActive.eq(1)))
                 .fetch();
     }
+
+    @Override
+    public List<MemberImage> findByIdAndMember(Long id, Member member) {
+        return jpaQueryFactory
+                .selectFrom(memberImage)
+                .where(memberImage.member.eq(member)
+                        .and(memberImage.id.eq(id))
+                        .and(memberImage.isActive.eq(1)))
+                .fetch();
+    }
+
 }
