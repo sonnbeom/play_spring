@@ -47,6 +47,7 @@ public class PostService {
     }
     public PostResponseOne readOne(Long postId) {
         Post post = findById(postId);
+        post.upHit();
         List<ResponseImg> responseImgs = postImgService.readImages(post);
         return postMapper.entityToDtoWithImage(post, responseImgs);
     }
@@ -67,7 +68,7 @@ public class PostService {
         return postMapper.pageEntityToDto(postPage);
     }
 
-    public PostResponseOne update(Long postId ,PostUpdateDto updateDto) {
+    public PostResponseOne update(Long postId ,PostUpdateDto updateDto, List<MultipartFile> files, List<Long> deleteImageList) {
         Post post = findById(postId);
         if (updateDto.getTitle() != null && !updateDto.getTitle().isEmpty()){
             post.changeTitle(updateDto.getTitle());
@@ -75,11 +76,13 @@ public class PostService {
         if (updateDto.getContent() != null && !updateDto.getContent().isEmpty()){
             post.changeContent(updateDto.getContent());
         }
-        return postMapper.entityToDto(post);
+        List<ResponseImg> imgList = postImgService.update(post, deleteImageList, files);
+        return postMapper.entityToDtoWithImage(post, imgList);
     }
     public int delete(Long postId) {
         Post post = findById(postId);
         post.changeIsActive();
+        postImgService.deleteImg(post);
         return post.getIsActive();
     }
 }

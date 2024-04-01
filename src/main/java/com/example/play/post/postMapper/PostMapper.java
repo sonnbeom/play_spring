@@ -31,7 +31,7 @@ public class PostMapper {
                 .id(saved.getId())
                 .content(saved.getContent())
                 .title(saved.getTitle())
-                .hit(saved.getHit())
+                .hit(saved.getHit()+1)
                 .responseImgs(responseImgs)
                 .like(saved.getLikeCount())
                 .createdAt(saved.getCreatedAt())

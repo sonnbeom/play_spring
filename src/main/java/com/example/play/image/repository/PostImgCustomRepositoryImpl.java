@@ -28,4 +28,14 @@ public class PostImgCustomRepositoryImpl implements PostImgCustomRepository {
                         .and(postImage.isActive.eq(1)))
                 .fetch();
     }
+
+    @Override
+    public List<PostImage> findListForDelete(Post post, List<Long> deleteIds) {
+       return jpaQueryFactory
+               .selectFrom(postImage)
+               .where(postImage.post.eq(post)
+                       .and(postImage.id.in(deleteIds))
+                       .and(postImage.isActive.eq(1)))
+               .fetch();
+    }
 }

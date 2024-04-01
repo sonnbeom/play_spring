@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PostImgCustomRepository {
     List<PostImage> readByPost(Post post);
+    List<PostImage> findListForDelete(Post post, List<Long> deleteIds);
 }

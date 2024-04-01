@@ -51,4 +51,40 @@ public class PostImgService {
         List<PostImage> postImages = customRepository.readByPost(post);
         return postImgMapper.entityToDto(postImages);
     }
+
+    public List<ResponseImg> update(Post post, List<Long> deleteImageList, List<MultipartFile> files) {
+        if (deleteImageList != null && !deleteImageList.isEmpty()){
+            List<PostImage> listImg = customRepository.findListForDelete(post, deleteImageList);
+            for (PostImage img: listImg){
+                img.changeStatus();
+            }
+        }
+        saveUpdateImg(files, post);
+        return readImages(post);
+    }
+    private void saveUpdateImg (List<MultipartFile> fileList, Post post){
+        List<PostImage> postImages = new ArrayList<>();
+
+        for (MultipartFile file : fileList){
+            ImageDto imageDto = minioServiceProvider.uploadImage(Bucket.Post, file);
+            if (imageDto.getStatus().equals(ImageDto.Status.UPLOADED)){
+                PostImage postImage = PostImage.builder()
+                        .isActive(1)
+                        .post(post)
+                        .url(imageDto.getPath())
+                        .build();
+                postImages.add(postImage);
+            }else {
+                throw new MinioUploadException("이미지가 업로드에 실패하였습니다");
+            }
+        }
+        postImgRepository.saveAll(postImages);
+    }
+
+    public void deleteImg(Post post) {
+        List<PostImage> postImages = customRepository.readByPost(post);
+        for (PostImage img : postImages){
+            img.changeStatus();
+        }
+    }
 }
