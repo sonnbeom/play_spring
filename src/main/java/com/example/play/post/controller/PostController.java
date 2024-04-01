@@ -26,37 +26,41 @@ public class PostController {
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestPart("postDto") CreatePostDto postDto,
                                     BindingResult bindingResult,
-                                    @RequestPart("files") List<MultipartFile> files){
+                                    @RequestPart(value = "files", required = false) List<MultipartFile> files){
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(postDto);
         }
         PostResponseOne response = postService.create(postDto ,files);;
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    /*
-    * 방문 시에 조회수 올려주는 거 업데이트 필요
-    * */
-//    @GetMapping("/{postId}")
-//    public ResponseEntity<PostResponseOne> readOne(@PathVariable("postId") Long postId){
-//        PostResponseOne responsePostDto = postService.readOne(postId);
-//        return ResponseEntity.status(HttpStatus.OK).body(responsePostDto);
-//    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostResponseOne> readOne(@PathVariable("postId") Long postId){
+        PostResponseOne responsePostDto = postService.readOne(postId);
+        return ResponseEntity.status(HttpStatus.OK).body(responsePostDto);
+    }
     //최신순 페이징 정렬
     @GetMapping("/sort")
-    public ResponseEntity<PostResponseDto> readBySort(@RequestParam(defaultValue = "0")int page, @RequestParam String sortType){
+    public ResponseEntity<PostResponseDto> readBySort(@RequestParam(defaultValue = "0")int page,
+                                                      @RequestParam String sortType){
         PostResponseDto postResponseDto = postService.readBySort(page ,sortType);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
     }
     @GetMapping("/search")
-    public ResponseEntity<PostResponseDto> readBySearch(@RequestParam(defaultValue = "0") int page, @RequestParam String type, @RequestParam String keyword){
+    public ResponseEntity<PostResponseDto> readBySearch(@RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam String type,
+                                                        @RequestParam String keyword){
         PostResponseDto postResponseDto = postService.readBySearch(page, type, keyword);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
     }
-//    @PatchMapping("/{postId}")
-//    public ResponseEntity<PostResponseOne> update(@PathVariable("postId") Long postId, @RequestBody PostUpdateDto updateDto){
-//        PostResponseOne responseOne = postService.update(postId ,updateDto);
-//        return ResponseEntity.status(HttpStatus.OK).body(responseOne);
-//    }
+    @PatchMapping("/{postId}")
+    public ResponseEntity<PostResponseOne> update(@PathVariable("postId") Long postId,
+                                                  @RequestPart(value = "updatePostDto") PostUpdateDto updateDto,
+                                                  @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                                  @RequestPart(value = "deleteFileList", required = false) List<Long> deleteImageList){
+        PostResponseOne responseOne = postService.update(postId ,updateDto, files, deleteImageList);
+        return ResponseEntity.status(HttpStatus.OK).body(responseOne);
+    }
     @DeleteMapping("/{postId}")
     public ResponseEntity delete(@PathVariable("postId")Long postId){
         int deleteSuccess = postService.delete(postId);

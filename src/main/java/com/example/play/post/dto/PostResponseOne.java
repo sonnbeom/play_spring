@@ -1,5 +1,6 @@
 package com.example.play.post.dto;
 
+import com.example.play.image.dto.ResponseImg;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,6 @@ public class PostResponseOne {
     private String content;
     private int hit;
     private int like;
-    private List<String> urls = new ArrayList<>();
+    private List<ResponseImg> responseImgs = new ArrayList<>();
     private LocalDateTime createdAt;
 }

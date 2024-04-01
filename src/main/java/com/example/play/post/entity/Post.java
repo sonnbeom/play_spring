@@ -37,6 +37,9 @@ public class Post extends BaseEntity {
     private Member member;
     @OneToMany(mappedBy = "post")
     private List<PostImage> imageList = new ArrayList<>();
+    public void upHit(){
+        hit += 1;
+    }
     public void changeTitle(String title){
         this.title = title;
     }

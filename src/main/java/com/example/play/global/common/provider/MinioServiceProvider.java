@@ -24,7 +24,7 @@ import static com.example.play.image.dto.ImageDto.Status.UPLOADED;
 @RequiredArgsConstructor
 @Component
 public class MinioServiceProvider {
-    private MinioClient minioClient;
+    private final MinioClient minioClient;
 
     @Value("${minio.allowed.file_extension}")
     private List<String> allowedFileExtensions;

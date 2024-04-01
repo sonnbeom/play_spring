@@ -3,8 +3,11 @@ package com.example.play.image.service;
 import com.example.play.global.common.constant.Bucket;
 import com.example.play.global.common.provider.MinioServiceProvider;
 import com.example.play.image.dto.ImageDto;
+import com.example.play.image.dto.ResponseImg;
 import com.example.play.image.entity.PostImage;
 import com.example.play.image.exception.MinioUploadException;
+import com.example.play.image.mapper.PostImgMapper;
+import com.example.play.image.repository.PostImgCustomRepositoryImpl;
 import com.example.play.image.repository.PostImgRepository;
 import com.example.play.post.entity.Post;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +24,12 @@ import java.util.List;
 public class PostImgService {
     private final PostImgRepository postImgRepository;
     private final MinioServiceProvider minioServiceProvider;
+    private final PostImgCustomRepositoryImpl customRepository;
+    private final PostImgMapper postImgMapper;
 
-    public List<String> savePostImage(List<MultipartFile> fileList, Post post){
+    public List<ResponseImg> savePostImage(List<MultipartFile> fileList, Post post){
         List<PostImage> postImages = new ArrayList<>();
-        List<String> urls = new ArrayList<>();
+
         for (MultipartFile file : fileList){
             ImageDto imageDto = minioServiceProvider.uploadImage(Bucket.Post, file);
             if (imageDto.getStatus().equals(ImageDto.Status.UPLOADED)){
@@ -34,12 +39,52 @@ public class PostImgService {
                             .url(imageDto.getPath())
                             .build();
                 postImages.add(postImage);
-                urls.add(imageDto.getPath());
+            }else {
+                throw new MinioUploadException("이미지가 업로드에 실패하였습니다");
+            }
+        }
+
+        List<PostImage> postImagesList = postImgRepository.saveAll(postImages);
+        return postImgMapper.entityToDto(postImagesList);
+    }
+    public List<ResponseImg> readImages(Post post){
+        List<PostImage> postImages = customRepository.readByPost(post);
+        return postImgMapper.entityToDto(postImages);
+    }
+
+    public List<ResponseImg> update(Post post, List<Long> deleteImageList, List<MultipartFile> files) {
+        if (deleteImageList != null && !deleteImageList.isEmpty()){
+            List<PostImage> listImg = customRepository.findListForDelete(post, deleteImageList);
+            for (PostImage img: listImg){
+                img.changeStatus();
+            }
+        }
+        saveUpdateImg(files, post);
+        return readImages(post);
+    }
+    private void saveUpdateImg (List<MultipartFile> fileList, Post post){
+        List<PostImage> postImages = new ArrayList<>();
+
+        for (MultipartFile file : fileList){
+            ImageDto imageDto = minioServiceProvider.uploadImage(Bucket.Post, file);
+            if (imageDto.getStatus().equals(ImageDto.Status.UPLOADED)){
+                PostImage postImage = PostImage.builder()
+                        .isActive(1)
+                        .post(post)
+                        .url(imageDto.getPath())
+                        .build();
+                postImages.add(postImage);
             }else {
                 throw new MinioUploadException("이미지가 업로드에 실패하였습니다");
             }
         }
         postImgRepository.saveAll(postImages);
-        return urls;
+    }
+
+    public void deleteImg(Post post) {
+        List<PostImage> postImages = customRepository.readByPost(post);
+        for (PostImage img : postImages){
+            img.changeStatus();
+        }
     }
 }

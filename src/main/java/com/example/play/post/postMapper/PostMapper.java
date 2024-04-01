@@ -1,5 +1,6 @@
 package com.example.play.post.postMapper;
 
+import com.example.play.image.dto.ResponseImg;
 import com.example.play.post.dto.CreatePostDto;
 import com.example.play.post.dto.PostPageResponseDto;
 import com.example.play.post.dto.PostResponseDto;
@@ -25,13 +26,13 @@ public class PostMapper {
                 .isActive(1).build();
     }
 
-    public PostResponseOne entityToDtoWithImage(Post saved, List<String> urls) {
+    public PostResponseOne entityToDtoWithImage(Post saved, List<ResponseImg> responseImgs) {
         return PostResponseOne.builder()
                 .id(saved.getId())
                 .content(saved.getContent())
                 .title(saved.getTitle())
-                .hit(saved.getHit())
-                .urls(urls)
+                .hit(saved.getHit()+1)
+                .responseImgs(responseImgs)
                 .like(saved.getLikeCount())
                 .createdAt(saved.getCreatedAt())
                 .build();
