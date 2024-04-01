@@ -1,5 +1,7 @@
 package com.example.play.member.dto;
 
+import com.example.play.image.dto.ResponseMemberImg;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,17 +10,13 @@ import java.util.List;
 
 @NoArgsConstructor
 @Getter
+@AllArgsConstructor
+@Builder
 public class MemberDtoByReadOne {
+    private Long id;
     private String name;
     private String email;
     private String nickname;
-    private String picture;
+    private ResponseMemberImg img;
 
-    @Builder
-    public MemberDtoByReadOne(String name, String email, String nickname, String picture) {
-        this.name = name;
-        this.email = email;
-        this.nickname = nickname;
-        this.picture = picture;
-    }
 }

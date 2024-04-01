@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,12 +35,13 @@ public class MemberController {
     * */
 
     @PostMapping("/create")
-    public ResponseEntity<MemberDto> createMember(@Valid @RequestBody MemberDto memberDto,
-                               BindingResult bindingResult){
+    public ResponseEntity<MemberDto> createMember(@Valid @RequestPart("memberDto") MemberDto memberDto,
+                                                  BindingResult bindingResult,
+                                                  @RequestPart(value = "profile", required = false) MultipartFile profile){
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(memberDto);
         }
-        Long l = memberService.createMember(memberDto);
+        Long l = memberService.createMember(memberDto, profile);
         if (l != 0){
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }

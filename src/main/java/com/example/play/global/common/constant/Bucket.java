@@ -1,6 +1,6 @@
 package com.example.play.global.common.constant;
 
 abstract public class Bucket {
-    public static String Member ="memberProfile";
-    public static String Post ="post";
+    public static String MEMBER ="member";
+    public static String POST ="post";
 }

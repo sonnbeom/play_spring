@@ -36,13 +36,13 @@ public class QMember extends EntityPathBase<Member> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
+    public final ListPath<com.example.play.image.entity.MemberImage, com.example.play.image.entity.QMemberImage> memberImages = this.<com.example.play.image.entity.MemberImage, com.example.play.image.entity.QMemberImage>createList("memberImages", com.example.play.image.entity.MemberImage.class, com.example.play.image.entity.QMemberImage.class, PathInits.DIRECT2);
+
     public final StringPath name = createString("name");
 
     public final StringPath nickname = createString("nickname");
 
     public final StringPath password = createString("password");
-
-    public final StringPath picture = createString("picture");
 
     public final ListPath<com.example.play.post.entity.Post, com.example.play.post.entity.QPost> postList = this.<com.example.play.post.entity.Post, com.example.play.post.entity.QPost>createList("postList", com.example.play.post.entity.Post.class, com.example.play.post.entity.QPost.class, PathInits.DIRECT2);
 

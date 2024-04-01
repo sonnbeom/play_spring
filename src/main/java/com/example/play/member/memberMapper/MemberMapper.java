@@ -1,6 +1,7 @@
 package com.example.play.member.memberMapper;
 
 
+import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.member.dto.MemberDto;
 import com.example.play.member.dto.MemberDtoByReadOne;
 import com.example.play.member.dto.ResponseUpdatedMemberDto;
@@ -26,16 +27,15 @@ public class MemberMapper {
                 .password(passwordEncoder.encode(memberDto.getPassword()))
                 .nickname(memberDto.getNickname())
                 .role(Role.User)
-                .picture(memberDto.getPicture())
                 .build();
     }
 
-    public MemberDtoByReadOne entityToDto(Member member) {
+    public MemberDtoByReadOne entityToDto(Member member, ResponseMemberImg img) {
         return MemberDtoByReadOne.builder()
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .name(member.getName())
-                .picture(member.getPicture())
+                .img(img)
                 .build();
     }
 
