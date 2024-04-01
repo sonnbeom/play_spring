@@ -13,6 +13,5 @@ public class SessionMember implements Serializable {
     public SessionMember(Member member) {
         this.name = member.getName();
         this.email = member.getEmail();
-        this.picture = member.getPicture();
     }
 }

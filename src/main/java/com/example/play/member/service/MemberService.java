@@ -1,5 +1,7 @@
 package com.example.play.member.service;
 
+import com.example.play.image.dto.ResponseMemberImg;
+import com.example.play.image.service.MemberImgService;
 import com.example.play.member.dto.MemberDto;
 import com.example.play.member.dto.MemberDtoByReadOne;
 import com.example.play.member.dto.MemberUpdateDto;
@@ -12,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -23,10 +26,12 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
-    public Long createMember(MemberDto memberDto) {
+    private final MemberImgService memberImgService;
+    public Long createMember(MemberDto memberDto, MultipartFile profile) {
         if(duplicateCheck(memberDto)){
             Member member = memberMapper.dtoToMember(memberDto);
             Member saved = memberRepository.save(member);
+            memberImgService.saveMemberImg(saved, profile);
             return saved.getId();
         }
         else {
@@ -45,7 +50,8 @@ public class MemberService {
 
     public MemberDtoByReadOne findMember(Long memberId) {
         Member findMember = findMemberById(memberId);
-        return memberMapper.entityToDto(findMember);
+        ResponseMemberImg img = memberImgService.findMemberImageByMember(findMember);
+        return memberMapper.entityToDto(findMember ,img);
     }
 
     public ResponseUpdatedMemberDto updateMember(Long memberId, MemberUpdateDto updateDto) {

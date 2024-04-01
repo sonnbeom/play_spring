@@ -10,6 +10,7 @@ import com.example.play.image.mapper.PostImgMapper;
 import com.example.play.image.repository.PostImgCustomRepositoryImpl;
 import com.example.play.image.repository.PostImgRepository;
 import com.example.play.post.entity.Post;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class PostImgService {
     private final PostImgRepository postImgRepository;
     private final MinioServiceProvider minioServiceProvider;
@@ -31,7 +33,7 @@ public class PostImgService {
         List<PostImage> postImages = new ArrayList<>();
 
         for (MultipartFile file : fileList){
-            ImageDto imageDto = minioServiceProvider.uploadImage(Bucket.Post, file);
+            ImageDto imageDto = minioServiceProvider.uploadImage(Bucket.POST, file);
             if (imageDto.getStatus().equals(ImageDto.Status.UPLOADED)){
                 PostImage postImage = PostImage.builder()
                             .isActive(1)
@@ -40,7 +42,7 @@ public class PostImgService {
                             .build();
                 postImages.add(postImage);
             }else {
-                throw new MinioUploadException("이미지가 업로드에 실패하였습니다");
+                throw new MinioUploadException("게시물 이미지 업로드에 실패하였습니다");
             }
         }
 
@@ -66,7 +68,7 @@ public class PostImgService {
         List<PostImage> postImages = new ArrayList<>();
 
         for (MultipartFile file : fileList){
-            ImageDto imageDto = minioServiceProvider.uploadImage(Bucket.Post, file);
+            ImageDto imageDto = minioServiceProvider.uploadImage(Bucket.POST, file);
             if (imageDto.getStatus().equals(ImageDto.Status.UPLOADED)){
                 PostImage postImage = PostImage.builder()
                         .isActive(1)

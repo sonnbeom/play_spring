@@ -1,6 +1,7 @@
 package com.example.play.member.entity;
 
 import com.example.play.friendship.entity.Friendship;
+import com.example.play.image.entity.MemberImage;
 import com.example.play.member.role.Role;
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.post.entity.Post;
@@ -21,29 +22,25 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
-    @Column
     private String name;
     @Column(unique = true)
     private String email;
-    @Column
     private String password;
     @Column(name="is_active")
     private Integer isActive;
-    @Column
     private String nickname;
-    @Column
-    private String picture;
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToMany(mappedBy = "member")
     private List<Friendship> friendshipList = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     private List<Post> postList = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<MemberImage> memberImages = new ArrayList<>();
     @Builder
     public Member(String name, String email, String picture, Role role, Integer isActive, String nickname, String password){
         this.name = name;
         this.email = email;
-        this.picture = picture;
         this.role = role;
         this.isActive = isActive;
         this.nickname = nickname;
@@ -53,15 +50,13 @@ public class Member extends BaseEntity {
     public Member(String name, String email, String picture, Role role, Integer isActive){
         this.name = name;
         this.email = email;
-        this.picture = picture;
         this.role = role;
         this.isActive = isActive;
 
     }
 
-    public Member update(String name, String picture){
+    public Member update(String name){
         this.name = name;
-        this.picture = picture;
         return this;
     }
 
