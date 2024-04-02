@@ -5,6 +5,7 @@ import com.example.play.global.common.provider.MinioServiceProvider;
 import com.example.play.image.dto.ImageDto;
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.entity.MemberImage;
+import com.example.play.image.exception.MemberImgException;
 import com.example.play.image.exception.MinioUploadException;
 import com.example.play.image.mapper.MemberImgMapper;
 import com.example.play.image.repository.MemberImgCustomRepository;
@@ -28,7 +29,7 @@ public class MemberImgService {
     private final MemberImgMapper memberImgMapper;
     private final MemberImgCustomRepository memberImgCustomRepository;
 
-    public ResponseMemberImg findMemberImageByMember(Member member) {
+    public ResponseMemberImg findByMember(Member member) {
         List<MemberImage> img = memberImgCustomRepository.findByMember(member);
         if (img.isEmpty() && img.size() != 1){
             return new ResponseMemberImg().builder()
@@ -85,6 +86,16 @@ public class MemberImgService {
         if (!deleteImgList.isEmpty() && deleteImgList.size() == 1){
             MemberImage deleteImg = deleteImgList.get(0);
             deleteImg.changeStatus();
+        }
+    }
+    public int changeStatusByMember(Member member){
+        List<MemberImage> deleteImgList = memberImgCustomRepository.findByMember(member);
+        if (!deleteImgList.isEmpty() && deleteImgList.size()==1){
+            MemberImage memberImage = deleteImgList.get(0);
+            memberImage.changeStatus();
+            return memberImage.getIsActive();
+        }else {
+            throw new MemberImgException("삭제하려는 멤버의 프로필이 1개 이상입니다.");
         }
     }
 }

@@ -32,7 +32,7 @@ public class Post extends BaseEntity {
     private int isActive;
     @Column(name = "like_count")
     private int likeCount;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
     @OneToMany(mappedBy = "post")

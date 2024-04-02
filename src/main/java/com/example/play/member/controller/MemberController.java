@@ -1,9 +1,6 @@
 package com.example.play.member.controller;
 
-import com.example.play.member.dto.MemberDto;
-import com.example.play.member.dto.MemberDtoByReadOne;
-import com.example.play.member.dto.MemberUpdateDto;
-import com.example.play.member.dto.ResponseUpdatedMemberDto;
+import com.example.play.member.dto.*;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -63,13 +60,14 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
     @DeleteMapping("/{memberId}")
-    public ResponseEntity deleteMember(@PathVariable Long memberId){
-        int deleteSuccess = memberService.deleteMember(memberId);
-        if (deleteSuccess == 0){
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    public ResponseEntity<ResponseDeleteMemberDto> deleteMember(@PathVariable Long memberId){
+        ResponseDeleteMemberDto deleted = memberService.deleteMember(memberId);
+        if (deleted.getMemberStatus().equals(ResponseDeleteMemberDto.STATUS.DELETED)
+                && deleted.getMemberImgStatus().equals(ResponseDeleteMemberDto.STATUS.DELETED)){
+            return ResponseEntity.status(HttpStatus.OK).body(deleted);
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(deleted);
         }
     }
-
 }

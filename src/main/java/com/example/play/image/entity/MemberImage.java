@@ -20,7 +20,7 @@ public class MemberImage {
     private String url;
     @Column(name = "is_active")
     private int isActive;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
     public void changeStatus(){
