@@ -4,7 +4,7 @@ package com.example.play.member.memberMapper;
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.member.dto.MemberDto;
 import com.example.play.member.dto.MemberDtoByReadOne;
-import com.example.play.member.dto.ResponseUpdatedMemberDto;
+import com.example.play.member.dto.ResponseDeleteMemberDto;
 import com.example.play.member.entity.Member;
 import com.example.play.member.role.Role;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +39,7 @@ public class MemberMapper {
                 .img(img)
                 .build();
     }
-
+    public ResponseDeleteMemberDto deleteResponse(int memberStatus, int imgStatus){
+        return new ResponseDeleteMemberDto(memberStatus, imgStatus);
+    }
 }

@@ -19,7 +19,7 @@ public class PostImage {
     private String url;
     @Column(name = "is_active")
     private int isActive;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
     public void changeStatus(){

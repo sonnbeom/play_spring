@@ -2,10 +2,7 @@ package com.example.play.member.service;
 
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.service.MemberImgService;
-import com.example.play.member.dto.MemberDto;
-import com.example.play.member.dto.MemberDtoByReadOne;
-import com.example.play.member.dto.MemberUpdateDto;
-import com.example.play.member.dto.ResponseUpdatedMemberDto;
+import com.example.play.member.dto.*;
 import com.example.play.member.entity.Member;
 import com.example.play.member.exception.MemberNotFoundException;
 import com.example.play.member.memberMapper.MemberMapper;
@@ -54,7 +51,7 @@ public class MemberService {
 
     public MemberDtoByReadOne findMember(Long memberId) {
         Member findMember = findMemberById(memberId);
-        ResponseMemberImg img = memberImgService.findMemberImageByMember(findMember);
+        ResponseMemberImg img = memberImgService.findByMember(findMember);
         return memberMapper.entityToDto(findMember ,img);
     }
 
@@ -76,10 +73,12 @@ public class MemberService {
         return memberMapper.entityToDto(updateMember, img);
     }
 
-    public int deleteMember(Long memberId){
+    public ResponseDeleteMemberDto deleteMember(Long memberId){
        Member member = findMemberById(memberId);
-       member.changeStatus();
-       return member.getIsActive();
+        int imgStatus = memberImgService.changeStatusByMember(member);
+        member.changeStatus();
+        int memberStatus = member.getIsActive();
+        return memberMapper.deleteResponse(memberStatus, imgStatus);
     }
     private Member findMemberById(Long memberId){
         Optional<Member> optionalMember = memberRepository.findById(memberId);
