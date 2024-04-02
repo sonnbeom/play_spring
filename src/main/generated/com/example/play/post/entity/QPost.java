@@ -44,6 +44,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final com.example.play.member.entity.QMember member;
 
+    public final ListPath<com.example.play.like.post.entity.PostLike, com.example.play.like.post.entity.QPostLike> postLikes = this.<com.example.play.like.post.entity.PostLike, com.example.play.like.post.entity.QPostLike>createList("postLikes", com.example.play.like.post.entity.PostLike.class, com.example.play.like.post.entity.QPostLike.class, PathInits.DIRECT2);
+
     public final StringPath title = createString("title");
 
     public QPost(String variable) {

@@ -2,6 +2,7 @@ package com.example.play.member.entity;
 
 import com.example.play.friendship.entity.Friendship;
 import com.example.play.image.entity.MemberImage;
+import com.example.play.like.post.entity.PostLike;
 import com.example.play.member.role.Role;
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.post.entity.Post;
@@ -37,6 +38,8 @@ public class Member extends BaseEntity {
     private List<Post> postList = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     private List<MemberImage> memberImages = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<PostLike> postLikes =new ArrayList<>();
     @Builder
     public Member(String name, String email, String picture, Role role, Integer isActive, String nickname, String password){
         this.name = name;

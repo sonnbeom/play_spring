@@ -13,13 +13,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PostPageResponseDto {
+public class ResponsePostPageDto {
     private Long id;
     private String title;
     private int likeCount;
     private int hit;
     private String url;
-    public PostPageResponseDto(Post post) {
+    public ResponsePostPageDto(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.likeCount = post.getLikeCount();

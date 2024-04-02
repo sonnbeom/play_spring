@@ -1,6 +1,5 @@
 package com.example.play.member.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +9,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class MemberUpdateDto {
+public class RequestMemberUpdateDto {
     private String nickname;
     private String email;
     private String picture;

@@ -26,7 +26,7 @@ public class MemberService {
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
     private final MemberImgService memberImgService;
-    public Long createMember(MemberDto memberDto, MultipartFile profile) {
+    public Long createMember(RequestMemberDto memberDto, MultipartFile profile) {
         if(duplicateCheck(memberDto)){
             Member member = memberMapper.dtoToMember(memberDto);
             Member saved = memberRepository.save(member);
@@ -39,7 +39,7 @@ public class MemberService {
             return 0L;
         }
     }
-    private boolean duplicateCheck(MemberDto memberDto){
+    private boolean duplicateCheck(RequestMemberDto memberDto){
         if (memberRepository.existsByEmail(memberDto.getEmail())){
             return false;
         }
@@ -49,13 +49,13 @@ public class MemberService {
         return true;
     }
 
-    public MemberDtoByReadOne findMember(Long memberId) {
+    public ResponseMemberDto readMember(Long memberId) {
         Member findMember = findMemberById(memberId);
         ResponseMemberImg img = memberImgService.findByMember(findMember);
         return memberMapper.entityToDto(findMember ,img);
     }
 
-    public MemberDtoByReadOne updateMember(Long memberId, MemberUpdateDto updateDto, MultipartFile profile, Long deleteFile) {
+    public ResponseMemberDto updateMember(Long memberId, RequestMemberUpdateDto updateDto, MultipartFile profile, Long deleteFile) {
         Member updateMember = findMemberById(memberId);
         if (updateDto.getNickname() != null && !updateDto.getNickname().isEmpty()){
             updateMember.changeNickname(updateMember.getNickname());
@@ -80,7 +80,7 @@ public class MemberService {
         int memberStatus = member.getIsActive();
         return memberMapper.deleteResponse(memberStatus, imgStatus);
     }
-    private Member findMemberById(Long memberId){
+    public Member findMemberById(Long memberId){
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         return optionalMember.orElseThrow(() -> new MemberNotFoundException(memberId+"로 ID를 가진 유저를 조회할 수 없습니다."));
     }

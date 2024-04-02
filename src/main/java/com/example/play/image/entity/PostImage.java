@@ -1,5 +1,6 @@
 package com.example.play.image.entity;
 
+import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PostImage {
+public class PostImage extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;

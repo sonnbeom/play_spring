@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Log4j2
-public class ImgaeListDto {
+public class ImgListDto {
     private List<MultipartFile> imageList;
     private int imageCount;
 }

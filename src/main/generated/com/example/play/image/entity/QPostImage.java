@@ -22,9 +22,17 @@ public class QPostImage extends EntityPathBase<PostImage> {
 
     public static final QPostImage postImage = new QPostImage("postImage");
 
+    public final com.example.play.global.common.entity.QBaseEntity _super = new com.example.play.global.common.entity.QBaseEntity(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final NumberPath<Integer> isActive = createNumber("isActive", Integer.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
     public final com.example.play.post.entity.QPost post;
 

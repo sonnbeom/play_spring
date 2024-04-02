@@ -1,9 +1,9 @@
 package com.example.play.post.controller;
 
-import com.example.play.post.dto.CreatePostDto;
-import com.example.play.post.dto.PostResponseOne;
-import com.example.play.post.dto.PostResponseDto;
-import com.example.play.post.dto.PostUpdateDto;
+import com.example.play.post.dto.RequestPostDto;
+import com.example.play.post.dto.ResponsePostOne;
+import com.example.play.post.dto.ResponsePostDTo;
+import com.example.play.post.dto.RequestUpdatePostDto;
 import com.example.play.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,41 +24,41 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestPart("postDto") CreatePostDto postDto,
+    public ResponseEntity<?> create(@Valid @RequestPart("postDto") RequestPostDto postDto,
                                     BindingResult bindingResult,
                                     @RequestPart(value = "files", required = false) List<MultipartFile> files){
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(postDto);
         }
-        PostResponseOne response = postService.create(postDto ,files);;
+        ResponsePostOne response = postService.create(postDto ,files);;
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponseOne> readOne(@PathVariable("postId") Long postId){
-        PostResponseOne responsePostDto = postService.readOne(postId);
+    public ResponseEntity<ResponsePostOne> readOne(@PathVariable("postId") Long postId){
+        ResponsePostOne responsePostDto = postService.readOne(postId);
         return ResponseEntity.status(HttpStatus.OK).body(responsePostDto);
     }
     //최신순 페이징 정렬
     @GetMapping("/sort")
-    public ResponseEntity<PostResponseDto> readBySort(@RequestParam(defaultValue = "0")int page,
+    public ResponseEntity<ResponsePostDTo> readBySort(@RequestParam(defaultValue = "0")int page,
                                                       @RequestParam String sortType){
-        PostResponseDto postResponseDto = postService.readBySort(page ,sortType);
+        ResponsePostDTo postResponseDto = postService.readBySort(page ,sortType);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
     }
     @GetMapping("/search")
-    public ResponseEntity<PostResponseDto> readBySearch(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<ResponsePostDTo> readBySearch(@RequestParam(defaultValue = "0") int page,
                                                         @RequestParam String type,
                                                         @RequestParam String keyword){
-        PostResponseDto postResponseDto = postService.readBySearch(page, type, keyword);
+        ResponsePostDTo postResponseDto = postService.readBySearch(page, type, keyword);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
     }
     @PatchMapping("/{postId}")
-    public ResponseEntity<PostResponseOne> update(@PathVariable("postId") Long postId,
-                                                  @RequestPart(value = "updatePostDto") PostUpdateDto updateDto,
+    public ResponseEntity<ResponsePostOne> update(@PathVariable("postId") Long postId,
+                                                  @RequestPart(value = "updatePostDto") RequestUpdatePostDto updateDto,
                                                   @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                                   @RequestPart(value = "deleteFileList", required = false) List<Long> deleteImageList){
-        PostResponseOne responseOne = postService.update(postId ,updateDto, files, deleteImageList);
+        ResponsePostOne responseOne = postService.update(postId ,updateDto, files, deleteImageList);
         return ResponseEntity.status(HttpStatus.OK).body(responseOne);
     }
     @DeleteMapping("/{postId}")

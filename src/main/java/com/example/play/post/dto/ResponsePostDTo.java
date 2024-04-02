@@ -12,8 +12,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class PostResponseDto<T> {
+public class ResponsePostDTo<T> {
     private int currentPage;
     private int totalPages;
-    private List<PostPageResponseDto> postListDto = new ArrayList<>();
+    private List<ResponsePostPageDto> postListDto = new ArrayList<>();
 }
