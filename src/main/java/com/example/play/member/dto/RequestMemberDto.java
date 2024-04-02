@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MemberDto {
+public class RequestMemberDto {
     private String name;
     private String email;
     private String password;

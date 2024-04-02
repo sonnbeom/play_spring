@@ -6,13 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @NoArgsConstructor
 @Getter
 @AllArgsConstructor
 @Builder
-public class MemberDtoByReadOne {
+public class ResponseMemberDto {
     private Long id;
     private String name;
     private String email;

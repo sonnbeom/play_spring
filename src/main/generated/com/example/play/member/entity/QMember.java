@@ -44,6 +44,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath password = createString("password");
 
+    public final ListPath<com.example.play.like.post.entity.PostLike, com.example.play.like.post.entity.QPostLike> postLikes = this.<com.example.play.like.post.entity.PostLike, com.example.play.like.post.entity.QPostLike>createList("postLikes", com.example.play.like.post.entity.PostLike.class, com.example.play.like.post.entity.QPostLike.class, PathInits.DIRECT2);
+
     public final ListPath<com.example.play.post.entity.Post, com.example.play.post.entity.QPost> postList = this.<com.example.play.post.entity.Post, com.example.play.post.entity.QPost>createList("postList", com.example.play.post.entity.Post.class, com.example.play.post.entity.QPost.class, PathInits.DIRECT2);
 
     public final EnumPath<com.example.play.member.role.Role> role = createEnum("role", com.example.play.member.role.Role.class);

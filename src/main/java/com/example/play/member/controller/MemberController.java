@@ -1,7 +1,6 @@
 package com.example.play.member.controller;
 
 import com.example.play.member.dto.*;
-import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +31,9 @@ public class MemberController {
     * */
 
     @PostMapping("/create")
-    public ResponseEntity<MemberDto> createMember(@Valid @RequestPart("memberDto") MemberDto memberDto,
-                                                  BindingResult bindingResult,
-                                                  @RequestPart(value = "profile", required = false) MultipartFile profile){
+    public ResponseEntity<RequestMemberDto> createMember(@Valid @RequestPart("memberDto") RequestMemberDto memberDto,
+                                                         BindingResult bindingResult,
+                                                         @RequestPart(value = "profile", required = false) MultipartFile profile){
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(memberDto);
         }
@@ -47,16 +46,16 @@ public class MemberController {
         }
     }
     @GetMapping("/{memberId}")
-    public ResponseEntity<MemberDtoByReadOne> readMember(@PathVariable("memberId") Long memberId){
-        MemberDtoByReadOne dto =  memberService.findMember(memberId);
+    public ResponseEntity<ResponseMemberDto> readMember(@PathVariable("memberId") Long memberId){
+        ResponseMemberDto dto =  memberService.readMember(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
     @PatchMapping("/{memberId}")
-    public ResponseEntity<MemberDtoByReadOne> updateMember(@PathVariable Long memberId,
-                                                                 @RequestPart(value = "updateDto", required = false) MemberUpdateDto updateDto,
-                                                                 @RequestPart(value = "file", required = false)MultipartFile profile,
-                                                                 @RequestPart(value = "deleteFile", required = false) Long deleteFile){
-        MemberDtoByReadOne updatedDto = memberService.updateMember(memberId, updateDto, profile, deleteFile);
+    public ResponseEntity<ResponseMemberDto> updateMember(@PathVariable Long memberId,
+                                                          @RequestPart(value = "updateDto", required = false) RequestMemberUpdateDto updateDto,
+                                                          @RequestPart(value = "file", required = false)MultipartFile profile,
+                                                          @RequestPart(value = "deleteFile", required = false) Long deleteFile){
+        ResponseMemberDto updatedDto = memberService.updateMember(memberId, updateDto, profile, deleteFile);
         return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
     @DeleteMapping("/{memberId}")

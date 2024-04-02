@@ -3,10 +3,10 @@ package com.example.play.post.service;
 import com.example.play.image.dto.ResponseImg;
 import com.example.play.image.service.PostImgService;
 import com.example.play.post.constant.PageSize;
-import com.example.play.post.dto.CreatePostDto;
-import com.example.play.post.dto.PostResponseOne;
-import com.example.play.post.dto.PostResponseDto;
-import com.example.play.post.dto.PostUpdateDto;
+import com.example.play.post.dto.RequestPostDto;
+import com.example.play.post.dto.ResponsePostOne;
+import com.example.play.post.dto.ResponsePostDTo;
+import com.example.play.post.dto.RequestUpdatePostDto;
 import com.example.play.post.entity.Post;
 import com.example.play.post.exception.PostNotFoundException;
 import com.example.play.post.postMapper.PostMapper;
@@ -34,7 +34,7 @@ public class PostService {
     private final PostRepositoryCustom postRepositoryCustom;
     private final PostImgService postImgService;
 
-    public PostResponseOne create(CreatePostDto postDto, List<MultipartFile> files) {
+    public ResponsePostOne create(RequestPostDto postDto, List<MultipartFile> files) {
         Post post = postMapper.dtoToEntity(postDto);
         Post saved = postRepository.save(post);
         if (!files.isEmpty()){
@@ -45,30 +45,30 @@ public class PostService {
             return postMapper.entityToDto(saved);
         }
     }
-    public PostResponseOne readOne(Long postId) {
+    public ResponsePostOne readOne(Long postId) {
         Post post = findById(postId);
         post.upHit();
         List<ResponseImg> responseImgs = postImgService.readImages(post);
         return postMapper.entityToDtoWithImage(post, responseImgs);
     }
-    private Post findById(Long postId){
+    public Post findById(Long postId){
         Optional<Post> optional = postRepository.findById(postId);
         return optional.orElseThrow(() -> new PostNotFoundException(postId+"로 ID를 가진 게시글을 조회할 수 없습니다."));
     }
 
-    public PostResponseDto readBySort(int page, String sortType) {
+    public ResponsePostDTo readBySort(int page, String sortType) {
         Pageable pageable = PageRequest.of(page ,PageSize.size);
         Page<Post> postPage = postRepositoryCustom.findBySort(pageable, sortType);
         return postMapper.pageEntityToDto(postPage);
     }
 
-    public PostResponseDto readBySearch(int page, String type, String keyword) {
+    public ResponsePostDTo readBySearch(int page, String type, String keyword) {
         Pageable pageable = PageRequest.of(page, PageSize.size);
         Page<Post> postPage = postRepositoryCustom.findBySearch(pageable, type, keyword);
         return postMapper.pageEntityToDto(postPage);
     }
 
-    public PostResponseOne update(Long postId ,PostUpdateDto updateDto, List<MultipartFile> files, List<Long> deleteImageList) {
+    public ResponsePostOne update(Long postId , RequestUpdatePostDto updateDto, List<MultipartFile> files, List<Long> deleteImageList) {
         Post post = findById(postId);
         if (updateDto.getTitle() != null && !updateDto.getTitle().isEmpty()){
             post.changeTitle(updateDto.getTitle());
@@ -84,5 +84,9 @@ public class PostService {
         post.changeIsActive();
         postImgService.deleteImg(post);
         return post.getIsActive();
+    }
+    public ResponsePostOne entityToDto(Post post){
+        List<ResponseImg> imgList = postImgService.readImages(post);
+        return postMapper.entityToDtoWithImage(post, imgList);
     }
 }

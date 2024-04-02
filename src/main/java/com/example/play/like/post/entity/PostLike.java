@@ -1,4 +1,4 @@
-package com.example.play.image.entity;
+package com.example.play.like.post.entity;
 
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.member.entity.Member;
@@ -10,21 +10,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberImage extends BaseEntity {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Getter
+public class PostLike extends BaseEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String url;
-    @Column(name = "is_active")
-    private int isActive;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-    public void changeStatus(){
+    @Column(name = "is_active")
+    private int isActive;
+
+    public int deleteLike() {
         isActive = 0;
+        return isActive;
     }
 }

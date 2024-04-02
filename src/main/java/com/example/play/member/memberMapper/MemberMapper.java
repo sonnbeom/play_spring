@@ -2,8 +2,8 @@ package com.example.play.member.memberMapper;
 
 
 import com.example.play.image.dto.ResponseMemberImg;
-import com.example.play.member.dto.MemberDto;
-import com.example.play.member.dto.MemberDtoByReadOne;
+import com.example.play.member.dto.RequestMemberDto;
+import com.example.play.member.dto.ResponseMemberDto;
 import com.example.play.member.dto.ResponseDeleteMemberDto;
 import com.example.play.member.entity.Member;
 import com.example.play.member.role.Role;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class MemberMapper {
     @Autowired
     private final PasswordEncoder passwordEncoder;
-    public Member dtoToMember(MemberDto memberDto){
+    public Member dtoToMember(RequestMemberDto memberDto){
         return Member.builder()
                 .name(memberDto.getName())
                 .email(memberDto.getEmail())
@@ -30,8 +30,8 @@ public class MemberMapper {
                 .build();
     }
 
-    public MemberDtoByReadOne entityToDto(Member member, ResponseMemberImg img) {
-        return MemberDtoByReadOne.builder()
+    public ResponseMemberDto entityToDto(Member member, ResponseMemberImg img) {
+        return ResponseMemberDto.builder()
                 .id(member.getId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())

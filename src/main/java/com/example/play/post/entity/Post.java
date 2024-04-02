@@ -2,6 +2,7 @@ package com.example.play.post.entity;
 
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.image.entity.PostImage;
+import com.example.play.like.post.entity.PostLike;
 import com.example.play.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -37,9 +38,12 @@ public class Post extends BaseEntity {
     private Member member;
     @OneToMany(mappedBy = "post")
     private List<PostImage> imageList = new ArrayList<>();
+    @OneToMany(mappedBy = "post")
+    private List<PostLike> postLikes = new ArrayList<>();
     public void upHit(){
         hit += 1;
     }
+    public void upLike(){likeCount += 1;}
     public void changeTitle(String title){
         this.title = title;
     }
@@ -48,5 +52,9 @@ public class Post extends BaseEntity {
     }
     public void changeIsActive(){
         isActive = 0;
+    }
+
+    public void downLike() {
+        likeCount -= 1;
     }
 }
