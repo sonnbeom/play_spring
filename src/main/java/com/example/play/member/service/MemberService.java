@@ -84,4 +84,8 @@ public class MemberService {
         Optional<Member> optionalMember = memberRepository.findById(memberId);
         return optionalMember.orElseThrow(() -> new MemberNotFoundException(memberId+"로 ID를 가진 유저를 조회할 수 없습니다."));
     }
+    public Member findByEmail(String email){
+        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        return optionalMember.orElseThrow(() -> new MemberNotFoundException(email+ "을 가진 유저를 조회할 수 없습니다."));
+    }
 }

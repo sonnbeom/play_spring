@@ -24,8 +24,12 @@ public class QFriendship extends EntityPathBase<Friendship> {
 
     public final com.example.play.global.common.entity.QBaseEntity _super = new com.example.play.global.common.entity.QBaseEntity(this);
 
+    public final NumberPath<Long> counterpartId = createNumber("counterpartId", Long.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    public final StringPath friendEmail = createString("friendEmail");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -36,7 +40,9 @@ public class QFriendship extends EntityPathBase<Friendship> {
 
     public final com.example.play.member.entity.QMember member;
 
-    public final EnumPath<com.example.play.member.constant.FriendshipStatus> status = createEnum("status", com.example.play.member.constant.FriendshipStatus.class);
+    public final StringPath memberEmail = createString("memberEmail");
+
+    public final EnumPath<Friendship.FriendshipStatus> status = createEnum("status", Friendship.FriendshipStatus.class);
 
     public QFriendship(String variable) {
         this(Friendship.class, forVariable(variable), INITS);
