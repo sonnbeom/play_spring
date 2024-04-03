@@ -33,7 +33,7 @@ public class FriendshipService {
         Friendship friendshipTo = friendshipMapper.toDtoToEntity(fromMember, toMember);
 
         friendshipRepository.save(friendshipTo);
-        friendshipRepository.save(friendshipTo);
+        friendshipRepository.save(friendshipFrom);
 
         friendshipFrom.setCounterpartId(friendshipTo.getId());
         friendshipTo.setCounterpartId(friendshipFrom.getId());
