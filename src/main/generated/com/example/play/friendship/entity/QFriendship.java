@@ -31,6 +31,8 @@ public class QFriendship extends EntityPathBase<Friendship> {
 
     public final StringPath friendEmail = createString("friendEmail");
 
+    public final StringPath friendNickname = createString("friendNickname");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final BooleanPath isFrom = createBoolean("isFrom");
@@ -42,7 +44,7 @@ public class QFriendship extends EntityPathBase<Friendship> {
 
     public final StringPath memberEmail = createString("memberEmail");
 
-    public final EnumPath<Friendship.FriendshipStatus> status = createEnum("status", Friendship.FriendshipStatus.class);
+    public final EnumPath<com.example.play.friendship.constant.FriendshipStatus> status = createEnum("status", com.example.play.friendship.constant.FriendshipStatus.class);
 
     public QFriendship(String variable) {
         this(Friendship.class, forVariable(variable), INITS);
