@@ -26,6 +26,7 @@ public class Friendship extends BaseEntity {
     private String memberEmail;
     private String friendNickname;
     private String friendEmail;
+    @Enumerated(EnumType.STRING)
     private FriendshipStatus status;
     @Column(name = "counterpart_id")
     private Long counterpartId;

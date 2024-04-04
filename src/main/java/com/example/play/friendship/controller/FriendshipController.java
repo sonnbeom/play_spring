@@ -24,8 +24,8 @@ public class FriendshipController {
         ResponseFriendship responseFriendship =  friendshipService.create(friendship);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseFriendship);
     }
-    @GetMapping("/received")
-    public ResponseEntity<List<WaitingFriendListDto>> getWaitingFriendship(String email){
+    @GetMapping("/received/{email}")
+    public ResponseEntity<List<WaitingFriendListDto>> getWaitingFriendship(@PathVariable String email){
         List<WaitingFriendListDto> result = friendshipService.getWaitingFriendList(email);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

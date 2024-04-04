@@ -17,4 +17,5 @@ public class ResponseFriendshipDto {
     private String friendEmail;
     private FriendshipStatus status;
     private Long counterpartId;
+    private String friendNickname;
 }

@@ -24,6 +24,7 @@ public class FriendshipMapper {
         return Friendship.builder()
                 .isFrom(true)
                 .member(fromMember)
+                .friendNickname(toMember.getNickname())
                 .memberEmail(fromMember.getEmail())
                 .friendEmail(toMember.getEmail())
                 .status(WAITING)
@@ -34,6 +35,7 @@ public class FriendshipMapper {
         return Friendship.builder()
                 .isFrom(false)
                 .member(toMember)
+                .friendNickname(fromMember.getNickname())
                 .memberEmail(toMember.getEmail())
                 .friendEmail(fromMember.getEmail())
                 .status(WAITING)
@@ -49,6 +51,7 @@ public class FriendshipMapper {
                 .memberEmail(friendshipFrom.getMemberEmail())
                 .status(friendshipFrom.getStatus())
                 .id(friendshipFrom.getId())
+                .friendNickname(friendshipFrom.getFriendNickname())
                 .build();
     }
 

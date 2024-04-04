@@ -31,6 +31,8 @@ public class QFriendship extends EntityPathBase<Friendship> {
 
     public final StringPath friendEmail = createString("friendEmail");
 
+    public final StringPath friendNickname = createString("friendNickname");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final BooleanPath isFrom = createBoolean("isFrom");

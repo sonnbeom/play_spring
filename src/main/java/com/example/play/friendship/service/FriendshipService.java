@@ -8,6 +8,7 @@ import com.example.play.friendship.entity.Friendship;
 import com.example.play.friendship.mapper.FriendshipMapper;
 import com.example.play.friendship.repository.FriendshipCustomRepository;
 import com.example.play.friendship.repository.FriendshipRepository;
+import com.example.play.image.constant.ImgConstant;
 import com.example.play.image.entity.MemberImage;
 import com.example.play.image.service.MemberImgService;
 import com.example.play.member.entity.Member;
@@ -74,27 +75,40 @@ public class FriendshipService {
 
         // 리스에 저장된 멤버(친구 신청한 이들) id로 멤버 이미지 리스트 조회
         List<MemberImage> toMemberImgList = memberImgService.findImgListByIdList(toMemberIdList);
-
         // key: 친구 요청 신청한 멤버의 id, value: 친구 요청
-        Map<Long, Friendship> map = new HashMap<>();
-        for (Friendship f : friendshipList){
-            map.put(f.getCounterpartId(), f);
+        Map<Long, MemberImage> map = new HashMap<>();
+        for (MemberImage img : toMemberImgList){
+            Long memberId = img.getMember().getId();
+            map.put(memberId, img);
         }
         // 가져온 멤버 이미지(친구 신청한 멤버)의 멤버 id와 map의 key로 저장된 id가 일치한다면 클라이언트 전달한 dtoList 생성
         List<WaitingFriendListDto> dtoList = new ArrayList<>();
-        for (MemberImage i : toMemberImgList){
-            Long key = i.getMember().getId();
-            Friendship friendship = map.get(key);
-            if (map.containsKey(key)){
+
+        for (Friendship friendship : friendshipList){
+           Long toMemberId = friendship.getCounterpartId();
+           // 사진이 있을 경우
+            if (map.containsKey(toMemberId)){
+                String url = map.get(toMemberId).getUrl();
+            WaitingFriendListDto dto = WaitingFriendListDto.builder()
+                    .friendNickname(friendship.getFriendNickname())
+                    .imgUrl(url)
+                    .friendshipId(friendship.getId())
+                    .friendEmail(friendship.getFriendEmail())
+                    .time(friendship.getCreatedAt())
+                    .status(friendship.getStatus())
+                    .build();
+                dtoList.add(dto);
+            }else {
                 WaitingFriendListDto dto = WaitingFriendListDto.builder()
                         .friendNickname(friendship.getFriendNickname())
-                        .imgUrl(i.getUrl())
+                        .imgUrl(String.valueOf(ImgConstant.DEFAULT))
                         .friendshipId(friendship.getId())
                         .friendEmail(friendship.getFriendEmail())
                         .time(friendship.getCreatedAt())
                         .status(friendship.getStatus())
                         .build();
                 dtoList.add(dto);
+
             }
         }
         return dtoList;
