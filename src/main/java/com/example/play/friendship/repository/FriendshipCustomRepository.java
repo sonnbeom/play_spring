@@ -6,5 +6,6 @@ import com.example.play.member.entity.Member;
 import java.util.List;
 
 public interface FriendshipCustomRepository {
-    List<Friendship> findWaitingRequestByEmail(String e);
+
+    List<Friendship> findWaitinFrinedshipList(Member member);
 }

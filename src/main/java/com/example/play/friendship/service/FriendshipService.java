@@ -8,6 +8,8 @@ import com.example.play.friendship.entity.Friendship;
 import com.example.play.friendship.mapper.FriendshipMapper;
 import com.example.play.friendship.repository.FriendshipCustomRepository;
 import com.example.play.friendship.repository.FriendshipRepository;
+import com.example.play.image.entity.MemberImage;
+import com.example.play.image.service.MemberImgService;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
 import jakarta.transaction.Transactional;
@@ -15,7 +17,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +31,7 @@ public class FriendshipService {
     private final FriendshipRepository friendshipRepository;
     private final MemberService memberService;
     private final FriendshipMapper friendshipMapper;
+    private final MemberImgService memberImgService;
 
     public ResponseFriendship create(RequestFriendship friendship) {
         // 친구요청 보내는 이와 받는 이를 조회 isFrom = true : 보내는 사람
@@ -52,10 +58,45 @@ public class FriendshipService {
                 .build();
     }
 
+
     public List<WaitingFriendListDto> getWaitingFriendList(String email) {
-        //현재 로그인한 멤버의 정보를 불러온다.
+        //친구 요청 목록을 조회하고자 하는 멤버 조회
         Member member = memberService.findByEmail(email);
-        List<Friendship> waitingFriendList = friendshipCustomRepository.findWaitingRequestByEmail(email);
-        return friendshipMapper.listEntityToDto(waitingFriendList);
+
+        //해당 멤버의 친구 대기 요청 목록 조회
+        List<Friendship> friendshipList = friendshipCustomRepository.findWaitinFrinedshipList(member);
+
+        //대기 요청 목록에서 신청한 이들의 아이디를 가져와 리스트에 저장
+        List<Long> toMemberIdList = new ArrayList<>();
+        friendshipList.forEach(friendship -> {
+            toMemberIdList.add(friendship.getCounterpartId());
+        });
+
+        // 리스에 저장된 멤버(친구 신청한 이들) id로 멤버 이미지 리스트 조회
+        List<MemberImage> toMemberImgList = memberImgService.findImgListByIdList(toMemberIdList);
+
+        // key: 친구 요청 신청한 멤버의 id, value: 친구 요청
+        Map<Long, Friendship> map = new HashMap<>();
+        for (Friendship f : friendshipList){
+            map.put(f.getCounterpartId(), f);
+        }
+        // 가져온 멤버 이미지(친구 신청한 멤버)의 멤버 id와 map의 key로 저장된 id가 일치한다면 클라이언트 전달한 dtoList 생성
+        List<WaitingFriendListDto> dtoList = new ArrayList<>();
+        for (MemberImage i : toMemberImgList){
+            Long key = i.getMember().getId();
+            Friendship friendship = map.get(key);
+            if (map.containsKey(key)){
+                WaitingFriendListDto dto = WaitingFriendListDto.builder()
+                        .friendNickname(friendship.getFriendNickname())
+                        .imgUrl(i.getUrl())
+                        .friendshipId(friendship.getId())
+                        .friendEmail(friendship.getFriendEmail())
+                        .time(friendship.getCreatedAt())
+                        .status(friendship.getStatus())
+                        .build();
+                dtoList.add(dto);
+            }
+        }
+        return dtoList;
     }
 }

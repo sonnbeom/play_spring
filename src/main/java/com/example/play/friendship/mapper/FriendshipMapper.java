@@ -52,15 +52,5 @@ public class FriendshipMapper {
                 .build();
     }
 
-    public List<WaitingFriendListDto> listEntityToDto(List<Friendship> waitingFriendList) {
-        List<WaitingFriendListDto> list = new ArrayList<>();
-        waitingFriendList.forEach(friendshipOne -> {
-            WaitingFriendListDto dto = WaitingFriendListDto.builder()
-                    .friendshipId(friendshipOne.getId())
-                    .friendEmail(friendshipOne.getFriendEmail())
-                    .time(friendshipOne.getCreatedAt())
-                    .status(friendshipOne.getStatus())
-                    .friendNickname(friendshipOne.)
-        });
-    }
+
 }

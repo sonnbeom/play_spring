@@ -3,6 +3,7 @@ package com.example.play.friendship.repository;
 import com.example.play.friendship.constant.FriendshipStatus;
 import com.example.play.friendship.entity.Friendship;
 import com.example.play.friendship.entity.QFriendship;
+import com.example.play.member.entity.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
@@ -20,20 +21,21 @@ public class FriendshipCustomRepositoryImpl implements FriendshipCustomRepositor
         this.jpaQueryFactory = new JPAQueryFactory(entityManager);
     }
 
+
+    /*
+    * 받은 친구 요청 리스트를 조회
+    * */
     @Override
-    public List<Friendship> findWaitingRequestByEmail(String email) {
+    public List<Friendship> findWaitinFrinedshipList(Member member) {
         return jpaQueryFactory
                 .selectFrom(friendship)
-                .where(friendship.memberEmail.eq(email)
+                .innerJoin(friendship.member)
+                .fetchJoin()
+                .where(friendship.member.eq(member)
                         .and(friendship.isFrom.eq(false))
                         .and(friendship.status.eq(WAITING)))
+                .orderBy(friendship.createdAt.desc())
                 .fetch();
-    }
-
-    public List<Friendship> z(String email) {
-        return jpaQueryFactory
-                .selectFrom(friendship)
-                .f
     }
 
 }

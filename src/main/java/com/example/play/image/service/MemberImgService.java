@@ -98,4 +98,8 @@ public class MemberImgService {
             throw new MemberImgException("삭제하려는 멤버의 프로필이 1개 이상입니다.");
         }
     }
+
+    public List<MemberImage> findImgListByIdList(List<Long> toMemberIdList) {
+        return memberImgCustomRepository.findImgsByIdList(toMemberIdList);
+    }
 }
