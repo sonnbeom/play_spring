@@ -1,14 +1,19 @@
 package com.example.play.friendship.mapper;
 
 
+import com.example.play.friendship.constant.FriendshipStatus;
 import com.example.play.friendship.dto.ResponseFriendshipDto;
+import com.example.play.friendship.dto.WaitingFriendListDto;
 import com.example.play.friendship.entity.Friendship;
 import com.example.play.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import static com.example.play.friendship.entity.Friendship.FriendshipStatus.WAITING;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.play.friendship.constant.FriendshipStatus.*;
 
 @RequiredArgsConstructor
 @Component
@@ -45,5 +50,17 @@ public class FriendshipMapper {
                 .status(friendshipFrom.getStatus())
                 .id(friendshipFrom.getId())
                 .build();
+    }
+
+    public List<WaitingFriendListDto> listEntityToDto(List<Friendship> waitingFriendList) {
+        List<WaitingFriendListDto> list = new ArrayList<>();
+        waitingFriendList.forEach(friendshipOne -> {
+            WaitingFriendListDto dto = WaitingFriendListDto.builder()
+                    .friendshipId(friendshipOne.getId())
+                    .friendEmail(friendshipOne.getFriendEmail())
+                    .time(friendshipOne.getCreatedAt())
+                    .status(friendshipOne.getStatus())
+                    .friendNickname(friendshipOne.)
+        });
     }
 }

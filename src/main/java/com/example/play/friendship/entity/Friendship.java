@@ -1,7 +1,7 @@
 package com.example.play.friendship.entity;
 
+import com.example.play.friendship.constant.FriendshipStatus;
 import com.example.play.global.common.entity.BaseEntity;
-import com.example.play.member.constant.FriendshipStatus;
 import com.example.play.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,6 +24,7 @@ public class Friendship extends BaseEntity {
     private Member member;
     private boolean isFrom;
     private String memberEmail;
+    private String friendNickname;
     private String friendEmail;
     private FriendshipStatus status;
     @Column(name = "counterpart_id")
@@ -35,7 +36,5 @@ public class Friendship extends BaseEntity {
     public void setCounterpartId(Long id){
         counterpartId = id;
     }
-    public enum FriendshipStatus{
-        WAITING, ACCEPTED
-    }
+
 }
