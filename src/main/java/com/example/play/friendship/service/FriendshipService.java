@@ -1,7 +1,9 @@
 package com.example.play.friendship.service;
 
+import com.example.play.friendship.constant.FriendshipDeleteStatus;
 import com.example.play.friendship.dto.*;
 import com.example.play.friendship.entity.Friendship;
+import com.example.play.friendship.exception.FriendshipDeleteAuthorityException;
 import com.example.play.friendship.exception.FriendshipNotFoundException;
 import com.example.play.friendship.mapper.FriendshipMapper;
 import com.example.play.friendship.repository.FriendshipCustomRepository;
@@ -16,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static com.example.play.friendship.constant.FriendshipDeleteStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -136,5 +140,37 @@ public class FriendshipService {
     private Friendship findById(Long friendshipId){
         Optional<Friendship> friendship = friendshipRepository.findById(friendshipId);
         return friendship.orElseThrow(()->new FriendshipNotFoundException("해당 id를 가진 Friendship을 조회할 수 없습니다. :{}",friendshipId));
+    }
+
+    public ResponseFriendshipDelete deleteFriendship(RequestDeleteFriendship requestDeleteFriendship) {
+        Friendship friendship = findById(requestDeleteFriendship.getFriendshipId());
+        Member member = memberService.findMemberById(requestDeleteFriendship.getMemberId());
+
+        // 삭제 권한이 있는지 확인
+        checkDeleteRights(friendship, member);
+        Long counterpartId = friendship.getCounterpartId();
+        Friendship counterFriendship = findById(counterpartId);
+
+        boolean deleteFriendship = friendshipCustomRepository.delete(friendship);
+        boolean deleteCounterpart = friendshipCustomRepository.delete(counterFriendship);
+
+        if(deleteCounterpart && deleteFriendship){
+            return ResponseFriendshipDelete.builder()
+                    .counterpartId(counterpartId)
+                    .friendshipId(friendship.getId())
+                    .status(SUCCESS)
+                    .build();
+        }else {
+            return ResponseFriendshipDelete.builder()
+                    .counterpartId(counterpartId)
+                    .friendshipId(friendship.getId())
+                    .status(FAILURE)
+                    .build();
+        }
+    }
+    private void checkDeleteRights(Friendship friendship, Member member){
+        if (friendship.getMember().getId() != member.getId()){
+            throw new FriendshipDeleteAuthorityException("해당 멤버의 id로 friendship를 삭제할 수 있는 권한이 없습니다.",member.getId(), friendship.getId());
+        }
     }
 }
