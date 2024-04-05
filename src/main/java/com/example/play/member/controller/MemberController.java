@@ -45,6 +45,9 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @PostMapping("/login")
+    public ResponseEntity<ResponseMemberDto> login(@Valid @RequestBody )
+
     @GetMapping("/{memberId}")
     public ResponseEntity<ResponseMemberDto> readMember(@PathVariable("memberId") Long memberId){
         ResponseMemberDto dto =  memberService.readMember(memberId);
