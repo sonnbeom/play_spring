@@ -1,9 +1,6 @@
 package com.example.play.friendship.controller;
 
-import com.example.play.friendship.dto.RequestFriendship;
-import com.example.play.friendship.dto.ResponseFriendship;
-import com.example.play.friendship.dto.ResponseFriendshipDto;
-import com.example.play.friendship.dto.WaitingFriendListDto;
+import com.example.play.friendship.dto.*;
 import com.example.play.friendship.service.FriendshipService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,17 +23,21 @@ public class FriendshipController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseFriendship);
     }
     @GetMapping("/received/{email}")
-    public ResponseEntity<List<WaitingFriendListDto>> getWaitingFriendship(@PathVariable String email){
-        List<WaitingFriendListDto> result = friendshipService.getWaitingFriendList(email);
+    public ResponseEntity<List<ResponseFriendListDto>> getWaitingFriendship(@PathVariable String email){
+        List<ResponseFriendListDto> result = friendshipService.getWaitingFriendList(email);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
-    /*
-    * 1. 친구 신청 수락
-    * 2. 친구 리스트 가져오기
-    * */
+    
     @PostMapping("approve/{friendshipId}")
     public ResponseEntity<List<ResponseFriendshipDto>> approveFriendship(@Valid @PathVariable("friendshipId") Long friendshipId){
         List<ResponseFriendshipDto> responseApprove = friendshipService.approveFriendship(friendshipId);
         return ResponseEntity.status(HttpStatus.OK).body(responseApprove);
     }
+    
+    @GetMapping("/friendList/{memberId}")
+    public ResponseEntity<List<ResponseFriendListDto>> readFriendList(@Valid @PathVariable("memberId") Long memberId){
+        List<ResponseFriendListDto> friendList = friendshipService.findFriendList(memberId);
+        return ResponseEntity.status(HttpStatus.OK).body(friendList);
+    }
+    // 친구 요청 삭제
 }

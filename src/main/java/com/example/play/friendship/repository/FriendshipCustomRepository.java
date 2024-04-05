@@ -8,4 +8,6 @@ import java.util.List;
 public interface FriendshipCustomRepository {
 
     List<Friendship> findWaitinFrinedshipList(Member member);
+
+    List<Friendship> findFriendListByMember(Member member);
 }
