@@ -5,6 +5,7 @@ import com.example.play.friendship.dto.ResponseFriendship;
 import com.example.play.friendship.dto.ResponseFriendshipDto;
 import com.example.play.friendship.dto.WaitingFriendListDto;
 import com.example.play.friendship.entity.Friendship;
+import com.example.play.friendship.exception.FriendshipNotFoundException;
 import com.example.play.friendship.mapper.FriendshipMapper;
 import com.example.play.friendship.repository.FriendshipCustomRepository;
 import com.example.play.friendship.repository.FriendshipRepository;
@@ -18,10 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -98,6 +96,7 @@ public class FriendshipService {
                     .status(friendship.getStatus())
                     .build();
                 dtoList.add(dto);
+                // 사진이 없을 경우 이미지를 디폴트로 설정해서 리턴
             }else {
                 WaitingFriendListDto dto = WaitingFriendListDto.builder()
                         .friendNickname(friendship.getFriendNickname())
@@ -112,5 +111,27 @@ public class FriendshipService {
             }
         }
         return dtoList;
+    }
+
+    public List<ResponseFriendshipDto> approveFriendship(Long friendshipId) {
+        Friendship friendship = findById(friendshipId);
+        Friendship counterFriendship = findById(friendship.getCounterpartId());
+
+        friendship.acceptFriendshipRequest();
+        counterFriendship.acceptFriendshipRequest();
+
+        ResponseFriendshipDto response = friendshipMapper.entityToDto(friendship);
+        ResponseFriendshipDto responseCounter = friendshipMapper.entityToDto(counterFriendship);
+
+        List<ResponseFriendshipDto> list = new ArrayList<>();
+        list.add(response);
+        list.add(responseCounter);
+
+        return list;
+
+    }
+    private Friendship findById(Long friendshipId){
+        Optional<Friendship> friendship = friendshipRepository.findById(friendshipId);
+        return friendship.orElseThrow(()->new FriendshipNotFoundException("해당 id를 가진 Friendship을 조회할 수 없습니다. :{}",friendshipId));
     }
 }
