@@ -12,11 +12,13 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WaitingFriendListDto {
+public class ResponseFriendList {
     private Long friendshipId;
+    private String memberEmail;
+    private Long memberId;
     private String friendEmail;
     private String friendNickname;
     private String imgUrl;
     private FriendshipStatus status;
-    private LocalDateTime time;
+    private LocalDateTime time;;
 }

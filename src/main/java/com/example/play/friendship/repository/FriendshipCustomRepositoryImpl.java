@@ -38,4 +38,16 @@ public class FriendshipCustomRepositoryImpl implements FriendshipCustomRepositor
                 .fetch();
     }
 
+    @Override
+    public List<Friendship> findFriendListByMember(Member member) {
+        return jpaQueryFactory
+                .selectFrom(friendship)
+                .innerJoin(friendship.member)
+                .fetchJoin()
+                .where(friendship.member.eq(member)
+                        .and(friendship.status.eq(ACCEPTED)))
+                .orderBy(friendship.createdAt.desc())
+                .fetch();
+    }
+
 }

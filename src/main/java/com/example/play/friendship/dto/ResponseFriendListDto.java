@@ -6,16 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
+import java.time.LocalDateTime;
+
 @Builder
 @Data
-public class ResponseFriendshipDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class ResponseFriendListDto {
     private Long friendshipId;
     private String memberEmail;
+    private Long memberId;
     private String friendEmail;
-    private FriendshipStatus status;
-    private Long counterpartId;
     private String friendNickname;
-    private boolean isFrom;
+    private String imgUrl;
+    private FriendshipStatus status;
+    private LocalDateTime time;
 }
