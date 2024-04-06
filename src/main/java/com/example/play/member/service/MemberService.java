@@ -2,10 +2,12 @@ package com.example.play.member.service;
 
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.service.MemberImgService;
+import com.example.play.jwt.exception.InvalidLoginException;
 import com.example.play.member.dto.*;
 import com.example.play.member.entity.Member;
 import com.example.play.member.exception.MemberNotFoundException;
 import com.example.play.member.memberMapper.MemberMapper;
+import com.example.play.member.repository.MemberCustomRepository;
 import com.example.play.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class MemberService {
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
     private final MemberImgService memberImgService;
+    private final MemberCustomRepository memberCustomRepository;
     public Long createMember(RequestMemberDto memberDto, MultipartFile profile) {
         if(duplicateCheck(memberDto)){
             Member member = memberMapper.dtoToMember(memberDto);
@@ -87,5 +90,36 @@ public class MemberService {
     public Member findByEmail(String email){
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
         return optionalMember.orElseThrow(() -> new MemberNotFoundException(email+ "을 가진 유저를 조회할 수 없습니다."));
+    }
+
+    public ResponseLoginDto login(RequestLogin reqLogin) {
+        Member member = findByEmail(reqLogin.getMemberEmail());
+        if (!passwordEncoder.matches(reqLogin.getPassword(), member.getPassword())){
+            return ResponseLoginDto.builder()
+                    .password(reqLogin.getPassword())
+                    .email(reqLogin.getMemberEmail())
+                    .loginSuccess(false)
+                    .build();
+        }else {
+            return ResponseLoginDto.builder()
+                    .id(member.getId())
+                    .name(member.getName())
+                    .role(member.getRole())
+                    .email(member.getEmail())
+                    .isActive(member.getIsActive())
+                    .loginSuccess(true)
+                    .nickname(member.getNickname())
+                    .build();
+        }
+    }
+
+    public Member getLoginByMemberId(String loginId) {
+        try {
+            Long id = Long.parseLong(loginId);
+            return findMemberById(id);
+        } catch (NumberFormatException e){
+            log.info(" memberService: 해당 loginId를 Long으로 형변환할 수 없습니다: {} ",loginId);
+            throw new InvalidLoginException("로그인 ID 형식이 올바르지 않습니다: " + loginId, e);
+        }
     }
 }

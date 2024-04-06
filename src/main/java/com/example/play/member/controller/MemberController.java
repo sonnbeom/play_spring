@@ -1,10 +1,12 @@
 package com.example.play.member.controller;
 
+import com.example.play.jwt.util.JwtTokenUtil;
 import com.example.play.member.dto.*;
 import com.example.play.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -45,6 +47,28 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @PostMapping("/login")
+    public ResponseEntity<ResponseLoginDto> login(@Valid @RequestBody RequestLogin reqLogin){
+        ResponseLoginDto res = memberService.login(reqLogin);
+
+
+        if (res.isLoginSuccess()){
+            HttpHeaders httpHeaders = new HttpHeaders();
+            return new ResponseEntity<>(res, httpHeaders, HttpStatus.OK);
+        }else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+        }
+    }
+    @PostMapping("/login/jwt")
+    public String jwtLogin(@Valid @RequestBody RequestLogin reqLogin){
+        ResponseLoginDto res = memberService.login(reqLogin);
+        String secretKey = "my-secret-key-123123";
+        long expireTimeMs = 1000 * 60 * 60;
+
+        String jwtToken =  JwtTokenUtil.createToken(String.valueOf(res.getId()), expireTimeMs);
+        return jwtToken;
+    }
+
     @GetMapping("/{memberId}")
     public ResponseEntity<ResponseMemberDto> readMember(@PathVariable("memberId") Long memberId){
         ResponseMemberDto dto =  memberService.readMember(memberId);

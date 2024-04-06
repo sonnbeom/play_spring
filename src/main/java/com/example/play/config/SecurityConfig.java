@@ -1,6 +1,8 @@
-package com.example.play.config.auth;
+package com.example.play.config;
 
-import com.example.play.config.auth.service.CustomAuth2UserService;
+import com.example.play.auth.service.CustomAuth2UserService;
+import com.example.play.jwt.filter.JwtTokenFilter;
+import com.example.play.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,21 +11,22 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig{
-    private final CustomAuth2UserService customAuth2UserService;
 
-    @Bean
-    public BCryptPasswordEncoder encoder(){
-        return new BCryptPasswordEncoder();
-    }
+    private final CustomAuth2UserService customAuth2UserService;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final MemberService memberService;
+    private static String secretKey = "my-secret-key-123123";
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
@@ -32,6 +35,11 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         OAuth2LoginConfigurer<HttpSecurity> HttpSecurity;
+        http
+                .sessionManagement((session)->session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http
+                .addFilterBefore(new JwtTokenFilter(memberService, secretKey), UsernamePasswordAuthenticationFilter.class);
         http
                 // CSRF 설정 변경
                 .csrf(csrf -> csrf.disable())

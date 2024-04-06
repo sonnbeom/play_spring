@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class MemberMapper {
-    @Autowired
+
     private final PasswordEncoder passwordEncoder;
     public Member dtoToMember(RequestMemberDto memberDto){
         return Member.builder()

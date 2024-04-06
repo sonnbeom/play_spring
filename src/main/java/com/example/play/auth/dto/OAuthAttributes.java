@@ -1,4 +1,4 @@
-package com.example.play.config.auth.dto;
+package com.example.play.auth.dto;
 
 import com.example.play.member.entity.Member;
 import com.example.play.member.role.Role;
