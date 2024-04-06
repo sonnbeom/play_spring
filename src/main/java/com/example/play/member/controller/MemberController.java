@@ -13,6 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.example.play.jwt.constant.HttpHeaderSetting.*;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member")
@@ -50,10 +52,10 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<ResponseLoginDto> login(@Valid @RequestBody RequestLogin reqLogin){
         ResponseLoginDto res = memberService.login(reqLogin);
-
-
         if (res.isLoginSuccess()){
+            String token = "a";
             HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.add(AUTHORIZATION, BEARER_TOKEN + token);
             return new ResponseEntity<>(res, httpHeaders, HttpStatus.OK);
         }else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
@@ -64,7 +66,7 @@ public class MemberController {
         ResponseLoginDto res = memberService.login(reqLogin);
         String secretKey = "my-secret-key-123123";
         long expireTimeMs = 1000 * 60 * 60;
-
+// 이 과정을 서비스 층에 넣어주어야 함
         String jwtToken =  JwtTokenUtil.createToken(String.valueOf(res.getId()), expireTimeMs);
         return jwtToken;
     }

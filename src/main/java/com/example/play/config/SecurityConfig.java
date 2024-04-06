@@ -2,6 +2,8 @@ package com.example.play.config;
 
 import com.example.play.auth.service.CustomAuth2UserService;
 import com.example.play.jwt.filter.JwtTokenFilter;
+
+import com.example.play.jwt.util.JwtTokenUtil;
 import com.example.play.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -23,7 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig{
 
     private final CustomAuth2UserService customAuth2UserService;
-    private final AuthenticationConfiguration authenticationConfiguration;
     private final MemberService memberService;
     private static String secretKey = "my-secret-key-123123";
 
