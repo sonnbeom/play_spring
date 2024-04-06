@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class RequestLogin {
-    private Long memberId;
+    private String memberEmail;
     private String password;
 }

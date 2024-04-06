@@ -1,9 +1,9 @@
-package com.example.play.config.auth.service;
+package com.example.play.auth.service;
 
+import com.example.play.auth.dto.OAuthAttributes;
+import com.example.play.auth.dto.SessionMember;
 import com.example.play.member.entity.Member;
 import com.example.play.member.repository.MemberRepository;
-import com.example.play.config.auth.dto.OAuthAttributes;
-import com.example.play.config.auth.dto.SessionMember;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
