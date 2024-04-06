@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final MemberService memberService;
     private final String secretKey;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -52,10 +54,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         String token = authorizationHeader.split(" ")[1];
 
         // 전송 받은 Jwt Token이 만료되었으면 => 다음 필터 진행(인증 x)
-        if (JwtTokenUtil.isExpired(token, secretKey)){
+        if (JwtTokenUtil.isExpired(token)){
             filterChain.doFilter(request, response);
         }
-        String loginId = JwtTokenUtil.getLoginId(token, secretKey);
+        String loginId = JwtTokenUtil.getLoginId(token);
         Member loginMember = memberService.getLoginByMemberId(loginId);
 
         // 조회한 유저 정보를 바탕으로 객체 생성 사용자의 id, 비밀번호, 권한을 포함
