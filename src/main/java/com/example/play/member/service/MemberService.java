@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
+import static com.example.play.jwt.constant.TokenTime.expireTimeMs;
+
 
 @Service
 @RequiredArgsConstructor
@@ -102,6 +104,7 @@ public class MemberService {
                     .loginSuccess(false)
                     .build();
         }else {
+            String jwtToken =  JwtTokenUtil.createToken(String.valueOf(member.getId()), expireTimeMs);
             return ResponseLoginDto.builder()
                     .id(member.getId())
                     .name(member.getName())
@@ -110,6 +113,7 @@ public class MemberService {
                     .isActive(member.getIsActive())
                     .loginSuccess(true)
                     .nickname(member.getNickname())
+                    .jwtToken(jwtToken)
                     .build();
         }
     }
