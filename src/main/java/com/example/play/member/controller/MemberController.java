@@ -34,7 +34,7 @@ public class MemberController {
     *
     * */
 
-    @PostMapping("/create")
+    @PostMapping("/join")
     public ResponseEntity<RequestMemberDto> createMember(@Valid @RequestPart("memberDto") RequestMemberDto memberDto,
                                                          BindingResult bindingResult,
                                                          @RequestPart(value = "profile", required = false) MultipartFile profile){
@@ -49,26 +49,21 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    /*
+    * { "name" : "jwt test name",
+"email" : "1234@naver.com",
+"password" : "1234",
+"nickname" : "jwt"}*/
     @PostMapping("/login")
     public ResponseEntity<ResponseLoginDto> login(@Valid @RequestBody RequestLogin reqLogin){
-        ResponseLoginDto res = memberService.login(reqLogin);
-        if (res.isLoginSuccess()){
-            String token = "a";
+        ResponseLoginDto response = memberService.login(reqLogin);
+        if (response.isLoginSuccess() && response.getJwtToken() != null && !response.getJwtToken().isEmpty()){
             HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add(AUTHORIZATION, BEARER_TOKEN + token);
-            return new ResponseEntity<>(res, httpHeaders, HttpStatus.OK);
+            httpHeaders.add(AUTHORIZATION, BEARER_TOKEN + response.getJwtToken());
+            return new ResponseEntity<>(response, httpHeaders, HttpStatus.OK);
         }else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-    }
-    @PostMapping("/login/jwt")
-    public String jwtLogin(@Valid @RequestBody RequestLogin reqLogin){
-        ResponseLoginDto res = memberService.login(reqLogin);
-        String secretKey = "my-secret-key-123123";
-        long expireTimeMs = 1000 * 60 * 60;
-// 이 과정을 서비스 층에 넣어주어야 함
-        String jwtToken =  JwtTokenUtil.createToken(String.valueOf(res.getId()), expireTimeMs);
-        return jwtToken;
     }
 
     @GetMapping("/{memberId}")

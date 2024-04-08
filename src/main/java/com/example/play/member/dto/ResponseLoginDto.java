@@ -19,4 +19,5 @@ public class ResponseLoginDto {
     private String nickname;
     private Role role;
     private boolean loginSuccess;
+    private String jwtToken;
 }
