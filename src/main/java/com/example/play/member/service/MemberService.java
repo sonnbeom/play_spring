@@ -32,6 +32,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberImgService memberImgService;
     private final MemberCustomRepository memberCustomRepository;
+    private final JwtTokenUtil jwtTokenUtil;
     public Long createMember(RequestMemberDto memberDto, MultipartFile profile) {
         if(duplicateCheck(memberDto)){
             Member member = memberMapper.dtoToMember(memberDto);
@@ -104,7 +105,7 @@ public class MemberService {
                     .loginSuccess(false)
                     .build();
         }else {
-            String jwtToken =  JwtTokenUtil.createToken(String.valueOf(member.getId()), expireTimeMs);
+            String jwtToken =  jwtTokenUtil.createToken(String.valueOf(member.getId()), expireTimeMs);
             return ResponseLoginDto.builder()
                     .id(member.getId())
                     .name(member.getName())

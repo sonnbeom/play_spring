@@ -26,7 +26,8 @@ public class SecurityConfig{
 
     private final CustomAuth2UserService customAuth2UserService;
     private final MemberService memberService;
-    private static String secretKey = "my-secret-key-123123";
+    private final JwtTokenUtil jwtTokenUtil;
+//    private static String secretKey = "my-secret-key-123123";
 
 
     @Bean
@@ -40,21 +41,26 @@ public class SecurityConfig{
                 .sessionManagement((session)->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http
-                .addFilterBefore(new JwtTokenFilter(memberService, secretKey), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtTokenFilter(memberService, jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
         http
                 // CSRF 설정 변경
-                .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.disable())
+                .csrf(csrf -> csrf.disable());
+        http
+                .headers(headers -> headers.disable());
+        http
                 .authorizeRequests(authz -> authz
                         // 루트(/) , css, 이미지 ,자바스크립트 파일, h2 콘솔 경로에 대한 요청은 인증 없이 접근을 허용
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
                         // 해당 경로로 들어오는 요청은 user 역할을 가진 사용자만 접근할 수 있음
-                        .requestMatchers("/api/v1/**").permitAll()
+                        .requestMatchers("/api/v1/member/join").permitAll()
+                        .requestMatchers("/api/v1/member/login").permitAll()
                         // 위에서 정의하지 않은 요청은 인증된 사용자만 접근할 수 있음
-                        .anyRequest().permitAll())
+                        .anyRequest().authenticated());
+        http
                 .logout(logout -> logout
                         //로그아웃 기능을 활성화하고 로그 아웃 성공시 사용자를 해당 url로 리다이렉트한다
-                        .logoutSuccessUrl("/"))
+                        .logoutSuccessUrl("/"));
+        http
                 .formLogin(form -> form
                         //form 기반의 인증을 활성화 사용자가 폼을 통해 로그인할 수 있게
                         .loginPage("/member/login")
