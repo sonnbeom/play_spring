@@ -1,5 +1,6 @@
 package com.example.play.jwt.util;
 
+import com.example.play.jwt.entity.RefreshToken;
 import com.example.play.jwt.exception.InvalidJwtException;
 import com.example.play.jwt.exception.JwtCreateException;
 import com.example.play.jwt.repository.TokenRepository;
@@ -50,7 +51,9 @@ public class JwtTokenUtil {
     }
     public String createRefreshToken(String loginId){
         try {
-            return createToken(loginId, refreshTokenValidTime);
+            String token = createToken(loginId, refreshTokenValidTime);
+            saveRefreshToken(token);
+            return token;
         } catch (JwtException e){
             throw new JwtCreateException("refresh 토큰 생성 중 오류가 발생했습니다", loginId, e);
         }
@@ -111,5 +114,9 @@ public class JwtTokenUtil {
     }
     public boolean existsRefreshToken(String refreshToken){
         return tokenRepository.existsByRefreshToken(refreshToken);
+    }
+    private void saveRefreshToken(String token){
+        RefreshToken refreshToken = new RefreshToken(token);
+        tokenRepository.save(refreshToken);
     }
 }
