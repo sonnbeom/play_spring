@@ -1,5 +1,6 @@
 package com.example.play.jwt.filter;
 
+import com.example.play.jwt.constant.HeaderConstant;
 import com.example.play.jwt.util.JwtTokenUtil;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
@@ -8,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,8 +21,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+import static com.example.play.jwt.constant.HeaderConstant.*;
+
 //OncePerRequestFilter: 매번 들어갈 때마다 체크해주는 필터
 @RequiredArgsConstructor
+@Slf4j
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final MemberService memberService;
@@ -29,6 +34,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String refreshToken = request.getHeader(REFRESH_TOKEN);
 
         // Header의 Authorization 값이 비어있으면 => Jwt Token을 전송하지 않음 => 로그인 하지 않음
         if (authorizationHeader == null){
@@ -56,6 +62,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // 전송 받은 Jwt Token이 만료되었으면 => 다음 필터 진행(인증 x)
         if (jwtTokenUtil.isExpired(token)){
             filterChain.doFilter(request, response);
+            if (jwtTokenUtil.isExpired(refreshToken)){
+
+            }
         }
         String loginId = jwtTokenUtil.getLoginId(token);
         Member loginMember = memberService.getLoginByMemberId(loginId);

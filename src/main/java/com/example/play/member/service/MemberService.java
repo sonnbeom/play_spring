@@ -105,7 +105,8 @@ public class MemberService {
                     .loginSuccess(false)
                     .build();
         }else {
-            String jwtToken =  jwtTokenUtil.createToken(String.valueOf(member.getId()), expireTimeMs);
+            String accessTokenToken =  jwtTokenUtil.createAccessToken(String.valueOf(member.getId()));
+            String refreshToken =  jwtTokenUtil.createRefreshToken(String.valueOf(member.getId()));
             return ResponseLoginDto.builder()
                     .id(member.getId())
                     .name(member.getName())
@@ -114,11 +115,11 @@ public class MemberService {
                     .isActive(member.getIsActive())
                     .loginSuccess(true)
                     .nickname(member.getNickname())
-                    .jwtToken(jwtToken)
+                    .accessToken(accessTokenToken)
+                    .refreshToken(refreshToken)
                     .build();
         }
     }
-
     public Member getLoginByMemberId(String loginId) {
         try {
             Long id = Long.parseLong(loginId);

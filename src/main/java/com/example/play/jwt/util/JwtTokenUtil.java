@@ -1,35 +1,59 @@
 package com.example.play.jwt.util;
 
 import com.example.play.jwt.exception.InvalidJwtException;
+import com.example.play.jwt.exception.JwtCreateException;
+import com.example.play.jwt.repository.TokenRepository;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+
+import static com.example.play.jwt.constant.HeaderConstant.*;
+
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtTokenUtil {
     @Value("${secretKey}")
     private String key;
+    @Value("${accessTokenValidTime}")
+    private long accessTokenValidTime;
+    @Value("${refreshTokenValidTime}")
+    private long refreshTokenValidTime;
 
-//    public JwtTokenUtil( @Value("${secretKey}")String key) {
-//        this.key = key;
-//    }
+    private final TokenRepository tokenRepository;
 
-
-    public String createToken(String loginId, long expireTimeMs){
+    // jwt 토큰 생성
+    private String createToken(String loginId, long tokenValid){
         // Claim : jwt token에 들어갈 정보
         // claim에 loginId를 넣음으로써 나중에 loginId 꺼낼 수 있음
-        Claims claims = Jwts.claims();
-        claims.put("loginId", loginId);
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
-                .signWith(SignatureAlgorithm.HS256, key)
-                .compact();
+            Claims claims = Jwts.claims();
+            claims.put("loginId", loginId);
+            return Jwts.builder()
+                    .setClaims(claims)
+                    .setIssuedAt(new Date(System.currentTimeMillis()))
+                    .setExpiration(new Date(System.currentTimeMillis() + tokenValid))
+                    .signWith(SignatureAlgorithm.HS256, key)
+                    .compact();
+
+    }
+    public String createAccessToken(String loginId){
+        try {
+            return createToken(loginId, accessTokenValidTime);
+        } catch (JwtException e){
+            throw new JwtCreateException("access 토큰 생성 중 오류가 발생했습니다", loginId, e);
+        }
+    }
+    public String createRefreshToken(String loginId){
+        try {
+            return createToken(loginId, refreshTokenValidTime);
+        } catch (JwtException e){
+            throw new JwtCreateException("refresh 토큰 생성 중 오류가 발생했습니다", loginId, e);
+        }
     }
 
     // claim에서 loginId 꺼내기
@@ -78,5 +102,14 @@ public class JwtTokenUtil {
             log.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
+    }
+    public void setHeaderAccessToken(HttpServletResponse response, String accessToken){
+        response.setHeader(AUTHORIZATION, BEARER_TOKEN + accessToken);
+    }
+    public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken){
+        response.setHeader(REFRESH_TOKEN, BEARER_TOKEN + refreshToken);
+    }
+    public boolean existsRefreshToken(String refreshToken){
+        return tokenRepository.existsByRefreshToken(refreshToken);
     }
 }

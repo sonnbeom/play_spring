@@ -3,6 +3,7 @@ package com.example.play.member.controller;
 import com.example.play.jwt.util.JwtTokenUtil;
 import com.example.play.member.dto.*;
 import com.example.play.member.service.MemberService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.example.play.jwt.constant.HttpHeaderSetting.*;
+import static com.example.play.jwt.constant.HeaderConstant.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ import static com.example.play.jwt.constant.HttpHeaderSetting.*;
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
+    private JwtTokenUtil jwtTokenUtil;
 
     // 비밀번호 찾기, 아이디 찾기
     // 멤버 정보 이름, 사진, 이메일, 친구목록
@@ -55,14 +57,17 @@ public class MemberController {
 "password" : "1234",
 "nickname" : "jwt"}*/
     @PostMapping("/login")
-    public ResponseEntity<ResponseLoginDto> login(@Valid @RequestBody RequestLogin reqLogin){
-        ResponseLoginDto response = memberService.login(reqLogin);
-        if (response.isLoginSuccess() && response.getJwtToken() != null && !response.getJwtToken().isEmpty()){
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.add(AUTHORIZATION, BEARER_TOKEN + response.getJwtToken());
-            return new ResponseEntity<>(response, httpHeaders, HttpStatus.OK);
+    public ResponseEntity<ResponseLoginDto> login(@Valid @RequestBody RequestLogin reqLogin,
+                                                  HttpServletResponse response){
+        ResponseLoginDto responseDto = memberService.login(reqLogin);
+        if (responseDto.isLoginSuccess()){
+            String jwtToken = responseDto.getAccessToken();
+            String refreshToken = responseDto.getRefreshToken();
+            jwtTokenUtil.setHeaderAccessToken(response, jwtToken);
+            jwtTokenUtil.setHeaderRefreshToken(response, refreshToken);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         }else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
         }
     }
 
