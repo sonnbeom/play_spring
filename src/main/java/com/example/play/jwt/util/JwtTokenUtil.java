@@ -5,10 +5,12 @@ import com.example.play.jwt.exception.InvalidJwtException;
 import com.example.play.jwt.exception.JwtCreateException;
 import com.example.play.jwt.repository.TokenRepository;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -40,7 +42,14 @@ public class JwtTokenUtil {
                     .setExpiration(new Date(System.currentTimeMillis() + tokenValid))
                     .signWith(SignatureAlgorithm.HS256, key)
                     .compact();
-
+    }
+    public String getToken(HttpServletRequest request , String headerName){
+        String header = request.getHeader(headerName);
+        if (header.startsWith("Bearer ") && header != null){
+            String token = request.getHeader(header).split(" ")[1];
+            return token;
+        }
+        return null;
     }
     public String createAccessToken(String loginId){
         try {
@@ -60,7 +69,7 @@ public class JwtTokenUtil {
     }
 
     // claim에서 loginId 꺼내기
-    public  String getLoginId(String token){
+    public String getLoginId(String token){
         return extractClaims(token).get("loginId").toString();
     }
 
@@ -91,10 +100,10 @@ public class JwtTokenUtil {
     }
 
     // 토큰의 유효성 검증을 수행
-    public boolean validateToken(String token) {
+    public UsernamePasswordAuthenticationToken validateToken(HttpServletRequest request, String token) {
         try {
             Jwts.parser().setSigningKey(key).parseClaimsJws(token);
-            return true;
+            return getAuthentication(token);
         } catch (SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
@@ -104,8 +113,13 @@ public class JwtTokenUtil {
         } catch (IllegalArgumentException e) {
             log.info("JWT 토큰이 잘못되었습니다.");
         }
-        return false;
+        return null;
     }
+
+    private UsernamePasswordAuthenticationToken getAuthentication(String token) {
+        CustomUSerDe
+    }
+
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken){
         response.setHeader(AUTHORIZATION, BEARER_TOKEN + accessToken);
     }
@@ -119,4 +133,5 @@ public class JwtTokenUtil {
         RefreshToken refreshToken = new RefreshToken(token);
         tokenRepository.save(refreshToken);
     }
+
 }

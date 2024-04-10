@@ -1,6 +1,5 @@
 package com.example.play.jwt.filter;
 
-import com.example.play.jwt.constant.HeaderConstant;
 import com.example.play.jwt.util.JwtTokenUtil;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
@@ -11,8 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.play.jwt.constant.HeaderConstant.*;
 
@@ -36,6 +36,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         UserDetails userDetails;
+        Optional<String> token = extractToken(request, HttpHeaders.AUTHORIZATION);
+
+        if (!token.isEmpty()){
+            UsernamePasswordAuthenticationToken authentication = jwtTokenUtil.validateToken(request, token.get());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+        filterChain.doFilter(request, response);
 //        String refreshToken = request.getHeader(REFRESH_TOKEN);
         // Header의 Authorization 값이 비어있으면 => Jwt Token을 전송하지 않음 => 로그인 하지 않음
 //        if (authorizationHeader == null){
@@ -58,16 +65,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 //        }
 //        // 전송 받은 값에서 Bearer 뒷부분(Jwt Token) 추출
 //        String token = authorizationHeader.split(" ")[1];
-        String accessToken = this.getToken(request, HttpHeaders.AUTHORIZATION);
-        if (accessToken != null){
-            if (!jwtTokenUtil.isExpired(accessToken)){
-
-            }
-            else{
-                String refreshToken = getToken(request, REFRESH_TOKEN);
-                boolean isRefreshToken = jwtTokenUtil.existsRefreshToken(refreshToken);
-            }
+        String accessToken = jwtTokenUtil.getToken(request, HttpHeaders.AUTHORIZATION);
+        if (accessToken == null){
+            filterChain.doFilter(request, response);
         }
+        if (!jwtTokenUtil.isExpired(accessToken)){
+            setAuthentication(accessToken, request);
+        }
+
 
         // 전송 받은 Jwt Token이 만료되었으면 => 다음 필터 진행(인증 x)
         if (jwtTokenUtil.isExpired(accessToken)){
@@ -90,6 +95,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // 비밀번호를 null로 하는 이유는  이 시점에 비밀번호를 검증할 필요가 없기 때문 사용자가 로그인할 때 이미 비밃번호는 검증됨 + 보안상의 이유로 비밀번호와 같은 민감한 정보는 포함 x
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginMember.getId(), null, List.of(new SimpleGrantedAuthority(loginMember.getRole().name())));
+        String name = loginMember.getRole().getKey();
+
+
+
         // 요청 객체로부터 인증 세부 정보를 생성 token에 설정
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         // SecurityContext에 인증 객체를 등록함으로써 현재 요청이 인증되었음을 시큐리티에 알림 애플리케이션 내 다른 부분에서 사용자의 인증 정보에 접근 가능
@@ -103,17 +112,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
         return null;
     }
-    private String getToken(HttpServletRequest request ,String headerName){
-        String header = request.getHeader(headerName);
-        if (header.startsWith("Bearer ") && header != null){
-            String token = request.getHeader(header).split(" ")[1];
-            return token;
+    private Optional<String> extractToken(HttpServletRequest request ,String headerName){
+        if (request.getHeader(headerName) != null && request.getHeader(headerName).startsWith("Bearer ")){
+            return Optional.ofNullable(request.getHeader(headerName).split(" ")[1]);
         }
-        return null;
+        return Optional.empty();
     }
-    private void setAuthentication(Member loginMember, HttpServletRequest request){
+//    private Optional<String> extractToken(ServletRequest request) {
+//        return Optional.ofNullable(((HttpServletRequest) request).getHeader("Authorization"));
+//    }
+
+
+    private void setAuthentication(String token, HttpServletRequest request){
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginMember.getId(), null, List.of(new SimpleGrantedAuthority(loginMember.getRole().name())));
+                memberId, null, List.of(new SimpleGrantedAuthority(loginMember.getRole().name())));
         // 요청 객체로부터 인증 세부 정보를 생성 token에 설정
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         // SecurityContext에 인증 객체를 등록함으로써 현재 요청이 인증되었음을 시큐리티에 알림 애플리케이션 내 다른 부분에서 사용자의 인증 정보에 접근 가능
