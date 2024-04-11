@@ -39,7 +39,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         Optional<String> token = extractToken(request, HttpHeaders.AUTHORIZATION);
 
         if (!token.isEmpty()){
-            UsernamePasswordAuthenticationToken authentication = jwtTokenUtil.validateToken(request, token.get());
+            Authentication authentication = jwtTokenUtil.validateToken(token.get());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
@@ -65,20 +65,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 //        }
 //        // 전송 받은 값에서 Bearer 뒷부분(Jwt Token) 추출
 //        String token = authorizationHeader.split(" ")[1];
-        String accessToken = jwtTokenUtil.getToken(request, HttpHeaders.AUTHORIZATION);
-        if (accessToken == null){
-            filterChain.doFilter(request, response);
-        }
-        if (!jwtTokenUtil.isExpired(accessToken)){
-            setAuthentication(accessToken, request);
-        }
+//        String accessToken = jwtTokenUtil.getToken(request, HttpHeaders.AUTHORIZATION);
+//        if (accessToken == null){
+//            filterChain.doFilter(request, response);
+//        }
+//        if (!jwtTokenUtil.isExpired(accessToken)){
+//            setAuthentication(accessToken, request);
+//        }
 
 
         // 전송 받은 Jwt Token이 만료되었으면 => 다음 필터 진행(인증 x)
-        if (jwtTokenUtil.isExpired(accessToken)){
-//            filterChain.doFilter(request, response);
-            String refreshToken = getToken(request, REFRESH_TOKEN);
-            boolean isRefreshToken = jwtTokenUtil.existsRefreshToken(refreshToken);
+//        if (jwtTokenUtil.isExpired(accessToken)){
+////            filterChain.doFilter(request, response);
+//            String refreshToken = getToken(request, REFRESH_TOKEN);
+//            boolean isRefreshToken = jwtTokenUtil.existsRefreshToken(refreshToken);
 //            if (!jwtTokenUtil.isExpired(refreshToken) && isRefreshToken){
 //                /*
 //                * 1. 새로운 token과 refresh 토큰 발급하기
@@ -88,24 +88,24 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 //            }
 //            else filterChain.doFilter(request, response);
         }
-        String loginId = jwtTokenUtil.getLoginId(accessToken);
-        Member loginMember = memberService.getLoginByMemberId(loginId);
-
-        // 조회한 유저 정보를 바탕으로 객체 생성 사용자의 id, 비밀번호, 권한을 포함
-        // 비밀번호를 null로 하는 이유는  이 시점에 비밀번호를 검증할 필요가 없기 때문 사용자가 로그인할 때 이미 비밃번호는 검증됨 + 보안상의 이유로 비밀번호와 같은 민감한 정보는 포함 x
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginMember.getId(), null, List.of(new SimpleGrantedAuthority(loginMember.getRole().name())));
-        String name = loginMember.getRole().getKey();
-
-
-
-        // 요청 객체로부터 인증 세부 정보를 생성 token에 설정
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        // SecurityContext에 인증 객체를 등록함으로써 현재 요청이 인증되었음을 시큐리티에 알림 애플리케이션 내 다른 부분에서 사용자의 인증 정보에 접근 가능
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        // 요청 처리 체인을 계속 진행
-        filterChain.doFilter(request, response);
-    }
+//        String loginId = jwtTokenUtil.getLoginId(accessToken);
+//        Member loginMember = memberService.getLoginByMemberId(loginId);
+//
+//        // 조회한 유저 정보를 바탕으로 객체 생성 사용자의 id, 비밀번호, 권한을 포함
+//        // 비밀번호를 null로 하는 이유는  이 시점에 비밀번호를 검증할 필요가 없기 때문 사용자가 로그인할 때 이미 비밃번호는 검증됨 + 보안상의 이유로 비밀번호와 같은 민감한 정보는 포함 x
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+//                loginMember.getId(), null, List.of(new SimpleGrantedAuthority(loginMember.getRole().name())));
+//        String name = loginMember.getRole().getKey();
+//
+//
+//
+//        // 요청 객체로부터 인증 세부 정보를 생성 token에 설정
+//        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//        // SecurityContext에 인증 객체를 등록함으로써 현재 요청이 인증되었음을 시큐리티에 알림 애플리케이션 내 다른 부분에서 사용자의 인증 정보에 접근 가능
+//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//        // 요청 처리 체인을 계속 진행
+//        filterChain.doFilter(request, response);
+//    }
     public String getRefreshToken(HttpServletRequest request){
         if (request.getHeader(REFRESH_TOKEN) != null){
             return request.getHeader(REFRESH_TOKEN).split(" ")[1];
@@ -123,12 +123,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 //    }
 
 
-    private void setAuthentication(String token, HttpServletRequest request){
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                memberId, null, List.of(new SimpleGrantedAuthority(loginMember.getRole().name())));
-        // 요청 객체로부터 인증 세부 정보를 생성 token에 설정
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        // SecurityContext에 인증 객체를 등록함으로써 현재 요청이 인증되었음을 시큐리티에 알림 애플리케이션 내 다른 부분에서 사용자의 인증 정보에 접근 가능
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-    }
+//    private void setAuthentication(String token, HttpServletRequest request){
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+//                memberId, null, List.of(new SimpleGrantedAuthority(loginMember.getRole().name())));
+//        // 요청 객체로부터 인증 세부 정보를 생성 token에 설정
+//        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//        // SecurityContext에 인증 객체를 등록함으로써 현재 요청이 인증되었음을 시큐리티에 알림 애플리케이션 내 다른 부분에서 사용자의 인증 정보에 접근 가능
+//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//    }
 }

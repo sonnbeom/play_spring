@@ -22,7 +22,7 @@ import static com.example.play.jwt.constant.HeaderConstant.*;
 @Slf4j
 public class MemberController {
     private final MemberService memberService;
-    private JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
 
     // 비밀번호 찾기, 아이디 찾기
     // 멤버 정보 이름, 사진, 이메일, 친구목록
@@ -43,7 +43,9 @@ public class MemberController {
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(memberDto);
         }
+        log.info("컨틀롤러 체크");
         Long l = memberService.createMember(memberDto, profile);
+        log.info("컨트롤러 체크{}:",l);
         if (l != 0){
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
