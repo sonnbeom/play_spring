@@ -38,6 +38,7 @@ public class MemberController {
     public ResponseEntity<RequestMemberDto> createMember(@Valid @RequestPart("memberDto") RequestMemberDto memberDto,
                                                          BindingResult bindingResult,
                                                          @RequestPart(value = "profile", required = false) MultipartFile profile){
+
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(memberDto);
         }
@@ -49,11 +50,16 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    /*
-    * { "name" : "jwt test name",
-"email" : "1234@naver.com",
+/*{
+{
+"name" : "test412",
+"email" : "412@nav.com",
 "password" : "1234",
-"nickname" : "jwt"}*/
+"nickname": "412"
+}
+}*/
+
+
     @PostMapping("/login")
     public ResponseEntity<ResponseLoginDto> login(@Valid @RequestBody RequestLogin reqLogin){
         ResponseLoginDto response = memberService.login(reqLogin);
@@ -68,6 +74,7 @@ public class MemberController {
 
     @GetMapping("/{memberId}")
     public ResponseEntity<ResponseMemberDto> readMember(@PathVariable("memberId") Long memberId){
+        log.info("컨트롤러 호출했니?");
         ResponseMemberDto dto =  memberService.readMember(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }

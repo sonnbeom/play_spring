@@ -58,7 +58,10 @@ public class MemberService {
 
     public ResponseMemberDto readMember(Long memberId) {
         Member findMember = findMemberById(memberId);
+        log.info("서비스 호출?");
+        log.info("파인드멤버 이메일 뭐고?{}", findMember.getEmail());
         ResponseMemberImg img = memberImgService.findByMember(findMember);
+        log.info("이미지는 찾았노?", img.toString());
         return memberMapper.entityToDto(findMember ,img);
     }
 
@@ -105,7 +108,7 @@ public class MemberService {
                     .loginSuccess(false)
                     .build();
         }else {
-            String jwtToken =  jwtTokenUtil.createToken(String.valueOf(member.getId()), expireTimeMs);
+            String jwtToken =  jwtTokenUtil.createAccessToken(member.getEmail(), member.getRole());
             return ResponseLoginDto.builder()
                     .id(member.getId())
                     .name(member.getName())

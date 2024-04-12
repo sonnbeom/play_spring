@@ -10,4 +10,8 @@ public class MemberNotFoundException extends RuntimeException{
         super(message);
         log.info(message);
     }
+
+    public MemberNotFoundException(String message, String email) {
+        super(String.format(message, email));
+    }
 }

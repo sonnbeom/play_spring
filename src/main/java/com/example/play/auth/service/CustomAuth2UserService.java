@@ -45,7 +45,7 @@ public class CustomAuth2UserService implements OAuth2UserService<OAuth2UserReque
         Member member = saveOrUpdate(attributes);
         httpSession.setAttribute("member", new SessionMember(member));
         // 애플리케이션에서 사용할 OAuth2User 객체를 생성하여 반환 사용자의 권한 정보(key),  속성 정보(attributes), 식별자의 키(getNameAttributeKey)
-        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(member.getRole().getKey())),
+        return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(member.getRole().toString())),
                 attributes.getAttributes(),
                 attributes.getNameAttributeKey());
     }
