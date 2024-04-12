@@ -29,10 +29,6 @@ public class JwtTokenUtil {
     private String key;
     private final CustomUserDetailService customUserDetailService;
 
-//    public JwtTokenUtil( @Value("${secretKey}")String key) {
-//        this.key = key;
-//    }
-
     public String createToken(String email, Role role, long expireTimeMs){
         // Claim : jwt token에 들어갈 정보
         // claim에 loginId를 넣음으로써 나중에 loginId 꺼낼 수 있음
@@ -74,19 +70,15 @@ public class JwtTokenUtil {
         return createToken(email, role, expireTimeMs);
     }
 
-    public Authentication validateToken(String token) {
+    public UsernamePasswordAuthenticationToken validateToken(String token) {
         Claims claims = extractClaims(token);
         String email = claims.get("EMAIL").toString();
-        log.info("이메일{}",email);
+
         CustomUserDetails userDetails = customUserDetailService.loadUserByUsername(email);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
         return authentication;
     }
-    // claim에서 loginId 꺼내기
-//    public  String getEmail(String token){
-//        return extractClaims(token).get("EMAIL").toString();
-//    }
 
     // 밝급된 Token이 만료 시간이 지났는지 체크
 //    public  boolean isExpired(String token) {
@@ -95,7 +87,6 @@ public class JwtTokenUtil {
 //        return expiredDate.before(new Date());
 //    }
 
-    // SecretKey를 사용해 Token Parsing
     private Claims extractClaims(String token) {
         try {
             return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
@@ -130,24 +121,4 @@ public class JwtTokenUtil {
         }
         return false;
     }
-
-
-
-
-//        try {
-//            Claims claim = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-//            return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-//        } catch (SecurityException | MalformedJwtException e) {
-//            log.info("잘못된 JWT 서명입니다.");
-//            throw new InvalidJwtException("잘못된 JWT 서명입니다.", e);
-//        } catch (ExpiredJwtException e) {
-//            log.info("만료된 JWT 토큰입니다.");
-//            throw new InvalidJwtException("만료된 JWT 토큰입니다.", e);
-//        } catch (UnsupportedJwtException e) {
-//            log.info("지원되지 않는 JWT 토큰입니다.");
-//            throw new InvalidJwtException("지원되지 않는 JWT 토큰입니다.", e);
-//        } catch (IllegalArgumentException e) {
-//            log.info("JWT 토큰이 잘못되었습니다.");
-//            throw new InvalidJwtException("JWT 토큰이 잘못되었습니다." ,e);
-//        }
-    }
+ }

@@ -50,15 +50,6 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-/*{
-{
-"name" : "test412",
-"email" : "412@nav.com",
-"password" : "1234",
-"nickname": "412"
-}
-}*/
-
 
     @PostMapping("/login")
     public ResponseEntity<ResponseLoginDto> login(@Valid @RequestBody RequestLogin reqLogin){
@@ -74,7 +65,6 @@ public class MemberController {
 
     @GetMapping("/{memberId}")
     public ResponseEntity<ResponseMemberDto> readMember(@PathVariable("memberId") Long memberId){
-        log.info("컨트롤러 호출했니?");
         ResponseMemberDto dto =  memberService.readMember(memberId);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
