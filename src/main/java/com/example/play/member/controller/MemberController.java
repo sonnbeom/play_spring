@@ -40,6 +40,7 @@ public class MemberController {
     public ResponseEntity<RequestMemberDto> createMember(@Valid @RequestPart("memberDto") RequestMemberDto memberDto,
                                                          BindingResult bindingResult,
                                                          @RequestPart(value = "profile", required = false) MultipartFile profile){
+
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(memberDto);
         }
@@ -53,11 +54,7 @@ public class MemberController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    /*
-    * { "name" : "jwt test name",
-"email" : "1234@naver.com",
-"password" : "1234",
-"nickname" : "jwt"}*/
+
     @PostMapping("/login")
     public ResponseEntity<ResponseLoginDto> login(@Valid @RequestBody RequestLogin reqLogin,
                                                   HttpServletResponse response){

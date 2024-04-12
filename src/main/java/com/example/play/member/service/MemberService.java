@@ -34,10 +34,8 @@ public class MemberService {
     private final MemberCustomRepository memberCustomRepository;
     private final JwtTokenUtil jwtTokenUtil;
     public Long createMember(RequestMemberDto memberDto, MultipartFile profile) {
-        log.info("서비스 들어왔노?!");
         if(duplicateCheck(memberDto)){
             Member member = memberMapper.dtoToMember(memberDto);
-            log.info("서비스 들어왔노?");
             Member saved = memberRepository.save(member);
             if (profile != null && !profile.isEmpty()){
                 memberImgService.saveMemberImg(saved, profile);
@@ -107,9 +105,7 @@ public class MemberService {
                     .loginSuccess(false)
                     .build();
         }else {
-            JwtTokenUtil.PrivateClaims privateClaims = new JwtTokenUtil.PrivateClaims(member.getEmail(), member.getRole());
-            String accessTokenToken =  jwtTokenUtil.createAccessToken(privateClaims);
-            String refreshToken =  jwtTokenUtil.createRefreshToken(privateClaims);
+            String jwtToken =  jwtTokenUtil.createAccessToken(member.getEmail(), member.getRole());
             return ResponseLoginDto.builder()
                     .id(member.getId())
                     .name(member.getName())
@@ -118,11 +114,11 @@ public class MemberService {
                     .isActive(member.getIsActive())
                     .loginSuccess(true)
                     .nickname(member.getNickname())
-                    .accessToken(accessTokenToken)
-                    .refreshToken(refreshToken)
+                    .jwtToken(jwtToken)
                     .build();
         }
     }
+
     public Member getLoginByMemberId(String loginId) {
         try {
             Long id = Long.parseLong(loginId);

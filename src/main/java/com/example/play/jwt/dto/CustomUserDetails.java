@@ -1,8 +1,7 @@
 package com.example.play.jwt.dto;
 
 import com.example.play.member.entity.Member;
-import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import com.example.play.member.role.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,14 +11,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
-
     private final Member member;
+
+    public CustomUserDetails(Member member) {
+        this.member = member;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> roles = new ArrayList<>();
-
+        roles.add(member.getRole().toString());
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
@@ -32,7 +34,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return member.getEmail();
+        return this.member.getEmail();
     }
 
     @Override

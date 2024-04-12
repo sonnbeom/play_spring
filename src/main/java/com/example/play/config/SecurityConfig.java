@@ -25,7 +25,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig{
 
     private final CustomAuth2UserService customAuth2UserService;
-    private final MemberService memberService;
     private final JwtTokenUtil jwtTokenUtil;
 //    private static String secretKey = "my-secret-key-123123";
 
@@ -41,14 +40,14 @@ public class SecurityConfig{
                 .sessionManagement((session)->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http
-                .addFilterBefore(new JwtTokenFilter(memberService, jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtTokenFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
         http
                 // CSRF 설정 변경
                 .csrf(csrf -> csrf.disable());
         http
                 .headers(headers -> headers.disable());
         http
-                .authorizeRequests(authz -> authz
+                .authorizeRequests(auth -> auth
                         // 루트(/) , css, 이미지 ,자바스크립트 파일, h2 콘솔 경로에 대한 요청은 인증 없이 접근을 허용
                         .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
                         // 해당 경로로 들어오는 요청은 user 역할을 가진 사용자만 접근할 수 있음

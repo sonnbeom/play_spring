@@ -26,7 +26,7 @@ public class MemberMapper {
                 .isActive(1)
                 .password(passwordEncoder.encode(memberDto.getPassword()))
                 .nickname(memberDto.getNickname())
-                .role(Role.User)
+                .role(Role.ROLE_USER)
                 .build();
     }
 
