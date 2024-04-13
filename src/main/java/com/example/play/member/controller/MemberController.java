@@ -35,6 +35,10 @@ public class MemberController {
     *
     *
     * */
+    @GetMapping("/admin")
+    public String admin(){
+        return "admin";
+    }
 
     @PostMapping("/join")
     public ResponseEntity<RequestMemberDto> createMember(@Valid @RequestPart("memberDto") RequestMemberDto memberDto,
