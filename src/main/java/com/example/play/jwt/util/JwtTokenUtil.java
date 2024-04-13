@@ -1,15 +1,18 @@
 package com.example.play.jwt.util;
 
+import com.example.play.jwt.constant.HeaderConstant;
 import com.example.play.jwt.dto.CustomUserDetails;
 import com.example.play.jwt.exception.InvalidJwtException;
 import com.example.play.jwt.service.CustomUserDetailService;
 import com.example.play.member.role.Role;
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +22,8 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.play.jwt.constant.HeaderConstant.*;
+import static com.example.play.jwt.constant.HeaderConstant.BEARER;
 import static com.example.play.jwt.constant.TokenTime.expireTimeMs;
 
 @Slf4j
@@ -42,30 +47,6 @@ public class JwtTokenUtil {
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     }
-//    public String createToken(PrivateClaim privateClaim,  long expireTimeMs){
-//        // Claim : jwt token에 들어갈 정보
-//        // claim에 loginId를 넣음으로써 나중에 loginId 꺼낼 수 있음
-//        Claims claims = Jwts.claims();
-//        claims.put("privateClaim", privateClaim);
-//        return Jwts.builder()
-//                .setClaims(claims)
-//                .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
-//                .signWith(SignatureAlgorithm.HS256, key)
-//                .compact();
-//    }
-//    private String createToken(String email, Role role, long expireTimeMs){
-//        // Claim : jwt token에 들어갈 정보
-//        // claim에 loginId를 넣음으로써 나중에 loginId 꺼낼 수 있음
-//        Claims claims = Jwts.claims();
-//        claims.put("privateClaim", privateClaim);
-//        return Jwts.builder()
-//                .setClaims(claims)
-//                .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
-//                .signWith(SignatureAlgorithm.HS256, key)
-//                .compact();
-//    }
     public String createAccessToken(String email, Role role){
         return createToken(email, role, expireTimeMs);
     }
@@ -121,4 +102,14 @@ public class JwtTokenUtil {
         }
         return false;
     }
- }
+
+    public void setHeaderAccessToken(HttpServletResponse response, String jwtToken) {
+        response.addHeader(AUTHORIZATION, BEARER + jwtToken);
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add(AUTHORIZATION, BEARER + jwtToken);
+    }
+    public void setHeaderRefreshToken(HttpServletResponse response, String jwtToken) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(REFRESH_TOKEN, BEARER + jwtToken);
+    }
+}
