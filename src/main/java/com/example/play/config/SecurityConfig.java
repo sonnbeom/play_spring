@@ -53,6 +53,7 @@ public class SecurityConfig{
                         // 해당 경로로 들어오는 요청은 user 역할을 가진 사용자만 접근할 수 있음
                         .requestMatchers("/api/v1/member/join").permitAll()
                         .requestMatchers("/api/v1/member/login").permitAll()
+                        .requestMatchers("/api/v1/member/admin").hasRole("ADMIN")
                         // 위에서 정의하지 않은 요청은 인증된 사용자만 접근할 수 있음
                         .anyRequest().authenticated());
         http
