@@ -114,7 +114,7 @@ public class MemberService {
                     .isActive(member.getIsActive())
                     .loginSuccess(true)
                     .nickname(member.getNickname())
-                    .jwtToken(jwtToken)
+                    .accessToken(jwtToken)
                     .build();
         }
     }

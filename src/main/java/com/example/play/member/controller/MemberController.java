@@ -44,9 +44,7 @@ public class MemberController {
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(memberDto);
         }
-        log.info("컨틀롤러 체크");
         Long l = memberService.createMember(memberDto, profile);
-        log.info("컨트롤러 체크{}:",l);
         if (l != 0){
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
@@ -63,7 +61,7 @@ public class MemberController {
             String jwtToken = responseDto.getAccessToken();
             String refreshToken = responseDto.getRefreshToken();
             jwtTokenUtil.setHeaderAccessToken(response, jwtToken);
-            jwtTokenUtil.setHeaderRefreshToken(response, refreshToken);
+//            jwtTokenUtil.setHeaderRefreshToken(response, refreshToken);
             return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         }else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
