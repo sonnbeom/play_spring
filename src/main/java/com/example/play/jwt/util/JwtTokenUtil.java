@@ -1,7 +1,9 @@
 package com.example.play.jwt.util;
 
 import com.example.play.jwt.constant.HeaderConstant;
+import com.example.play.jwt.constant.TokenTime;
 import com.example.play.jwt.dto.CustomUserDetails;
+import com.example.play.jwt.dto.TokenDto;
 import com.example.play.jwt.exception.InvalidJwtException;
 import com.example.play.jwt.service.CustomUserDetailService;
 import com.example.play.member.role.Role;
@@ -24,7 +26,8 @@ import java.util.List;
 
 import static com.example.play.jwt.constant.HeaderConstant.*;
 import static com.example.play.jwt.constant.HeaderConstant.BEARER;
-import static com.example.play.jwt.constant.TokenTime.expireTimeMs;
+import static com.example.play.jwt.constant.TokenTime.*;
+
 
 @Slf4j
 @Component
@@ -46,6 +49,14 @@ public class JwtTokenUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + expireTimeMs))
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
+    }
+    public TokenDto provideToken(String email, Role role){
+        String accessToken = createToken(email, role, expireTimeMs);
+        String refreshToken = createToken(email, role, refreshExpireTimeMs);
+        return TokenDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
     public String createAccessToken(String email, Role role){
         return createToken(email, role, expireTimeMs);
@@ -103,13 +114,12 @@ public class JwtTokenUtil {
         return false;
     }
 
-    public void setHeaderAccessToken(HttpServletResponse response, String jwtToken) {
-        response.addHeader(AUTHORIZATION, BEARER + jwtToken);
+    public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
+        response.addHeader(AUTHORIZATION, BEARER + accessToken);
 //        HttpHeaders httpHeaders = new HttpHeaders();
 //        httpHeaders.add(AUTHORIZATION, BEARER + jwtToken);
     }
-    public void setHeaderRefreshToken(HttpServletResponse response, String jwtToken) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(REFRESH_TOKEN, BEARER + jwtToken);
+    public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
+        response.addHeader(REFRESH_TOKEN, BEARER + refreshToken);
     }
 }

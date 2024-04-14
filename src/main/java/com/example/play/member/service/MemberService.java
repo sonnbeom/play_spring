@@ -2,6 +2,7 @@ package com.example.play.member.service;
 
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.service.MemberImgService;
+import com.example.play.jwt.dto.TokenDto;
 import com.example.play.jwt.exception.InvalidLoginException;
 import com.example.play.jwt.util.JwtTokenUtil;
 import com.example.play.member.dto.*;
@@ -37,6 +38,7 @@ public class MemberService {
         if(duplicateCheck(memberDto)){
             Member member = memberMapper.dtoToMember(memberDto);
             Member saved = memberRepository.save(member);
+            log.info("saved ID 뭐고" + saved.getId());
             if (profile != null && !profile.isEmpty()){
                 memberImgService.saveMemberImg(saved, profile);
             }
@@ -105,7 +107,8 @@ public class MemberService {
                     .loginSuccess(false)
                     .build();
         }else {
-            String jwtToken =  jwtTokenUtil.createAccessToken(member.getEmail(), member.getRole());
+//            String jwtToken =  jwtTokenUtil.createAccessToken(member.getEmail(), member.getRole());
+            TokenDto tokenDto = jwtTokenUtil.provideToken(member.getEmail(), member.getRole());
             return ResponseLoginDto.builder()
                     .id(member.getId())
                     .name(member.getName())
@@ -114,7 +117,8 @@ public class MemberService {
                     .isActive(member.getIsActive())
                     .loginSuccess(true)
                     .nickname(member.getNickname())
-                    .accessToken(jwtToken)
+                    .accessToken(tokenDto.getAccessToken())
+                    .refreshToken(tokenDto.getRefreshToken())
                     .build();
         }
     }

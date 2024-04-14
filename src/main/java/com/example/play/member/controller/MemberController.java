@@ -50,7 +50,7 @@ public class MemberController {
         }
         Long l = memberService.createMember(memberDto, profile);
         if (l != 0){
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(memberDto);
         }
         else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -62,10 +62,8 @@ public class MemberController {
                                                   HttpServletResponse response){
         ResponseLoginDto responseDto = memberService.login(reqLogin);
         if (responseDto.isLoginSuccess()){
-            String jwtToken = responseDto.getAccessToken();
-            String refreshToken = responseDto.getRefreshToken();
-            jwtTokenUtil.setHeaderAccessToken(response, jwtToken);
-//            jwtTokenUtil.setHeaderRefreshToken(response, refreshToken);
+            jwtTokenUtil.setHeaderAccessToken(response, responseDto.getAccessToken());
+            jwtTokenUtil.setHeaderRefreshToken(response, responseDto.getRefreshToken());
             return ResponseEntity.status(HttpStatus.OK).body(responseDto);
         }else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDto);
