@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import static com.example.play.member.role.Role.*;
+
 @RequiredArgsConstructor
 @Component
 @Slf4j
@@ -26,7 +28,7 @@ public class MemberMapper {
                 .isActive(1)
                 .password(passwordEncoder.encode(memberDto.getPassword()))
                 .nickname(memberDto.getNickname())
-                .role(Role.ROLE_ADMIN)
+                .role(ROLE_USER)
                 .build();
     }
 
