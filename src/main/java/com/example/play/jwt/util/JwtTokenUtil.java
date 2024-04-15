@@ -96,6 +96,21 @@ public class JwtTokenUtil {
             throw new InvalidJwtException("JWT 토큰이 잘못되었습니다." ,e);
         }
     }
+    public boolean tokenValidation(String token){
+        try {
+            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+            return true;
+        } catch (SecurityException | MalformedJwtException e) {
+            log.info("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            log.info("만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            log.info("지원되지 않는 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT 토큰이 잘못되었습니다.");
+        }
+        return false;
+    }
 
     // 토큰의 유효성 검증을 수행
     public boolean validateTokenz(String token) {

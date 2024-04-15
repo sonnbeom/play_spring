@@ -1,5 +1,6 @@
 package com.example.play.jwt.filter;
 
+import com.example.play.jwt.constant.HeaderConstant;
 import com.example.play.jwt.util.JwtTokenUtil;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
@@ -33,11 +34,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        Optional<String> token = getToken(request, HttpHeaders.AUTHORIZATION);
+        Optional<String> accessToken = getToken(request, HttpHeaders.AUTHORIZATION);
+        Optional<String> refreshToken = getToken(request, HeaderConstant.REFRESH_TOKEN);
 
-        if (!token.isEmpty()){
-            UsernamePasswordAuthenticationToken authentication = jwtTokenUtil.validateToken(token.get());
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        if (!accessToken.isEmpty() && jwtTokenUtil.tokenValidation(accessToken.get())){
+            UsernamePasswordAuthenticationToken authentication = jwtTokenUtil.validateToken(accessToken.get());
+//            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
