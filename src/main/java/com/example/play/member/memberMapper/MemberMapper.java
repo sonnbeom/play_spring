@@ -44,4 +44,5 @@ public class MemberMapper {
     public ResponseDeleteMemberDto deleteResponse(int memberStatus, int imgStatus){
         return new ResponseDeleteMemberDto(memberStatus, imgStatus);
     }
+
 }

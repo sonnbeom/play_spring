@@ -3,8 +3,7 @@ package com.example.play.config;
 import com.example.play.auth.service.CustomAuth2UserService;
 import com.example.play.jwt.filter.JwtTokenFilter;
 
-import com.example.play.jwt.util.JwtTokenUtil;
-import com.example.play.member.service.MemberService;
+import com.example.play.jwt.util.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig{
 
     private final CustomAuth2UserService customAuth2UserService;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtService jwtService;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
@@ -38,7 +37,7 @@ public class SecurityConfig{
                 .sessionManagement((session)->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http
-                .addFilterBefore(new JwtTokenFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtTokenFilter(jwtService), UsernamePasswordAuthenticationFilter.class);
         http
                 // CSRF 설정 변경
                 .csrf(csrf -> csrf.disable());

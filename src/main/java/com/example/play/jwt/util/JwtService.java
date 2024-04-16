@@ -1,7 +1,5 @@
 package com.example.play.jwt.util;
 
-import com.example.play.jwt.constant.HeaderConstant;
-import com.example.play.jwt.constant.TokenTime;
 import com.example.play.jwt.dto.CustomUserDetails;
 import com.example.play.jwt.dto.TokenDto;
 import com.example.play.jwt.exception.InvalidJwtException;
@@ -9,20 +7,15 @@ import com.example.play.jwt.service.CustomUserDetailService;
 import com.example.play.member.role.Role;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Optional;
 
 import static com.example.play.jwt.constant.HeaderConstant.*;
 import static com.example.play.jwt.constant.HeaderConstant.BEARER;
@@ -32,7 +25,7 @@ import static com.example.play.jwt.constant.TokenTime.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtTokenUtil {
+public class JwtService {
     @Value("${secretKey}")
     private String key;
     private final CustomUserDetailService customUserDetailService;
@@ -78,6 +71,9 @@ public class JwtTokenUtil {
 //        // Token의 만료 날짜가 지금보다 이전인지 check
 //        return expiredDate.before(new Date());
 //    }
+    public String extractEmail(String token){
+       return extractClaims(token).get("EMAIL").toString();
+    }
 
     private Claims extractClaims(String token) {
         try {
@@ -96,24 +92,7 @@ public class JwtTokenUtil {
             throw new InvalidJwtException("JWT 토큰이 잘못되었습니다." ,e);
         }
     }
-    public boolean tokenValidation(String token){
-        try {
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token);
-            return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
-        }
-        return false;
-    }
-
-    // 토큰의 유효성 검증을 수행
-    public boolean validateTokenz(String token) {
+    public boolean isTokenValid(String token){
         try {
             Jwts.parser().setSigningKey(key).parseClaimsJws(token);
             return true;
@@ -131,10 +110,9 @@ public class JwtTokenUtil {
 
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
         response.addHeader(AUTHORIZATION, BEARER + accessToken);
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.add(AUTHORIZATION, BEARER + jwtToken);
     }
     public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
         response.addHeader(REFRESH_TOKEN, BEARER + refreshToken);
     }
+
 }
