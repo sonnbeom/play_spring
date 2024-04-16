@@ -4,7 +4,7 @@ import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.service.MemberImgService;
 import com.example.play.jwt.dto.TokenDto;
 import com.example.play.jwt.exception.InvalidLoginException;
-import com.example.play.jwt.util.JwtTokenUtil;
+import com.example.play.jwt.util.JwtService;
 import com.example.play.member.dto.*;
 import com.example.play.member.entity.Member;
 import com.example.play.member.exception.MemberNotFoundException;
@@ -20,8 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-import static com.example.play.jwt.constant.TokenTime.expireTimeMs;
-
 
 @Service
 @RequiredArgsConstructor
@@ -33,12 +31,11 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberImgService memberImgService;
     private final MemberCustomRepository memberCustomRepository;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtService jwtService;
     public Long createMember(RequestMemberDto memberDto, MultipartFile profile) {
         if(duplicateCheck(memberDto)){
             Member member = memberMapper.dtoToMember(memberDto);
             Member saved = memberRepository.save(member);
-            log.info("saved ID 뭐고" + saved.getId());
             if (profile != null && !profile.isEmpty()){
                 memberImgService.saveMemberImg(saved, profile);
             }
@@ -108,7 +105,7 @@ public class MemberService {
                     .build();
         }else {
 //            String jwtToken =  jwtTokenUtil.createAccessToken(member.getEmail(), member.getRole());
-            TokenDto tokenDto = jwtTokenUtil.provideToken(member.getEmail(), member.getRole());
+            TokenDto tokenDto = jwtService.provideToken(member.getEmail(), member.getRole());
             return ResponseLoginDto.builder()
                     .id(member.getId())
                     .name(member.getName())

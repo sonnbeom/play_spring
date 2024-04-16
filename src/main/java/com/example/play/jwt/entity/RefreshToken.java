@@ -13,4 +13,6 @@ public class RefreshToken {
     @Id
     @Column(nullable = false)
     private String refreshToken;
+
+    private String email;
 }
