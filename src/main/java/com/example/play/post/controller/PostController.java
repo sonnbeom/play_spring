@@ -42,6 +42,12 @@ public class PostController {
         ResponsePostOne responsePostDto = postService.readOne(postId);
         return ResponseEntity.status(HttpStatus.OK).body(responsePostDto);
     }
+    @GetMapping("/likeList")
+    public ResponseEntity<ResponsePostDTo> readLikedPosts(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                            @RequestParam(defaultValue = "0") int page){
+        ResponsePostDTo responsePostDTo = postService.getLikedPosts(userDetails.getUsername(), page);
+        return ResponseEntity.status(HttpStatus.OK).body(responsePostDTo);
+    }
     //최신순 페이징 정렬
     @GetMapping("/sort")
     public ResponseEntity<ResponsePostDTo> readBySort(@RequestParam(defaultValue = "0")int page,
