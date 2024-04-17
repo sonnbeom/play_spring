@@ -1,30 +1,34 @@
 package com.example.play.post.repository;
 
-import com.example.play.member.entity.QMember;
+import com.example.play.like.post.entity.QPostLike;
+import com.example.play.member.entity.Member;
 import com.example.play.post.constant.PostSearchType;
 import com.example.play.post.constant.PostSortType;
 import com.example.play.post.entity.Post;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.example.play.like.post.entity.QPostLike.*;
 import static com.example.play.member.entity.QMember.*;
 import static com.example.play.post.entity.QPost.*;
 
 @Repository
-public class PostRepositoryCustomImpl implements PostRepositoryCustom{
+public class CustomPostRepositoryImpl implements CustomPostRepository {
     private final JPAQueryFactory jpaQueryFactory;
     @Autowired
-    public PostRepositoryCustomImpl(EntityManager entityManager) {
+    public CustomPostRepositoryImpl(EntityManager entityManager) {
         this.jpaQueryFactory = new JPAQueryFactory(entityManager);
     }
 
@@ -93,5 +97,23 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom{
                 .where(builder)
                 .fetchCount();
         return new PageImpl<>(posts, pageable, total);
+    }
+
+    @Override
+    public Page<Post> findLikedPosts(Member member, Pageable pageable) {
+
+        List<Post> posts = jpaQueryFactory
+                .selectFrom(post)
+                .innerJoin(post.postLikes, postLike)
+                .where(postLike.member.eq(member))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        JPAQuery<Long> countQuery = jpaQueryFactory
+                .select(post.count())
+                .from(post)
+                .innerJoin(post.postLikes, postLike)
+                .where(postLike.member.eq(member));
+        return PageableExecutionUtils.getPage(posts, pageable, countQuery::fetchOne);
     }
 }

@@ -15,7 +15,7 @@ import com.example.play.post.exception.PostNotFoundException;
 import com.example.play.post.exception.PostUpdateException;
 import com.example.play.post.postMapper.PostMapper;
 import com.example.play.post.repository.PostRepository;
-import com.example.play.post.repository.PostRepositoryCustom;
+import com.example.play.post.repository.CustomPostRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
-    private final PostRepositoryCustom postRepositoryCustom;
+    private final CustomPostRepository customPostRepository;
     private final PostImgService postImgService;
     private final MemberService memberService;
 
@@ -64,13 +64,13 @@ public class PostService {
 
     public ResponsePostDTo readBySort(int page, String sortType) {
         Pageable pageable = PageRequest.of(page ,PageSize.size);
-        Page<Post> postPage = postRepositoryCustom.findBySort(pageable, sortType);
+        Page<Post> postPage = customPostRepository.findBySort(pageable, sortType);
         return postMapper.pageEntityToDto(postPage);
     }
 
     public ResponsePostDTo readBySearch(int page, String type, String keyword) {
         Pageable pageable = PageRequest.of(page, PageSize.size);
-        Page<Post> postPage = postRepositoryCustom.findBySearch(pageable, type, keyword);
+        Page<Post> postPage = customPostRepository.findBySearch(pageable, type, keyword);
         return postMapper.pageEntityToDto(postPage);
     }
 
@@ -111,5 +111,12 @@ public class PostService {
     public ResponsePostOne entityToDto(Post post){
         List<ResponseImg> imgList = postImgService.readImages(post);
         return postMapper.entityToDtoWithImage(post, imgList);
+    }
+
+    public ResponsePostDTo getLikedPosts(String username, int page) {
+        Pageable pageable = PageRequest.of(page ,PageSize.size);
+        Member member = memberService.findByEmail(username);
+        Page<Post> likedPostPage = customPostRepository.findLikedPosts(member, pageable);
+        return postMapper.pageEntityToDto(likedPostPage);
     }
 }
