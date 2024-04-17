@@ -16,6 +16,7 @@ import com.example.play.post.service.PostService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -30,9 +31,9 @@ public class PostLikeService {
     private final MemberService memberService;
     private final PostLikeMapper postLikeMapper;
     private final PostLikeRepository postLikeRepository;
-    public ResponsePostLikeDto createLike(RequestLike likeRequest) {
+    public ResponsePostLikeDto createLike(RequestLike likeRequest, String email) {
         Post post = postService.findById(likeRequest.getPostId());
-        Member member = memberService.findMemberById(likeRequest.getMemberId());
+        Member member = memberService.findByEmail(email);
         List<PostLike> postLike = postLikeCustomRepository.findByPostAndMember(post, member);
 
         if (duplicateCheck(postLike)){
@@ -63,7 +64,7 @@ public class PostLikeService {
         }
     }
     private boolean duplicateCheck(List<PostLike> postLike){
-        if (postLike.isEmpty() && postLike.size() == 0){
+        if (ObjectUtils.isEmpty(postLike)){
             return true;
         }else {
             return false;

@@ -33,9 +33,9 @@ public class FriendshipService {
     private final MemberImgService memberImgService;
 
     // 친구 요청 생성
-    public ResponseFriendship create(RequestFriendship friendship) {
+    public ResponseFriendship create(RequestFriendship friendship, String fromUserEmail) {
         // 친구요청 보내는 이와 받는 이를 조회 isFrom = true : 보내는 사람
-        Member fromMember = memberService.findByEmail(friendship.getFromMemberEmail());
+        Member fromMember = memberService.findByEmail(fromUserEmail);
         Member toMember = memberService.findByEmail(friendship.getToMemberEmail());
 
         //친구 요청 보내는 멤버, 받는 멤버를 친구 요청 엔티티로 매핑
@@ -91,8 +91,8 @@ public class FriendshipService {
         return list;
     }
 
-    public List<ResponseFriendListDto> findFriendList(Long memberId) {
-        Member member = memberService.findMemberById(memberId);
+    public List<ResponseFriendListDto> findFriendList(String email) {
+        Member member = memberService.findByEmail(email);
         List<Friendship> friendshipList = friendshipCustomRepository.findFriendListByMember(member);
         Map<Long, MemberImage> friendImg = findFriendImg(friendshipList);
         List<ResponseFriendListDto> dtoList = readFriendListWithImg(friendshipList, friendImg);
@@ -142,9 +142,9 @@ public class FriendshipService {
         return friendship.orElseThrow(()->new FriendshipNotFoundException("해당 id를 가진 Friendship을 조회할 수 없습니다. :{}",friendshipId));
     }
 
-    public ResponseFriendshipDelete deleteFriendship(RequestDeleteFriendship requestDeleteFriendship) {
+    public ResponseFriendshipDelete deleteFriendship(RequestDeleteFriendship requestDeleteFriendship, String fromMemberEmail) {
         Friendship friendship = findById(requestDeleteFriendship.getFriendshipId());
-        Member member = memberService.findMemberById(requestDeleteFriendship.getMemberId());
+        Member member = memberService.findByEmail(fromMemberEmail);
 
         // 삭제 권한이 있는지 확인
         checkDeleteRights(friendship, member);

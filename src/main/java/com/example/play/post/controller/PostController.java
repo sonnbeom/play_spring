@@ -1,5 +1,6 @@
 package com.example.play.post.controller;
 
+import com.example.play.jwt.dto.CustomUserDetails;
 import com.example.play.post.dto.RequestPostDto;
 import com.example.play.post.dto.ResponsePostOne;
 import com.example.play.post.dto.ResponsePostDTo;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,11 +28,12 @@ public class PostController {
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestPart("postDto") RequestPostDto postDto,
                                     BindingResult bindingResult,
-                                    @RequestPart(value = "files", required = false) List<MultipartFile> files){
+                                    @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                    @AuthenticationPrincipal CustomUserDetails customUser){
         if (bindingResult.hasErrors()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(postDto);
         }
-        ResponsePostOne response = postService.create(postDto ,files);;
+        ResponsePostOne response = postService.create(postDto ,files, customUser.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -55,15 +58,17 @@ public class PostController {
     }
     @PatchMapping("/{postId}")
     public ResponseEntity<ResponsePostOne> update(@PathVariable("postId") Long postId,
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @RequestPart(value = "updatePostDto") RequestUpdatePostDto updateDto,
                                                   @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                                   @RequestPart(value = "deleteFileList", required = false) List<Long> deleteImageList){
-        ResponsePostOne responseOne = postService.update(postId ,updateDto, files, deleteImageList);
+        ResponsePostOne responseOne = postService.update(postId ,updateDto, files, deleteImageList, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(responseOne);
     }
     @DeleteMapping("/{postId}")
-    public ResponseEntity delete(@PathVariable("postId")Long postId){
-        int deleteSuccess = postService.delete(postId);
+    public ResponseEntity delete(@PathVariable("postId")Long postId,
+                                 @AuthenticationPrincipal CustomUserDetails userDetails){
+        int deleteSuccess = postService.delete(postId, userDetails.getUsername());
         if (deleteSuccess == 0){
             return ResponseEntity.status(HttpStatus.OK).build();
         }else {

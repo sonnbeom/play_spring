@@ -23,7 +23,6 @@ public class AuthService {
     private final TokenRepository tokenRepository;
 
     public Optional<TokenDto> refreshToken(String refreshToken, HttpServletResponse response) {
-        String accessToken = null;
         TokenDto tokenDto = null;
         if (!ObjectUtils.isEmpty(refreshToken)){
             String email = jwtService.extractEmail(refreshToken);

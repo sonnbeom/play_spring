@@ -1,6 +1,7 @@
 package com.example.play.post.postMapper;
 
 import com.example.play.image.dto.ResponseImg;
+import com.example.play.member.entity.Member;
 import com.example.play.post.dto.RequestPostDto;
 import com.example.play.post.dto.ResponsePostPageDto;
 import com.example.play.post.dto.ResponsePostDTo;
@@ -18,12 +19,14 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class PostMapper {
-    public Post dtoToEntity(RequestPostDto postDto) {
+    public Post dtoToEntity(RequestPostDto postDto, Member member) {
         return Post.builder()
                 .hit(1)
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
-                .isActive(1).build();
+                .isActive(1)
+                .member(member)
+                .build();
     }
 
     public ResponsePostOne entityToDtoWithImage(Post saved, List<ResponseImg> responseImgs) {
