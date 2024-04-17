@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestDeleteFriendship {
-    private Long memberId;
+//    private Long memberId;
     private Long friendshipId;
 }

@@ -31,8 +31,6 @@ public class JwtService {
     private final CustomUserDetailService customUserDetailService;
 
     public String createToken(String email, Role role, long expireTimeMs){
-        // Claim : jwt token에 들어갈 정보
-        // claim에 loginId를 넣음으로써 나중에 loginId 꺼낼 수 있음
         Claims claims = Jwts.claims();
         claims.put("EMAIL", email);
         claims.put("ROLE_TYPE", role);

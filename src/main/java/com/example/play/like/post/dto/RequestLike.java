@@ -6,6 +6,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class RequestLike {
-    private Long memberId;
     private Long postId;
 }

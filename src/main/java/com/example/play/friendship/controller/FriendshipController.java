@@ -3,11 +3,13 @@ package com.example.play.friendship.controller;
 import com.example.play.friendship.constant.FriendshipDeleteStatus;
 import com.example.play.friendship.dto.*;
 import com.example.play.friendship.service.FriendshipService;
+import com.example.play.jwt.dto.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,13 +21,14 @@ import java.util.List;
 public class FriendshipController {
     private final FriendshipService friendshipService;
     @PostMapping("/create")
-    public ResponseEntity<ResponseFriendship> sendFriendShipRequest(@Valid @RequestBody RequestFriendship friendship){
-        ResponseFriendship responseFriendship =  friendshipService.create(friendship);
+    public ResponseEntity<ResponseFriendship> sendFriendShipRequest(@Valid @RequestBody RequestFriendship friendship,
+                                                                    @AuthenticationPrincipal CustomUserDetails userDetails){
+        ResponseFriendship responseFriendship =  friendshipService.create(friendship, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseFriendship);
     }
-    @GetMapping("/received/{email}")
-    public ResponseEntity<List<ResponseFriendListDto>> getWaitingFriendship(@PathVariable String email){
-        List<ResponseFriendListDto> result = friendshipService.getWaitingFriendList(email);
+    @GetMapping("/received")
+    public ResponseEntity<List<ResponseFriendListDto>> getWaitingFriendship(@AuthenticationPrincipal CustomUserDetails userDetails){
+        List<ResponseFriendListDto> result = friendshipService.getWaitingFriendList(userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
     
@@ -35,9 +38,9 @@ public class FriendshipController {
         return ResponseEntity.status(HttpStatus.OK).body(responseApprove);
     }
     
-    @GetMapping("/friendList/{memberId}")
-    public ResponseEntity<List<ResponseFriendListDto>> readFriendList(@Valid @PathVariable("memberId") Long memberId){
-        List<ResponseFriendListDto> friendList = friendshipService.findFriendList(memberId);
+    @GetMapping("/friendList")
+    public ResponseEntity<List<ResponseFriendListDto>> readFriendList(@AuthenticationPrincipal CustomUserDetails userDetails){
+        List<ResponseFriendListDto> friendList = friendshipService.findFriendList(userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(friendList);
     }
     // 친구 요청 삭제
@@ -52,8 +55,9 @@ public class FriendshipController {
     * 1. friendship id로 엔티티 가져오기 counterpartId로 반대편 frinedship도 삭제
     * */
     @DeleteMapping("/delete")
-    public ResponseEntity<ResponseFriendshipDelete> deleteFriend(@Valid @RequestBody RequestDeleteFriendship requestDeleteFriendship){
-        ResponseFriendshipDelete responseDelete = friendshipService.deleteFriendship(requestDeleteFriendship);
+    public ResponseEntity<ResponseFriendshipDelete> deleteFriend(@Valid @RequestBody RequestDeleteFriendship requestDeleteFriendship,
+                                                                 @AuthenticationPrincipal CustomUserDetails userDetails){
+        ResponseFriendshipDelete responseDelete = friendshipService.deleteFriendship(requestDeleteFriendship, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(responseDelete);
     }
 }

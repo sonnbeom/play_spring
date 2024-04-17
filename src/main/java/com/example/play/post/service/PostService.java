@@ -2,6 +2,8 @@ package com.example.play.post.service;
 
 import com.example.play.image.dto.ResponseImg;
 import com.example.play.image.service.PostImgService;
+import com.example.play.member.entity.Member;
+import com.example.play.member.service.MemberService;
 import com.example.play.post.constant.PageSize;
 import com.example.play.post.dto.RequestPostDto;
 import com.example.play.post.dto.ResponsePostOne;
@@ -33,9 +35,11 @@ public class PostService {
     private final PostMapper postMapper;
     private final PostRepositoryCustom postRepositoryCustom;
     private final PostImgService postImgService;
+    private final MemberService memberService;
 
-    public ResponsePostOne create(RequestPostDto postDto, List<MultipartFile> files) {
-        Post post = postMapper.dtoToEntity(postDto);
+    public ResponsePostOne create(RequestPostDto postDto, List<MultipartFile> files, String email) {
+        Member member = memberService.findByEmail(email);
+        Post post = postMapper.dtoToEntity(postDto, member);
         Post saved = postRepository.save(post);
         if (!files.isEmpty()){
             List<ResponseImg> urlS = postImgService.savePostImage(files, saved);

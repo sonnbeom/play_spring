@@ -55,14 +55,14 @@ public class MemberService {
         return true;
     }
 
-    public ResponseMemberDto readMember(Long memberId) {
-        Member findMember = findMemberById(memberId);
-        ResponseMemberImg img = memberImgService.findByMember(findMember);
-        return memberMapper.entityToDto(findMember ,img);
+    public ResponseMemberDto readMember(String email) {
+        Member member = findByEmail(email);
+        ResponseMemberImg img = memberImgService.findByMember(member);
+        return memberMapper.entityToDto(member ,img);
     }
 
-    public ResponseMemberDto updateMember(Long memberId, RequestMemberUpdateDto updateDto, MultipartFile profile, Long deleteFile) {
-        Member updateMember = findMemberById(memberId);
+    public ResponseMemberDto updateMember(String email, RequestMemberUpdateDto updateDto, MultipartFile profile, Long deleteFile) {
+        Member updateMember = findByEmail(email);
         if (updateDto.getNickname() != null && !updateDto.getNickname().isEmpty()){
             updateMember.changeNickname(updateMember.getNickname());
         }
@@ -79,20 +79,18 @@ public class MemberService {
         return memberMapper.entityToDto(updateMember, img);
     }
 
-    public ResponseDeleteMemberDto deleteMember(Long memberId){
-       Member member = findMemberById(memberId);
+    public ResponseDeleteMemberDto deleteMember(String email){
+       Member member = findByEmail(email);
         int imgStatus = memberImgService.changeStatusByMember(member);
         member.changeStatus();
         int memberStatus = member.getIsActive();
         return memberMapper.deleteResponse(memberStatus, imgStatus);
     }
     public Member findMemberById(Long memberId){
-        Optional<Member> optionalMember = memberRepository.findById(memberId);
-        return optionalMember.orElseThrow(() -> new MemberNotFoundException(memberId+"로 ID를 가진 유저를 조회할 수 없습니다."));
+        return memberRepository.findById(memberId).orElseThrow(()-> new MemberNotFoundException(memberId+"로 ID를 가진 유저를 조회할 수 없습니다."));
     }
     public Member findByEmail(String email){
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        return optionalMember.orElseThrow(() -> new MemberNotFoundException(email+ "을 가진 유저를 조회할 수 없습니다."));
+        return memberRepository.findByEmail(email).orElseThrow(()-> new MemberNotFoundException(email+ "을 가진 유저를 조회할 수 없습니다."));
     }
 
     public ResponseLoginDto login(RequestLogin reqLogin) {

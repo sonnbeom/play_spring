@@ -1,7 +1,6 @@
 package com.example.play.jwt.dto;
 
 import com.example.play.member.entity.Member;
-import com.example.play.member.role.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,12 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CustomUserDetails implements UserDetails {
-    private final Member member;
-
-    public CustomUserDetails(Member member) {
-        this.member = member;
-    }
+public record CustomUserDetails(Member member) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
