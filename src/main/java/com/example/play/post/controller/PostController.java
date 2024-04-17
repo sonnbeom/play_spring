@@ -56,19 +56,19 @@ public class PostController {
         ResponsePostDTo postResponseDto = postService.readBySearch(page, type, keyword);
         return ResponseEntity.status(HttpStatus.OK).body(postResponseDto);
     }
-    // 게시글 작성자와 포스트 게시글의 매핑 작성자가 일치하여야 한다!
     @PatchMapping("/{postId}")
     public ResponseEntity<ResponsePostOne> update(@PathVariable("postId") Long postId,
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails,
                                                   @RequestPart(value = "updatePostDto") RequestUpdatePostDto updateDto,
                                                   @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                                   @RequestPart(value = "deleteFileList", required = false) List<Long> deleteImageList){
-        ResponsePostOne responseOne = postService.update(postId ,updateDto, files, deleteImageList);
+        ResponsePostOne responseOne = postService.update(postId ,updateDto, files, deleteImageList, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(responseOne);
     }
-    // 게시글 작성자와 포스트 게시글의 매핑 작성자가 일치하여야 한다!
     @DeleteMapping("/{postId}")
-    public ResponseEntity delete(@PathVariable("postId")Long postId){
-        int deleteSuccess = postService.delete(postId);
+    public ResponseEntity delete(@PathVariable("postId")Long postId,
+                                 @AuthenticationPrincipal CustomUserDetails userDetails){
+        int deleteSuccess = postService.delete(postId, userDetails.getUsername());
         if (deleteSuccess == 0){
             return ResponseEntity.status(HttpStatus.OK).build();
         }else {
