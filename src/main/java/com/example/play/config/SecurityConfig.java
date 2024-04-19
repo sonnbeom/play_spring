@@ -3,7 +3,7 @@ package com.example.play.config;
 import com.example.play.auth.service.CustomAuth2UserService;
 import com.example.play.jwt.filter.JwtTokenFilter;
 
-import com.example.play.jwt.util.JwtService;
+import com.example.play.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,6 +50,8 @@ public class SecurityConfig{
                         // 해당 경로로 들어오는 요청은 user 역할을 가진 사용자만 접근할 수 있음
                         .requestMatchers("/api/v1/member/join").permitAll()
                         .requestMatchers("/api/v1/member/login").permitAll()
+                        .requestMatchers("/api/v1/auth/authenticate").permitAll()
+                        .requestMatchers("/api/v1/auth/reissue").permitAll()
                         .requestMatchers("/api/v1/member/admin").hasRole("ADMIN")
                         // 위에서 정의하지 않은 요청은 인증된 사용자만 접근할 수 있음
                         .anyRequest().authenticated());

@@ -1,6 +1,6 @@
 package com.example.play.jwt.filter;
 
-import com.example.play.jwt.util.JwtService;
+import com.example.play.jwt.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

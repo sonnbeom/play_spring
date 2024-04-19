@@ -1,9 +1,9 @@
-package com.example.play.jwt.util;
+package com.example.play.jwt.service;
 
 import com.example.play.jwt.dto.CustomUserDetails;
 import com.example.play.jwt.dto.TokenDto;
 import com.example.play.jwt.exception.InvalidJwtException;
-import com.example.play.jwt.service.CustomUserDetailService;
+
 import com.example.play.member.role.Role;
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,10 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 
 import java.util.Date;
-import java.util.Optional;
 
 import static com.example.play.jwt.constant.HeaderConstant.*;
 import static com.example.play.jwt.constant.HeaderConstant.BEARER;
@@ -47,6 +45,7 @@ public class JwtService {
         return TokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .refreshTokenExpirationTime(refreshExpireTimeMs)
                 .build();
     }
     public String createAccessToken(String email, Role role){
@@ -63,18 +62,15 @@ public class JwtService {
         return authentication;
     }
 
-    // 밝급된 Token이 만료 시간이 지났는지 체크
-//    public  boolean isExpired(String token) {
-//        Date expiredDate = extractClaims(token).getExpiration();
-//        // Token의 만료 날짜가 지금보다 이전인지 check
-//        return expiredDate.before(new Date());
-//    }
     public String extractEmail(String token){
        return extractClaims(token).get("EMAIL").toString();
     }
 
     private Claims extractClaims(String token) {
         try {
+            //if (redisService.getValues(accessToken) != null // NPE 방지
+            //                    && redisService.getValues(accessToken).equals("logout")) { // 로그아웃 했을 경우
+            //                return false;
             return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         } catch (SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
