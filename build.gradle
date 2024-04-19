@@ -49,6 +49,9 @@ dependencies {
 //	minio
 	implementation 'io.minio:minio:8.3.4'
 
+	//Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+
 }
 
 tasks.named('bootBuildImage') {

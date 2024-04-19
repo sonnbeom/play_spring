@@ -15,5 +15,6 @@ import java.util.List;
 public class ResponsePostDTo<T> {
     private int currentPage;
     private int totalPages;
+    @Builder.Default
     private List<ResponsePostPageDto> postListDto = new ArrayList<>();
 }
