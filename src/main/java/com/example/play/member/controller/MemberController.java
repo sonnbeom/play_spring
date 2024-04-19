@@ -1,7 +1,7 @@
 package com.example.play.member.controller;
 
 import com.example.play.jwt.dto.CustomUserDetails;
-import com.example.play.jwt.util.JwtService;
+import com.example.play.jwt.service.JwtService;
 import com.example.play.member.dto.*;
 import com.example.play.member.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
