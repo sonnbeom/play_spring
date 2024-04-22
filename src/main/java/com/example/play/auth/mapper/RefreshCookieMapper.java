@@ -3,7 +3,7 @@ package com.example.play.auth.mapper;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
-import static com.example.play.common.constant.CookieConstants.REFRESH_TOKEN;
+import static com.example.play.global.common.constant.Bucket.CookieConstants.REFRESH_TOKEN;
 
 @Component
 public class RefreshCookieMapper {

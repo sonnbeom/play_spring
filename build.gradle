@@ -52,6 +52,9 @@ dependencies {
 	//Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
 
+	//WebSokcet
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 }
 
 tasks.named('bootBuildImage') {
