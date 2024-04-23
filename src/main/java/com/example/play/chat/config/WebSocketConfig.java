@@ -22,7 +22,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(webSocketHandler, "/ws/chat")
                 .addInterceptors(new HttpSessionHandshakeInterceptor(), new CustomHandshakeInterceptor())
-                        .setAllowedOrigins("https:/localhost/api/v1/chatting");
+                        .setAllowedOrigins("https://localhost/api/v1/chatting");
 
         // endpoint 설정 : /api/v1/chat/{postId}
         // 이를 통해서 ws://localhost:9090/ws/chat 으로 요청이 들어오면 websocket 통신을 진행한다.
