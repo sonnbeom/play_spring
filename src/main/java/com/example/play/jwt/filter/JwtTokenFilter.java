@@ -30,6 +30,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         if (!accessToken.isEmpty() && jwtService.isTokenValid(accessToken.get())){
             UsernamePasswordAuthenticationToken authentication = jwtService.validateToken(accessToken.get());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("인증 완료");
         }
         filterChain.doFilter(request, response);
     }

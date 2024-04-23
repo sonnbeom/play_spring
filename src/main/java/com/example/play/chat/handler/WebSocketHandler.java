@@ -33,7 +33,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         sessions.add(session);
         String url = session.getUri().toString();
         String roomNumber = url.split("/chat/")[1];
-        session.getAttributes().put("chatRoomId", roomNumber);
+        Long chatRoomId = Long.parseLong(roomNumber);
+        session.getAttributes().put("chatRoomId", chatRoomId);
+        log.info("세션에 roomNumber: {}", chatRoomId);
         log.info("소켓 연결 확인 {}", session.getId());
     }
     @Override
@@ -54,6 +56,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         log.info("session: {}", chatMessageDto.toString());
         // 종업원이 자리를 안내해줘야 하는 상황 -> 자리가 없다면 map에 넣음으로써 자리를 마련해준다.
         Long chatRoomId = chatMessageDto.getChatRoomId();
+        log.info("chatRoomId in handle{}", chatRoomId);
         //채팅방에 대한 세션이 map에 존재하지 않으면 만들어줌
         if (!chatRoomSessionMap.containsKey(chatRoomId)){
             chatRoomSessionMap.put(chatRoomId, new HashSet<>());
@@ -72,6 +75,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private <T> void sendMessage(WebSocketSession session, T message){
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+            log.info("send Message {}", message.toString());
         } catch (IOException e){
             log.info(e.getMessage(), e);
         }
@@ -81,7 +85,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         if (chatRoomId == null){
             log.info("소켓 연결 종료 중 세션 내 chatRoomId가 존재하지 안습니다.");
-            throw new ChatRoomException("소켓 연결 종료 중 세션 내 chatRoomId가 존재하지 안습니다.");
+            throw new ChatRoomException("소켓 연결 종료 중 세션 내 chatRoomId가 존재하지 않습니다.");
         }
 
         if (!chatRoomSessionMap.containsKey(chatRoomId)){
