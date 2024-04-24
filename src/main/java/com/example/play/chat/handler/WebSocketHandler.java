@@ -2,6 +2,7 @@ package com.example.play.chat.handler;
 
 import com.example.play.chat.dto.ChatMessageDto;
 import com.example.play.chat.exception.ChatRoomException;
+import com.example.play.chat.service.ChatMessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.gson.JsonObject;
@@ -25,6 +26,7 @@ import java.util.Set;
 public class WebSocketHandler extends TextWebSocketHandler {
     private final Map<Long, Set<WebSocketSession>> chatRoomSessionMap = new HashMap<>();
     private final ObjectMapper objectMapper;
+    private final ChatMessageService chatMessageService;
     private final Set<WebSocketSession> sessions = new HashSet<>();
     // 소켓 연결
     @Override
@@ -53,6 +55,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         log.info("payload: {}",payload);
 
         ChatMessageDto chatMessageDto = objectMapper.readValue(payload, ChatMessageDto.class);
+        chatMessageService.save(chatMessageDto);
+
         log.info("session: {}", chatMessageDto.toString());
         // 종업원이 자리를 안내해줘야 하는 상황 -> 자리가 없다면 map에 넣음으로써 자리를 마련해준다.
         Long chatRoomId = chatMessageDto.getChatRoomId();

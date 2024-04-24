@@ -1,6 +1,7 @@
 package com.example.play.chat.service;
 
 import com.example.play.chat.domain.ChatMessage;
+import com.example.play.chat.dto.ChatMessageDto;
 import com.example.play.chat.dto.ChatMessageResponseDto;
 import com.example.play.chat.repository.ChatMessageRepository;
 import com.example.play.member.service.MemberService;
@@ -26,5 +27,10 @@ public class ChatMessageService {
             dtoList.add(responseDto);
         }
         return dtoList;
+    }
+
+    public void save(ChatMessageDto chatMessageDto) {
+        ChatMessage chatMessage = new ChatMessage(chatMessageDto);
+        chatMessageRepository.save(chatMessage);
     }
 }
