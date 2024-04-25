@@ -37,7 +37,7 @@ public class ChatRoomService {
 
         if (optionalChatRoom.isPresent()){
             ChatRoom chatRoom = optionalChatRoom.get();
-            List<ChatMessageResponseDto> chatMessage =  chatMessageService.findByRoom(chatRoom.getId());
+            List<ChatMessageResponseDto> chatMessage =  chatMessageService.findByRoom(chatRoom);
 
             ChatRoomDto roomDto = chatRoom.toDto();
 
