@@ -16,10 +16,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
 public class ChatMessageResponseDto {
     private Long id;
     private String msg;
-    @Getter
     private Long chatRoomId;
     private LocalDateTime dateTime;
 }
