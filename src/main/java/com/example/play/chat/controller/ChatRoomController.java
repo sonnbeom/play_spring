@@ -8,21 +8,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/chatRoom")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
-    @PostMapping("/room")
+    @PostMapping()
     public ResponseEntity<?> createRoom(@RequestBody RequestChatRoomDto chatRoomDto,
                                         @AuthenticationPrincipal CustomUserDetails userDetails){
         ChatRoomWithMessageDto chatRoomWithMessageDto = chatRoomService.makeRoom(chatRoomDto, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(chatRoomWithMessageDto);
+    }
+    @GetMapping()
+    public ResponseEntity<?> getChatRooms(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                      @RequestParam(value = "page", defaultValue = "0") int page){
+        chatRoomService.getChatRooms(page, userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

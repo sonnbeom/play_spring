@@ -55,11 +55,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
         log.info("payload: {}",payload);
 
         ChatMessageDto chatMessageDto = objectMapper.readValue(payload, ChatMessageDto.class);
-        chatMessageService.save(chatMessageDto);
+        Long chatRoomId = (Long) session.getAttributes().get("chatRoomId");
+        chatMessageService.save(chatMessageDto, chatRoomId);
 
         log.info("session: {}", chatMessageDto.toString());
         // 종업원이 자리를 안내해줘야 하는 상황 -> 자리가 없다면 map에 넣음으로써 자리를 마련해준다.
-        Long chatRoomId = chatMessageDto.getChatRoomId();
         log.info("chatRoomId in handle{}", chatRoomId);
         //채팅방에 대한 세션이 map에 존재하지 않으면 만들어줌
         if (!chatRoomSessionMap.containsKey(chatRoomId)){

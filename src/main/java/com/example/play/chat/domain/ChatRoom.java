@@ -1,5 +1,7 @@
 package com.example.play.chat.domain;
 
+import com.example.play.chat.dto.ChatRoomDto;
+import com.example.play.chat.dto.ChatRoomWithMessageDto;
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.member.entity.Member;
 import jakarta.persistence.*;
@@ -10,10 +12,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-@Getter
 public class ChatRoom extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
     private Long id;
     @ManyToOne
     @JoinColumn(name = "my_id")
@@ -26,5 +28,13 @@ public class ChatRoom extends BaseEntity {
     public ChatRoom(Member fromMember, Member toMember) {
         this.member = fromMember;
         this.other = toMember;
+    }
+
+    public ChatRoomDto toDto() {
+        return ChatRoomDto.builder()
+                .chatRoomId(id)
+                .nickName(member.getNickname())
+                .otherNickname(other.getNickname())
+                .build();
     }
 }

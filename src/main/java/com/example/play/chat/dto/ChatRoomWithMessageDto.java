@@ -3,29 +3,27 @@ package com.example.play.chat.dto;
 import com.example.play.chat.domain.ChatRoom;
 import com.example.play.member.entity.Member;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+// 채팅방 하나에 채팅 여러개
 @Getter
 public class ChatRoomWithMessageDto {
 
-    private Long chatRoomId;
-
-    private String fromEmail;
-    private String toEmail;
+    private ChatRoomDto chatRoomDto;
     private List<ChatMessageResponseDto> chatMessage;
-    public ChatRoomWithMessageDto(ChatRoom chatRoom, List<ChatMessageResponseDto> chatMessage) {
-        this.chatRoomId = chatRoom.getId();
-        this.fromEmail = chatRoom.getMember().getEmail();
-        this.toEmail = chatRoom.getOther().getEmail();
+    @Builder
+    public ChatRoomWithMessageDto(ChatRoomDto chatRoomDto, List<ChatMessageResponseDto> chatMessage) {
+        this.chatRoomDto = chatRoomDto;
+        this.chatMessage = chatMessage;
     }
 
-    public ChatRoomWithMessageDto(ChatRoom chatRoom) {
-        this.chatRoomId = chatRoom.getId();
-        this.fromEmail = chatRoom.getMember().getEmail();
-        this.toEmail = chatRoom.getOther().getEmail();
+    public ChatRoomWithMessageDto(ChatRoomDto chatRoomDto) {
+        this.chatRoomDto = chatRoomDto;
         this.chatMessage = new ArrayList<>();
     }
 }
