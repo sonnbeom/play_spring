@@ -1,6 +1,7 @@
 package com.example.play.chat.repository;
 
 import com.example.play.chat.domain.ChatMessage;
+import com.example.play.chat.domain.ChatRoom;
 import com.example.play.chat.domain.QChatMessage;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -26,10 +27,7 @@ public class CustomChatMessageRepositoryImpl implements CustomChatMessageReposit
     }
 
 
-    @Override
-    public List<ChatMessage> findChatMessagesByChatRoom(Long chatRoomId) {
-        return null;
-    }
+
 
     @Override
     public Page<ChatMessage> getChats(Pageable pageable, Long chatRoomId) {
@@ -63,6 +61,16 @@ public class CustomChatMessageRepositoryImpl implements CustomChatMessageReposit
                 ))
                 .fetch();
         return chatMessages;
+    }
+
+    @Override
+    public List<ChatMessage> findByRoomNumber(ChatRoom chatRoom) {
+        return jpaQueryFactory
+                .selectFrom(chatMessage)
+                .where(chatMessage.chatRoom.eq(chatRoom))
+                .orderBy(chatMessage.createdAt.desc())
+                .limit(30)
+                .fetch();
     }
 
 }

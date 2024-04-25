@@ -11,12 +11,14 @@ import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 import static com.example.play.chat.domain.QChatMessage.chatMessage;
 import static com.example.play.chat.domain.QChatRoom.chatRoom;
 
+@Repository
 public class CustomChatRoomRepositoryImpl implements CustomChatRoomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
