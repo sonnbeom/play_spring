@@ -2,9 +2,11 @@ package com.example.play.chat.dto;
 
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@Getter
 public class ChatRoomsWithChatsDto {
     private ChatRoomDto chatRoomDto;
     private ChatMessageResponseDto chatMessage;
