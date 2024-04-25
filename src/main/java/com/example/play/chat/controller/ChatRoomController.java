@@ -1,6 +1,7 @@
 package com.example.play.chat.controller;
 
 import com.example.play.chat.dto.ChatRoomWithMessageDto;
+import com.example.play.chat.dto.ChatRoomsWithChatsDto;
 import com.example.play.chat.dto.RequestChatRoomDto;
 import com.example.play.chat.service.ChatRoomService;
 import com.example.play.jwt.dto.CustomUserDetails;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,8 +28,8 @@ public class ChatRoomController {
     @GetMapping()
     public ResponseEntity<?> getChatRooms(@AuthenticationPrincipal CustomUserDetails userDetails,
                                       @RequestParam(value = "page", defaultValue = "0") int page){
-        chatRoomService.getChatRooms(page, userDetails.getUsername());
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        List<ChatRoomsWithChatsDto> chatRooms = chatRoomService.getChatRooms(page, userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body(chatRooms);
     }
 
 }
