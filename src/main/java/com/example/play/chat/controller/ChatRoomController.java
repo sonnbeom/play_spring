@@ -28,4 +28,5 @@ public class ChatRoomController {
         chatRoomService.getChatRooms(page, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
+
 }

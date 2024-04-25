@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 public class ChatRoom extends BaseEntity {
@@ -23,6 +25,9 @@ public class ChatRoom extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "other_id")
     private Member other;
+    @OneToMany(mappedBy = "chatRoom",cascade = CascadeType.REMOVE)
+    private List<ChatMessage> chatMessages;
+
 
     @Builder
     public ChatRoom(Member fromMember, Member toMember) {

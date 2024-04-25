@@ -1,5 +1,6 @@
 package com.example.play.chat.domain;
 
+import com.example.play.chat.dto.ChatDtoUpdate;
 import com.example.play.chat.dto.ChatMessageDto;
 import com.example.play.chat.dto.ChatMessageResponseDto;
 import com.example.play.global.common.entity.BaseEntity;
@@ -34,4 +35,8 @@ public class ChatMessage extends BaseEntity {
                 .build();
     }
 
+    public Long updateMsg(ChatDtoUpdate chatDto) {
+        this.msg = chatDto.getMsg();
+        return this.id;
+    }
 }
