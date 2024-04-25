@@ -14,10 +14,13 @@ import com.example.play.member.entity.Member;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +46,9 @@ public class MemberImgService {
     }
 
     public MemberImage saveMemberImg(Member member, MultipartFile profile) {
+
         ImageDto imageDto = minioServiceProvider.uploadImage(Bucket.MEMBER, profile);
+
         if (imageDto.getStatus().equals(ImageDto.Status.UPLOADED)){
             MemberImage memberImage = MemberImage.builder()
                     .isActive(1)
@@ -52,7 +57,7 @@ public class MemberImgService {
                     .build();
             return memberImgRepository.save(memberImage);
         }else {
-            throw new MinioUploadException("멤버 이미지 업로드에 실패하였습니다");
+            throw new MinioUploadException("멤버 이미지 업로드에 실패하였습니다", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -70,7 +75,7 @@ public class MemberImgService {
     * */
     public ResponseMemberImg updateStatus(MultipartFile profile, Long deleteFileId, Member updateMember) {
         // 2, 4
-        if (profile != null && !profile.isEmpty()){
+        if (!ObjectUtils.isEmpty(profile)){
             MemberImage memberImage = saveMemberImg(updateMember, profile);
             return memberImgMapper.entityToDto(memberImage);
         }
@@ -95,7 +100,7 @@ public class MemberImgService {
             memberImage.changeStatus();
             return memberImage.getIsActive();
         }else {
-            throw new MemberImgException("삭제하려는 멤버의 프로필이 1개 이상입니다.");
+            throw new MemberImgException("삭제하려는 멤버의 프로필이 1개 이상입니다.", HttpStatus.BAD_REQUEST);
         }
     }
 
