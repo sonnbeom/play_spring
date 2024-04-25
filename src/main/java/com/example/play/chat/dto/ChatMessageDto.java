@@ -16,9 +16,7 @@ public class ChatMessageDto {
     }
     private MessageType messageType;
     private Long chatRoomId;
-    private Long sessionId; // 채팅을 보낸 사람
     private String message;
     private String nickname;
-
 }
 

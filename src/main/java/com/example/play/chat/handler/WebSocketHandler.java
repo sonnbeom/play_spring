@@ -56,9 +56,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         ChatMessageDto chatMessageDto = objectMapper.readValue(payload, ChatMessageDto.class);
         Long chatRoomId = (Long) session.getAttributes().get("chatRoomId");
-        chatMessageService.save(chatMessageDto, chatRoomId);
 
-        log.info("session: {}", chatMessageDto.toString());
         // 종업원이 자리를 안내해줘야 하는 상황 -> 자리가 없다면 map에 넣음으로써 자리를 마련해준다.
         log.info("chatRoomId in handle{}", chatRoomId);
         //채팅방에 대한 세션이 map에 존재하지 않으면 만들어줌
@@ -68,8 +66,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
         Set<WebSocketSession> chatSession = chatRoomSessionMap.get(chatRoomId);
         // message 타입이 ENTER와 동일하다면 키오스크에 테이블 좌석에 손님의 정보를 입력한다.
         if (chatMessageDto.getMessageType().equals(ChatMessageDto.MessageType.ENTER)){
+            log.info("채팅방 ID:"+chatRoomId+ chatMessageDto.getNickname()+"님이 입장하셨습니다.");
             chatSession.add(session);
         }
+        chatMessageService.save(chatMessageDto, chatRoomId);
         sendMessageToChatRoom(chatMessageDto, chatSession);
     }
     private void sendMessageToChatRoom(ChatMessageDto chatMessageDto, Set<WebSocketSession> chatSession){
@@ -79,7 +79,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private <T> void sendMessage(WebSocketSession session, T message){
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
-            log.info("send Message {}", message.toString());
+            log.info("메시지: {}", message.toString());
         } catch (IOException e){
             log.info(e.getMessage(), e);
         }
