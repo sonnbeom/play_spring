@@ -1,15 +1,16 @@
 package com.example.play.image.exception;
 
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-@NoArgsConstructor
-@Slf4j
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+
+
 public class MemberImgException extends RuntimeException{
-
-    public MemberImgException(String message) {
+    @Getter
+    private final HttpStatus status;
+    public MemberImgException(String message, HttpStatus status) {
         super(message);
-        log.info("member img upload error: {}" , message);
+        this.status = status;
     }
 }

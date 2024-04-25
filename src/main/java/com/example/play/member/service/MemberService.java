@@ -8,6 +8,8 @@ import com.example.play.jwt.exception.InvalidLoginException;
 import com.example.play.jwt.service.JwtService;
 import com.example.play.member.dto.*;
 import com.example.play.member.entity.Member;
+import com.example.play.member.exception.DuplicateMemberEmailException;
+import com.example.play.member.exception.DuplicateMemberNicknameException;
 import com.example.play.member.exception.MemberNotFoundException;
 import com.example.play.member.memberMapper.MemberMapper;
 import com.example.play.member.repository.MemberCustomRepository;
@@ -16,8 +18,10 @@ import com.example.play.redis.service.RedisService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -35,26 +39,22 @@ public class MemberService {
     private final RedisService redisService;
 
     public Long createMember(RequestMemberDto memberDto, MultipartFile profile) {
-        if (duplicateCheck(memberDto)) {
-            Member member = memberMapper.dtoToMember(memberDto);
-            Member saved = memberRepository.save(member);
-            if (profile != null && !profile.isEmpty()) {
-                memberImgService.saveMemberImg(saved, profile);
-            }
-            return saved.getId();
-        } else {
-            return 0L;
+        duplicateCheck(memberDto);
+        Member member = memberMapper.dtoToMember(memberDto);
+        Member saved = memberRepository.save(member);
+        if (!ObjectUtils.isEmpty(profile)){
+            memberImgService.saveMemberImg(saved, profile);
         }
+        return saved.getId();
     }
 
-    private boolean duplicateCheck(RequestMemberDto memberDto) {
+    private void duplicateCheck(RequestMemberDto memberDto) {
         if (memberRepository.existsByEmail(memberDto.getEmail())) {
-            return false;
+            throw new DuplicateMemberEmailException("해당 이메일을 가진 유저가 존재합니다. 이메일:"+ memberDto.getEmail() ,HttpStatus.BAD_REQUEST);
         }
         if (memberRepository.existsByNickname(memberDto.getNickname())) {
-            return false;
+            throw new DuplicateMemberNicknameException("해당 이메일을 가진 유저가 존재합니다. 닉네임:"+ memberDto.getEmail() ,HttpStatus.BAD_REQUEST);
         }
-        return true;
     }
 
     public ResponseMemberDto readMember(String email) {
@@ -65,16 +65,13 @@ public class MemberService {
 
     public ResponseMemberDto updateMember(String email, RequestMemberUpdateDto updateDto, MultipartFile profile, Long deleteFile) {
         Member updateMember = findByEmail(email);
-        if (updateDto.getNickname() != null && !updateDto.getNickname().isEmpty()) {
+        if (!ObjectUtils.isEmpty(updateDto.getNickname())) {
             updateMember.changeNickname(updateMember.getNickname());
         }
-        if (updateDto.getPassword() != null && !updateDto.getPassword().isEmpty()) {
+        if (!ObjectUtils.isEmpty(updateDto.getPassword())) {
             updateMember.changePassword(passwordEncoder.encode(updateMember.getPassword()));
         }
-        if (updateDto.getPicture() != null && !updateDto.getPicture().isEmpty()) {
-            updateMember.changePicture(updateDto.getPicture());
-        }
-        if (updateDto.getEmail() != null && !updateDto.getEmail().isEmpty()) {
+        if (!ObjectUtils.isEmpty(updateDto.getEmail())) {
             updateMember.changeEmail(updateDto.getEmail());
         }
         ResponseMemberImg img = memberImgService.updateStatus(profile, deleteFile, updateMember);
@@ -90,11 +87,11 @@ public class MemberService {
     }
 
     public Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId + "로 ID를 가진 유저를 조회할 수 없습니다."));
+        return memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId + "로 ID를 가진 유저를 조회할 수 없습니다.", HttpStatus.NOT_FOUND));
     }
 
     public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email + "을 가진 유저를 조회할 수 없습니다."));
+        return memberRepository.findByEmail(email).orElseThrow(() -> new MemberNotFoundException(email + "을 가진 유저를 조회할 수 없습니다.", HttpStatus.NOT_FOUND));
     }
 
     public ResponseLoginDto login(RequestLogin reqLogin) {

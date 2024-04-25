@@ -13,6 +13,7 @@ import com.example.play.post.entity.Post;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,7 +43,7 @@ public class PostImgService {
                             .build();
                 postImages.add(postImage);
             }else {
-                throw new MinioUploadException("게시물 이미지 업로드에 실패하였습니다");
+                throw new MinioUploadException("게시물 이미지 업로드에 실패하였습니다", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
 
@@ -77,7 +78,7 @@ public class PostImgService {
                         .build();
                 postImages.add(postImage);
             }else {
-                throw new MinioUploadException("이미지가 업로드에 실패하였습니다");
+                throw new MinioUploadException("이미지가 업로드에 실패하였습니다", HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         postImgRepository.saveAll(postImages);
