@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class PostExceptionHandler {
     @ExceptionHandler(PostNotFoundException.class)
     public ResponseEntity<String> postNotFoundException(PostNotFoundException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
     }
+
 }

@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,7 +60,7 @@ public class PostService {
     }
     public Post findById(Long postId){
         Optional<Post> optional = postRepository.findById(postId);
-        return optional.orElseThrow(() -> new PostNotFoundException(postId+"로 ID를 가진 게시글을 조회할 수 없습니다."));
+        return optional.orElseThrow(() -> new PostNotFoundException("ID와 일치하는 게시글을 조회할 수 없습니다. postId: "+postId, HttpStatus.NOT_FOUND));
     }
 
     public ResponsePostDTo readBySort(int page, String sortType) {
