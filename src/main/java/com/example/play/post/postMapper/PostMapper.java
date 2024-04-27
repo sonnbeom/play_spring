@@ -28,35 +28,12 @@ public class PostMapper {
                 .member(member)
                 .build();
     }
-
-    public ResponsePostOne entityToDtoWithImage(Post saved, List<ResponseImg> responseImgs) {
-        return ResponsePostOne.builder()
-                .id(saved.getId())
-                .content(saved.getContent())
-                .title(saved.getTitle())
-                .hit(saved.getHit()+1)
-                .responseImgs(responseImgs)
-                .like(saved.getLikeCount())
-                .createdAt(saved.getCreatedAt())
-                .build();
-    }
-    public ResponsePostOne entityToDto(Post saved) {
-        return ResponsePostOne.builder()
-                .id(saved.getId())
-                .content(saved.getContent())
-                .title(saved.getTitle())
-                .hit(saved.getHit())
-                .like(saved.getLikeCount())
-                .createdAt(saved.getCreatedAt())
-                .build();
-    }
-
     public ResponsePostDTo pageEntityToDto(Page<Post> postPage) {
         int totalPages = postPage.getTotalPages();
         int currentPage = postPage.getNumber();
         List<ResponsePostPageDto> dtoList = postPage.getContent()
                 .stream()
-                .map(post -> new ResponsePostPageDto(post))
+                .map(post -> post.toDtoForPage())
                 .collect(Collectors.toList());
         return ResponsePostDTo.builder()
                 .postListDto(dtoList)

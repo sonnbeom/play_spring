@@ -15,7 +15,7 @@ public record CustomUserDetails(Member member) implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<String> roles = new ArrayList<>();
-        roles.add(member.getRole().toString());
+        roles.add(member.getRoleForToken().toString());
         return roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
@@ -28,7 +28,7 @@ public record CustomUserDetails(Member member) implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.member.getEmail();
+        return this.member.getEmailForUSerDetail();
     }
 
     @Override

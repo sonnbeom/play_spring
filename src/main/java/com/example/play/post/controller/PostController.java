@@ -26,13 +26,9 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid @RequestPart("postDto") RequestPostDto postDto,
-                                    BindingResult bindingResult,
+    public ResponseEntity<ResponsePostOne> create(@Valid @RequestPart("postDto") RequestPostDto postDto,
                                     @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                     @AuthenticationPrincipal CustomUserDetails customUser){
-        if (bindingResult.hasErrors()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(postDto);
-        }
         ResponsePostOne response = postService.create(postDto ,files, customUser.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -72,13 +68,9 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(responseOne);
     }
     @DeleteMapping("/{postId}")
-    public ResponseEntity delete(@PathVariable("postId")Long postId,
-                                 @AuthenticationPrincipal CustomUserDetails userDetails){
+    public ResponseEntity<Integer> delete(@PathVariable("postId")Long postId,
+                                          @AuthenticationPrincipal CustomUserDetails userDetails){
         int deleteSuccess = postService.delete(postId, userDetails.getUsername());
-        if (deleteSuccess == 0){
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(deleteSuccess);
     }
 }

@@ -31,12 +31,12 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<Long> createMember(@Valid @RequestPart("memberDto") RequestMemberDto memberDto,
+    public ResponseEntity createMember(@Valid @RequestPart("memberDto") RequestMemberDto memberDto,
                                                          BindingResult bindingResult,
                                                          @RequestPart(value = "profile", required = false) MultipartFile profile){
 
-        Long savedId = memberService.createMember(memberDto, profile);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedId);
+        memberService.createMember(memberDto, profile);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{memberId}")

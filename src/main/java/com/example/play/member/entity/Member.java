@@ -1,8 +1,11 @@
 package com.example.play.member.entity;
 
+import com.example.play.auth.dto.SessionMember;
 import com.example.play.friendship.entity.Friendship;
+import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.entity.MemberImage;
 import com.example.play.like.post.entity.PostLike;
+import com.example.play.member.dto.ResponseMemberDto;
 import com.example.play.member.role.Role;
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.post.entity.Post;
@@ -10,6 +13,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +21,6 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
-@Getter
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,7 +76,36 @@ public class Member extends BaseEntity {
     public void changeEmail(String email) {
         this.email = email;
     }
-    public void changeStatus(){
+    public int changeStatus(){
         this.isActive = 0;
+        return isActive;
     }
+    public String getNicknameForChatRoomDto(){
+        return nickname;
+    }
+    public boolean isPassWordMatch(String password, PasswordEncoder passwordEncoder){
+        return passwordEncoder.matches(password, this.password);
+    }
+    public ResponseMemberDto entityToDto(ResponseMemberImg img){
+        return ResponseMemberDto.builder()
+                .id(id)
+                .email(email)
+                .nickname(nickname)
+                .name(name)
+                .img(img)
+                .build();
+    }
+    public Role getRoleForToken(){
+        return role;
+    }
+    public String getEmailForUSerDetail(){
+        return email;
+    }
+    public SessionMember memberToSessionMember(){
+        return SessionMember.builder()
+                .name(name)
+                .email(email)
+                .build();
+    }
+
 }

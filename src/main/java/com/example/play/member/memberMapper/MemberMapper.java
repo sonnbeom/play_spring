@@ -32,15 +32,6 @@ public class MemberMapper {
                 .build();
     }
 
-    public ResponseMemberDto entityToDto(Member member, ResponseMemberImg img) {
-        return ResponseMemberDto.builder()
-                .id(member.getId())
-                .email(member.getEmail())
-                .nickname(member.getNickname())
-                .name(member.getName())
-                .img(img)
-                .build();
-    }
     public ResponseDeleteMemberDto deleteResponse(int memberStatus, int imgStatus){
         return new ResponseDeleteMemberDto(memberStatus, imgStatus);
     }

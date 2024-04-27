@@ -38,9 +38,9 @@ public class AuthService {
         Member member = memberService.findByEmail(loginDto.getEmail());
         memberService.checkPassword(loginDto.getPassword(), member);
 
-        TokenDto tokenDto = jwtService.provideToken(member.getEmail(), member.getRole());
+        TokenDto tokenDto = jwtService.provideToken(loginDto.getEmail(), member.getRoleForToken());
 
-        saveRefreshToken(member, tokenDto);
+        saveRefreshToken(loginDto.getEmail(), tokenDto);
 
         return tokenDto;
     }
@@ -55,22 +55,22 @@ public class AuthService {
         String email = jwtService.extractEmail(refreshToken);
         Member member = memberService.findByEmail(email);
 
-        String refreshToken_redis = redisService.getValues(member.getEmail());
+        String refreshToken_redis = redisService.getValues(email);
 
         if (!refreshToken_redis.equals(refreshToken)){
-            throw new RefreshTokenReissueException("Refresh token doesn't match", HttpStatus.BAD_REQUEST);
+            throw new RefreshTokenReissueException("Redis에 있는 refreshToken과 클라이언트가 요구하는 refreshToken이 매칭되지 않습니다. ", HttpStatus.BAD_REQUEST);
         }
 
-        redisService.deleteValues(member.getEmail());
+        redisService.deleteValues(email);
 
-        tokenDto = jwtService.provideToken(member.getEmail(), member.getRole());
-        saveRefreshToken(member, tokenDto);
+        tokenDto = jwtService.provideToken(email, member.getRoleForToken());
+        saveRefreshToken(email, tokenDto);
 
         return tokenDto == null? Optional.empty() : Optional.of(tokenDto);
     }
-    private void saveRefreshToken(Member member, TokenDto tokenDto){
+    private void saveRefreshToken(String email, TokenDto tokenDto){
         redisService.setValuesWithTimeOut(
-                member.getEmail(),
+                email,
                 tokenDto.getRefreshToken(),
                 tokenDto.getRefreshTokenExpirationTime());
     }

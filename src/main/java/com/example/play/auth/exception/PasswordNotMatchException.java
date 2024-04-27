@@ -1,14 +1,13 @@
 package com.example.play.auth.exception;
 
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
 public class PasswordNotMatchException extends RuntimeException{
-    public PasswordNotMatchException() {
-    }
-
-    public PasswordNotMatchException(String message) {
+    @Getter
+    private final HttpStatus status;
+    public PasswordNotMatchException(String message, HttpStatus status) {
         super(message);
-    }
-
-    public PasswordNotMatchException(String message, String inputPassword, String password) {
-        super();
+        this.status = status;
     }
 }

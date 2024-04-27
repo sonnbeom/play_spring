@@ -1,7 +1,14 @@
 package com.example.play.post.exception;
 
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
 public class PostDeleteException extends RuntimeException{
-    public PostDeleteException(String message) {
+    @Getter
+    private final HttpStatus status;
+
+    public PostDeleteException(String message, HttpStatus status) {
         super(message);
+        this.status = status;
     }
 }
