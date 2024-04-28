@@ -86,6 +86,13 @@ public class Member extends BaseEntity {
     public boolean isPassWordMatch(String password, PasswordEncoder passwordEncoder){
         return passwordEncoder.matches(password, this.password);
     }
+    public ResponseMemberDto entityToDtoWithoutImg(){
+        return ResponseMemberDto.builder()
+                .id(id)
+                .nickname(nickname)
+                .name(name)
+                .build();
+    }
     public ResponseMemberDto entityToDto(ResponseMemberImg img){
         return ResponseMemberDto.builder()
                 .id(id)

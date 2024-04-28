@@ -27,8 +27,8 @@ public class FriendshipController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseFriendship);
     }
     @GetMapping("/received")
-    public ResponseEntity<List<ResponseFriendListDto>> getWaitingFriendship(@AuthenticationPrincipal CustomUserDetails userDetails){
-        List<ResponseFriendListDto> result = friendshipService.getWaitingFriendList(userDetails.getUsername());
+    public ResponseEntity<List<ResponseFriendshipWithImg>> getWaitingFriendship(@AuthenticationPrincipal CustomUserDetails userDetails){
+        List<ResponseFriendshipWithImg> result = friendshipService.getWaitingFriendList(userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
     
@@ -39,8 +39,8 @@ public class FriendshipController {
     }
     
     @GetMapping("/friendList")
-    public ResponseEntity<List<ResponseFriendListDto>> readFriendList(@AuthenticationPrincipal CustomUserDetails userDetails){
-        List<ResponseFriendListDto> friendList = friendshipService.findFriendList(userDetails.getUsername());
+    public ResponseEntity<List<ResponseFriendshipWithImg>> readFriendList(@AuthenticationPrincipal CustomUserDetails userDetails){
+        List<ResponseFriendshipWithImg> friendList = friendshipService.findFriendList(userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(friendList);
     }
     // 친구 요청 삭제

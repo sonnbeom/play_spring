@@ -18,41 +18,7 @@ import static com.example.play.friendship.constant.FriendshipStatus.*;
 @Slf4j
 public class FriendshipMapper {
 
-    public Friendship fromDtoToEntity(Member fromMember, Member toMember) {
 
-        return Friendship.builder()
-                .isFrom(true)
-                .member(fromMember)
-                .friendNickname(toMember.getNickname())
-                .memberEmail(fromMember.getEmail())
-                .friendEmail(toMember.getEmail())
-                .status(WAITING)
-                .build();
-    }
-
-    public Friendship toDtoToEntity(Member fromMember, Member toMember) {
-        return Friendship.builder()
-                .isFrom(false)
-                .member(toMember)
-                .friendNickname(fromMember.getNickname())
-                .memberEmail(toMember.getEmail())
-                .friendEmail(fromMember.getEmail())
-                .status(WAITING)
-                .build();
-    }
-
-
-    public ResponseFriendshipDto entityToDto(Friendship friendshipFrom) {
-        return ResponseFriendshipDto.builder()
-                .isFrom(friendshipFrom.isFrom())
-                .friendEmail(friendshipFrom.getFriendEmail())
-                .counterpartId(friendshipFrom.getCounterpartId())
-                .memberEmail(friendshipFrom.getMemberEmail())
-                .status(friendshipFrom.getStatus())
-                .friendshipId(friendshipFrom.getId())
-                .friendNickname(friendshipFrom.getFriendNickname())
-                .build();
-    }
 
 
     public ResponseFriendListDto EntityToDtoWithImg(Friendship friendship, String url) {
@@ -80,4 +46,23 @@ public class FriendshipMapper {
                         .status(friendship.getStatus())
                         .build();
     }
+
+    public Friendship dtoToEntityBySend(Member sender, Member receiver) {
+        return Friendship.builder()
+                .isReceived(false)
+                .sender(sender)
+                .receiver(receiver)
+                .status(WAITING)
+                .build();
+    }
+
+    public Friendship dtoToEntityByReceived(Member sender, Member receiver) {
+        return Friendship.builder()
+                .isReceived(true)
+                .sender(sender)
+                .receiver(receiver)
+                .status(WAITING)
+                .build();
+    }
+
 }

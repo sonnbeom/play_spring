@@ -104,7 +104,7 @@ public class MemberImgService {
         }
     }
 
-    public List<MemberImage> findImgListByIdList(List<Long> toMemberIdList) {
-        return memberImgCustomRepository.findImgsByIdList(toMemberIdList);
+    public List<MemberImage> findImgListByIdList(List<Member> memberList) {
+        return memberImgCustomRepository.findImgsByMemberList(memberList);
     }
 }
