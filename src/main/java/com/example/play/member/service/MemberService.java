@@ -3,9 +3,6 @@ package com.example.play.member.service;
 import com.example.play.auth.exception.PasswordNotMatchException;
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.service.MemberImgService;
-import com.example.play.jwt.dto.TokenDto;
-import com.example.play.jwt.exception.InvalidLoginException;
-import com.example.play.jwt.service.JwtService;
 import com.example.play.member.dto.*;
 import com.example.play.member.entity.Member;
 import com.example.play.member.exception.DuplicateMemberEmailException;
@@ -14,7 +11,6 @@ import com.example.play.member.exception.MemberNotFoundException;
 import com.example.play.member.memberMapper.MemberMapper;
 import com.example.play.member.repository.MemberCustomRepository;
 import com.example.play.member.repository.MemberRepository;
-import com.example.play.redis.service.RedisService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +32,7 @@ public class MemberService {
     private final MemberImgService memberImgService;
     private final MemberCustomRepository memberCustomRepository;
 
-    public void createMember(RequestMemberDto memberDto, MultipartFile profile) {
+    public void createMember(RequestCreateMemberDto memberDto, MultipartFile profile) {
         duplicateCheck(memberDto);
         Member member = memberMapper.dtoToMember(memberDto);
         Member saved = memberRepository.save(member);
@@ -45,7 +41,7 @@ public class MemberService {
         }
     }
 
-    private void duplicateCheck(RequestMemberDto memberDto) {
+    private void duplicateCheck(RequestCreateMemberDto memberDto) {
         if (memberRepository.existsByEmail(memberDto.getEmail())) {
             throw new DuplicateMemberEmailException("해당 이메일을 가진 유저가 존재합니다. 이메일:"+ memberDto.getEmail() ,HttpStatus.BAD_REQUEST);
         }
@@ -60,7 +56,7 @@ public class MemberService {
         return member.entityToDto(img);
     }
 
-    public ResponseMemberDto updateMember(String email, RequestMemberUpdateDto updateDto, MultipartFile profile, Long deleteFile) {
+    public ResponseMemberDto updateMember(String email, RequestUpdateMemberDto updateDto, MultipartFile profile, Long deleteFile) {
         Member member = findByEmail(email);
         if (!ObjectUtils.isEmpty(updateDto.getNickname())) {
             member.changeNickname(updateDto.getNickname());
@@ -77,7 +73,7 @@ public class MemberService {
 
     public ResponseDeleteMemberDto deleteMember(String email) {
         Member member = findByEmail(email);
-        int imgStatus = memberImgService.changeStatusByMember(member);
+        int imgStatus = memberImgService.delete(member);
         int statusResult = member.changeStatus();
         return memberMapper.deleteResponse(statusResult, imgStatus);
     }

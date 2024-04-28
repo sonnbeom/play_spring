@@ -1,15 +1,11 @@
 package com.example.play.member.memberMapper;
 
 
-import com.example.play.image.dto.ResponseMemberImg;
-import com.example.play.member.dto.RequestMemberDto;
-import com.example.play.member.dto.ResponseMemberDto;
+import com.example.play.member.dto.RequestCreateMemberDto;
 import com.example.play.member.dto.ResponseDeleteMemberDto;
 import com.example.play.member.entity.Member;
-import com.example.play.member.role.Role;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +17,7 @@ import static com.example.play.member.role.Role.*;
 public class MemberMapper {
 
     private final PasswordEncoder passwordEncoder;
-    public Member dtoToMember(RequestMemberDto memberDto){
+    public Member dtoToMember(RequestCreateMemberDto memberDto){
         return Member.builder()
                 .name(memberDto.getName())
                 .email(memberDto.getEmail())

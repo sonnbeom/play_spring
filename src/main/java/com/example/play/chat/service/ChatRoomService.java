@@ -65,9 +65,6 @@ public class ChatRoomService {
                 .build();
         return this.chatRoomRepository.save(chatRoom);
     }
-    public ChatRoom findById(Long chatRoomId){
-       return chatRoomRepository.findById(chatRoomId).orElseThrow(()-> new ChatRoomException("해당 id를 가진 chatRoom을 조회할 수 없습니다", chatRoomId));
-    }
     public List<ChatRoomsWithChatsDto> getChatRooms(int page, String memberEmail) {
         Member member = memberService.findByEmail(memberEmail);
         Pageable pageable = PageRequest.of(page, CHAT_ROOM_SIZE);

@@ -19,11 +19,4 @@ public class PostLikeMapper {
                 .isActive(1)
                 .build();
     }
-
-    public ResponseLike entityToDto(PostLike savedLike) {
-        return ResponseLike.builder()
-                .id(savedLike.getId())
-                .isActive(savedLike.getIsActive())
-                .build();
-    }
 }

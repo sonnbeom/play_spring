@@ -21,11 +21,12 @@ import java.util.List;
 public class FriendshipController {
     private final FriendshipService friendshipService;
     @PostMapping("/create")
-    public ResponseEntity<ResponseFriendship> sendFriendShipRequest(@Valid @RequestBody RequestFriendship friendship,
+    public ResponseEntity<ResponseFriendshipDto> sendFriendShipRequest(@Valid @RequestBody RequestFriendship friendship,
                                                                     @AuthenticationPrincipal CustomUserDetails userDetails){
-        ResponseFriendship responseFriendship =  friendshipService.create(friendship, userDetails.getUsername());
+        ResponseFriendshipDto responseFriendship =  friendshipService.create(friendship, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseFriendship);
     }
+    // 페이징 처리해야함.
     @GetMapping("/received")
     public ResponseEntity<List<ResponseFriendshipWithImg>> getWaitingFriendship(@AuthenticationPrincipal CustomUserDetails userDetails){
         List<ResponseFriendshipWithImg> result = friendshipService.getWaitingFriendList(userDetails.getUsername());
@@ -33,11 +34,12 @@ public class FriendshipController {
     }
     
     @PostMapping("/approve/{friendshipId}")
-    public ResponseEntity<List<ResponseFriendshipDto>> approveFriendship(@Valid @PathVariable("friendshipId") Long friendshipId){
-        List<ResponseFriendshipDto> responseApprove = friendshipService.approveFriendship(friendshipId);
+    public ResponseEntity<ResponseFriendshipDto> approveFriendship(@Valid @PathVariable("friendshipId") Long friendshipId,
+                                                                   @AuthenticationPrincipal CustomUserDetails userDetails){
+        ResponseFriendshipDto responseApprove = friendshipService.approveFriendship(friendshipId, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(responseApprove);
     }
-    
+    // 페이징 처리해야함.
     @GetMapping("/friendList")
     public ResponseEntity<List<ResponseFriendshipWithImg>> readFriendList(@AuthenticationPrincipal CustomUserDetails userDetails){
         List<ResponseFriendshipWithImg> friendList = friendshipService.findFriendList(userDetails.getUsername());
@@ -55,9 +57,9 @@ public class FriendshipController {
     * 1. friendship id로 엔티티 가져오기 counterpartId로 반대편 frinedship도 삭제
     * */
     @DeleteMapping("/delete")
-    public ResponseEntity<ResponseFriendshipDelete> deleteFriend(@Valid @RequestBody RequestDeleteFriendship requestDeleteFriendship,
+    public ResponseEntity deleteFriend(@Valid @RequestBody RequestDeleteFriendship requestDeleteFriendship,
                                                                  @AuthenticationPrincipal CustomUserDetails userDetails){
-        ResponseFriendshipDelete responseDelete = friendshipService.deleteFriendship(requestDeleteFriendship, userDetails.getUsername());
-        return ResponseEntity.status(HttpStatus.OK).body(responseDelete);
+        friendshipService.deleteFriendship(requestDeleteFriendship, userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

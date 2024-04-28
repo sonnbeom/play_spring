@@ -27,14 +27,11 @@ public class ChatRoom extends BaseEntity {
     private Member other;
     @OneToMany(mappedBy = "chatRoom",cascade = CascadeType.REMOVE)
     private List<ChatMessage> chatMessages;
-
-
     @Builder
     public ChatRoom(Member fromMember, Member toMember) {
         this.member = fromMember;
         this.other = toMember;
     }
-
     public ChatRoomDto toDto() {
         return ChatRoomDto.builder()
                 .chatRoomId(id)

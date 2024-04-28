@@ -2,34 +2,25 @@ package com.example.play.auth.service;
 
 import com.example.play.auth.dto.RequestLoginDto;
 import com.example.play.jwt.dto.TokenDto;
-import com.example.play.jwt.entity.RefreshToken;
 import com.example.play.jwt.exception.RefreshTokenReissueException;
-import com.example.play.jwt.repository.TokenRepository;
 import com.example.play.jwt.service.JwtService;
 import com.example.play.member.entity.Member;
-import com.example.play.member.exception.MemberNotFoundException;
 import com.example.play.member.repository.MemberRepository;
 import com.example.play.member.service.MemberService;
 import com.example.play.redis.service.RedisService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
 
-import static com.example.play.jwt.constant.HeaderConstant.AUTHORIZATION;
-import static com.example.play.jwt.constant.HeaderConstant.BEARER;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final MemberRepository memberRepository;
     private final JwtService jwtService;
-    private final TokenRepository tokenRepository;
     private final MemberService memberService;
     private final RedisService redisService;
 

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
@@ -74,16 +75,16 @@ public class JwtService {
             return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         } catch (SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
-            throw new InvalidJwtException("잘못된 JWT 서명입니다.", e);
+            throw new InvalidJwtException("잘못된 JWT 서명입니다.", e, HttpStatus.UNAUTHORIZED);
         } catch (ExpiredJwtException e) {
             log.info("만료된 JWT 토큰입니다.");
-            throw new InvalidJwtException("만료된 JWT 토큰입니다.", e);
+            throw new InvalidJwtException("만료된 JWT 토큰입니다.", e, HttpStatus.UNAUTHORIZED);
         } catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
-            throw new InvalidJwtException("지원되지 않는 JWT 토큰입니다.", e);
+            throw new InvalidJwtException("지원되지 않는 JWT 토큰입니다.", e, HttpStatus.BAD_REQUEST);
         } catch (IllegalArgumentException e) {
             log.info("JWT 토큰이 잘못되었습니다.");
-            throw new InvalidJwtException("JWT 토큰이 잘못되었습니다." ,e);
+            throw new InvalidJwtException("JWT 토큰이 잘못되었습니다." ,e, HttpStatus.BAD_REQUEST);
         }
     }
     public boolean isTokenValid(String token){

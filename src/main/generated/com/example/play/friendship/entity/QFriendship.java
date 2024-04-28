@@ -24,25 +24,17 @@ public class QFriendship extends EntityPathBase<Friendship> {
 
     public final com.example.play.global.common.entity.QBaseEntity _super = new com.example.play.global.common.entity.QBaseEntity(this);
 
-    public final NumberPath<Long> counterpartId = createNumber("counterpartId", Long.class);
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final StringPath friendEmail = createString("friendEmail");
-
-    public final StringPath friendNickname = createString("friendNickname");
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final BooleanPath isFrom = createBoolean("isFrom");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
-    public final com.example.play.member.entity.QMember member;
+    public final com.example.play.member.entity.QMember receiver;
 
-    public final StringPath memberEmail = createString("memberEmail");
+    public final com.example.play.member.entity.QMember sender;
 
     public final EnumPath<com.example.play.friendship.constant.FriendshipStatus> status = createEnum("status", com.example.play.friendship.constant.FriendshipStatus.class);
 
@@ -64,7 +56,8 @@ public class QFriendship extends EntityPathBase<Friendship> {
 
     public QFriendship(Class<? extends Friendship> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.example.play.member.entity.QMember(forProperty("member")) : null;
+        this.receiver = inits.isInitialized("receiver") ? new com.example.play.member.entity.QMember(forProperty("receiver")) : null;
+        this.sender = inits.isInitialized("sender") ? new com.example.play.member.entity.QMember(forProperty("sender")) : null;
     }
 
 }

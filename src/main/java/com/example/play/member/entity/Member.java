@@ -35,8 +35,10 @@ public class Member extends BaseEntity {
     private String nickname;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToMany(mappedBy = "member")
-    private List<Friendship> friendshipList = new ArrayList<>();
+    @OneToMany(mappedBy = "sender")
+    private List<Friendship> sentFriendships = new ArrayList<>();
+    @OneToMany(mappedBy = "receiver")
+    private List<Friendship> receivedFriendships  = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     private List<Post> postList = new ArrayList<>();
     @OneToMany(mappedBy = "member")

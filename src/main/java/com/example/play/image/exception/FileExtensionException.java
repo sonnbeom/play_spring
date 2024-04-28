@@ -1,14 +1,13 @@
 package com.example.play.image.exception;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
-@Log4j2
 public class FileExtensionException extends RuntimeException{
-    public FileExtensionException() {
-    }
-
-    public FileExtensionException(String message) {
+    @Getter
+    private final HttpStatus status;
+    public FileExtensionException(String message, HttpStatus status) {
         super(message);
-        log.info(message);
+        this.status = status;
     }
 }

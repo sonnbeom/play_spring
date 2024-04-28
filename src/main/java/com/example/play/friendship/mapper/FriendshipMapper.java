@@ -17,52 +17,11 @@ import static com.example.play.friendship.constant.FriendshipStatus.*;
 @Component
 @Slf4j
 public class FriendshipMapper {
-
-
-
-
-    public ResponseFriendListDto EntityToDtoWithImg(Friendship friendship, String url) {
-        return ResponseFriendListDto.builder()
-                .friendNickname(friendship.getFriendNickname())
-                .imgUrl(url)
-                .memberEmail(friendship.getMemberEmail())
-                .memberId(friendship.getMember().getId())
-                .friendshipId(friendship.getId())
-                .friendEmail(friendship.getFriendEmail())
-                .time(friendship.getCreatedAt())
-                .status(friendship.getStatus())
-                .build();
-    }
-
-    public ResponseFriendListDto entityToDtoWithoutImg(Friendship friendship) {
-       return ResponseFriendListDto.builder()
-                        .friendNickname(friendship.getFriendNickname())
-                        .imgUrl(String.valueOf(ImgConstant.DEFAULT))
-                        .friendshipId(friendship.getId())
-                        .memberEmail(friendship.getMemberEmail())
-                        .memberId(friendship.getMember().getId())
-                        .friendEmail(friendship.getFriendEmail())
-                        .time(friendship.getCreatedAt())
-                        .status(friendship.getStatus())
-                        .build();
-    }
-
-    public Friendship dtoToEntityBySend(Member sender, Member receiver) {
+    public Friendship dtoToEntity(Member sender, Member receiver) {
         return Friendship.builder()
-                .isReceived(false)
                 .sender(sender)
                 .receiver(receiver)
                 .status(WAITING)
                 .build();
     }
-
-    public Friendship dtoToEntityByReceived(Member sender, Member receiver) {
-        return Friendship.builder()
-                .isReceived(true)
-                .sender(sender)
-                .receiver(receiver)
-                .status(WAITING)
-                .build();
-    }
-
 }

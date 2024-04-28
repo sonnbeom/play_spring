@@ -2,6 +2,7 @@ package com.example.play.image.entity;
 
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.image.dto.ResponseImg;
+import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.member.entity.Member;
 import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
@@ -12,8 +13,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
+import static com.example.play.image.dto.ResponseMemberImg.Status.*;
+
 @Entity
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -27,17 +29,19 @@ public class MemberImage extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-    public void changeStatus(){
+    public int changeStatus(){
         isActive = 0;
+        return isActive;
     }
 
     public void createMapWithMember(Map<Member, MemberImage> map) {
         map.put(member, this);
     }
-    public ResponseImg entityToDto(){
-        return ResponseImg.builder().
-                id(id)
-                .url(url)
-                .build();
+    public ResponseMemberImg entityToDto() {
+            return new ResponseMemberImg().builder()
+                    .status(NOT_DEFAULT)
+                    .id(id)
+                    .url(url)
+                    .build();
     }
 }

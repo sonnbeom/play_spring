@@ -1,8 +1,14 @@
 package com.example.play.jwt.exception;
 
-public class InvalidJwtException extends RuntimeException{
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
-    public InvalidJwtException(String message, Throwable cause) {
+public class InvalidJwtException extends RuntimeException{
+    @Getter
+    private final HttpStatus status;
+
+    public InvalidJwtException(String message, Throwable cause, HttpStatus status) {
         super(message, cause);
+        this.status = status;
     }
 }

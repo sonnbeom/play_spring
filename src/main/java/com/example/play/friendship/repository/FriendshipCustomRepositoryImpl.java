@@ -1,9 +1,7 @@
 package com.example.play.friendship.repository;
 
-import com.example.play.friendship.constant.FriendshipStatus;
+
 import com.example.play.friendship.entity.Friendship;
-import com.example.play.friendship.entity.QFriendship;
-import com.example.play.friendship.exception.FriendshipDeleteException;
 import com.example.play.member.entity.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
@@ -24,46 +22,27 @@ public class FriendshipCustomRepositoryImpl implements FriendshipCustomRepositor
         this.jpaQueryFactory = new JPAQueryFactory(entityManager);
     }
 
-
-    /*
-    * 받은 친구 요청 리스트를 조회
-    * */
+    // 받은 친구 신청 리스트 조회
     @Override
     public List<Friendship> findWaitinFrinedshipList(Member member) {
-        return jpaQueryFactory
-                .selectFrom(friendship)
-                .innerJoin(friendship.member)
-                .fetchJoin()
-                .where(friendship.member.eq(member)
-                        .and(friendship.isFrom.eq(false))
+        return jpaQueryFactory.selectFrom(friendship)
+                .innerJoin(friendship.receiver).fetchJoin()
+                .innerJoin(friendship.sender).fetchJoin()
+                .where(friendship.receiver.eq(member)
+                        .or(friendship.sender.eq(member))
                         .and(friendship.status.eq(WAITING)))
                 .orderBy(friendship.createdAt.desc())
                 .fetch();
     }
-
     @Override
     public List<Friendship> findFriendListByMember(Member member) {
-        return jpaQueryFactory
-                .selectFrom(friendship)
-                .innerJoin(friendship.member)
-                .fetchJoin()
-                .where(friendship.member.eq(member)
+        return jpaQueryFactory.selectFrom(friendship)
+                .innerJoin(friendship.sender).fetchJoin()
+                .innerJoin(friendship.receiver).fetchJoin()
+                .where((friendship.sender.eq(member)
+                        .or(friendship.receiver.eq(member)))
                         .and(friendship.status.eq(ACCEPTED)))
                 .orderBy(friendship.createdAt.desc())
                 .fetch();
-    }
-
-    @Override
-    public boolean delete(Friendship entity) {
-        try {
-            long count = jpaQueryFactory
-                    .delete(friendship)
-                    .where(friendship.eq(entity))
-                    .execute();
-            return count > 0;
-        } catch (Exception e){
-            log.info("friendship 엔티티를 삭제하지 못 하였습니다. 삭제하려는 엔티티 아이디: {}", entity.getId(), e);
-            throw new FriendshipDeleteException("friendship 엔티티를 삭제하지 못하였습니다. {}", e);
-        }
     }
 }

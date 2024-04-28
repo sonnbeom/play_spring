@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @Getter
 @Setter
-public class RequestMemberUpdateDto {
+public class RequestUpdateMemberDto {
     private String nickname;
     private String email;
     private List<Long> imgIds;

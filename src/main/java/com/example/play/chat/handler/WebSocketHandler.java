@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import netscape.javascript.JSObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -89,11 +90,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         if (chatRoomId == null){
             log.info("소켓 연결 종료 중 세션 내 chatRoomId가 존재하지 안습니다.");
-            throw new ChatRoomException("소켓 연결 종료 중 세션 내 chatRoomId가 존재하지 않습니다.");
+            throw new ChatRoomException("소켓 연결 종료 중 세션 내 chatRoomId가 존재하지 않습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         if (!chatRoomSessionMap.containsKey(chatRoomId)){
-            throw new ChatRoomException("소켓 연결 종료 중 chatRoomId가 chatRoomSessionMap에 존재하지 않습니다.");
+            throw new ChatRoomException("소켓 연결 종료 중 chatRoomId가 chatRoomSessionMap에 존재하지 않습니다.", HttpStatus.NOT_FOUND);
         }
 
         Set<WebSocketSession> chatRoomSession = chatRoomSessionMap.get(chatRoomId);

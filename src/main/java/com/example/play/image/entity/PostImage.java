@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import java.util.Optional;
 
 @Entity
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

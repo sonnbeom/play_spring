@@ -10,5 +10,4 @@ public interface FriendshipCustomRepository {
     List<Friendship> findWaitinFrinedshipList(Member member);
 
     List<Friendship> findFriendListByMember(Member member);
-    boolean delete(Friendship friendship);
 }
