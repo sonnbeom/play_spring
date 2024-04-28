@@ -38,12 +38,12 @@ public class MemberImgCustomRepositoryImpl implements MemberImgCustomRepository 
     }
 
     @Override
-    public List<MemberImage> findImgsByIdList(List<Long> toMemberIdList) {
+    public List<MemberImage> findImgsByMemberList(List<Member> memberList) {
         return jpaQueryFactory
                 .selectFrom(memberImage)
                 .innerJoin(memberImage.member)
                 .where(memberImage.isActive.eq(1)
-                        .and(memberImage.member.id.in(toMemberIdList)))
+                        .and(memberImage.member.in(memberList)))
                 .fetch();
     }
 

@@ -1,6 +1,8 @@
 package com.example.play.jwt.exceptionHandler;
 
 import com.example.play.jwt.exception.ErrorResponse;
+import com.example.play.jwt.exception.InvalidJwtException;
+import com.example.play.jwt.exception.RefreshTokenReissueException;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,5 +21,13 @@ public class JwtExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).
                 header(HttpHeaders.WWW_AUTHENTICATE, "Bearer error=\"token_expired\"") //실제 값: Bearer error="token_expired"
                 .body(errorResponse);
+    }
+    @ExceptionHandler(InvalidJwtException.class)
+    public ResponseEntity<String> handleInvalidJwtException(InvalidJwtException ex){
+        return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
+    }
+    @ExceptionHandler(RefreshTokenReissueException.class)
+    public ResponseEntity<String> handleRefreshTokenReissueException(RefreshTokenReissueException ex){
+        return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
     }
 }

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -56,32 +57,17 @@ public class PostImgService {
     }
 
     public List<ResponseImg> update(Post post, List<Long> deleteImageList, List<MultipartFile> files) {
-        if (deleteImageList != null && !deleteImageList.isEmpty()){
+        // 이미지 삭제
+        if (!ObjectUtils.isEmpty(deleteImageList)){
             List<PostImage> listImg = customRepository.findListForDelete(post, deleteImageList);
             for (PostImage img: listImg){
                 img.changeStatus();
             }
         }
-        saveUpdateImg(files, post);
+        // 새로 올라오는 이미지 저장
+        savePostImage(files, post);
+        // 기존 이미지, 추가된 이미지, 삭제된 이미지 반영해서 이미지 리턴
         return readImages(post);
-    }
-    private void saveUpdateImg (List<MultipartFile> fileList, Post post){
-        List<PostImage> postImages = new ArrayList<>();
-
-        for (MultipartFile file : fileList){
-            ImageDto imageDto = minioServiceProvider.uploadImage(Bucket.POST, file);
-            if (imageDto.getStatus().equals(ImageDto.Status.UPLOADED)){
-                PostImage postImage = PostImage.builder()
-                        .isActive(1)
-                        .post(post)
-                        .url(imageDto.getPath())
-                        .build();
-                postImages.add(postImage);
-            }else {
-                throw new MinioUploadException("이미지가 업로드에 실패하였습니다", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-        postImgRepository.saveAll(postImages);
     }
 
     public void deleteImg(Post post) {

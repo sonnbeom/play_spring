@@ -1,14 +1,18 @@
 package com.example.play.post.entity;
 
 import com.example.play.global.common.entity.BaseEntity;
+import com.example.play.image.dto.ResponseImg;
 import com.example.play.image.entity.PostImage;
 import com.example.play.like.post.entity.PostLike;
 import com.example.play.member.entity.Member;
+import com.example.play.post.dto.ResponsePostOne;
+import com.example.play.post.dto.ResponsePostPageDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +21,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,18 +46,65 @@ public class Post extends BaseEntity {
     public void upHit(){
         hit += 1;
     }
-    public void upLike(){likeCount += 1;}
-    public void changeTitle(String title){
+    public void upLikeCount(){likeCount += 1;}
+    public void updateTitle(String title){
         this.title = title;
     }
-    public void changeContent(String content){
+    public void updateContent(String content){
         this.content = content;
     }
-    public void changeIsActive(){
+    public int changeIsActive(){
         isActive = 0;
+        return isActive;
     }
-
-    public void downLike() {
+    public void downLikeCount() {
         likeCount -= 1;
     }
+    public boolean checkAuthorization(Member member){
+        if (this.member.equals(member)){
+            return true;
+        }
+        return false;
+    }
+    public ResponsePostOne entityToDto(){
+        return ResponsePostOne.builder()
+                .id(id)
+                .content(content)
+                .title(title)
+                .hit(hit)
+                .likeCount(likeCount)
+                .createdAt(getCreatedAt())
+                .build();
+    }
+    public ResponsePostOne entityToDtoWithImage(List<ResponseImg> responseImgList) {
+        return ResponsePostOne.builder()
+                .id(id)
+                .content(content)
+                .title(title)
+                .hit(hit)
+                .responseImgList(responseImgList)
+                .likeCount(likeCount)
+                .createdAt(getCreatedAt())
+                .build();
+    }
+    public ResponsePostPageDto toDtoForPage(){
+        return ResponsePostPageDto.builder()
+                .id(id)
+                .title(title)
+                .likeCount(likeCount)
+                .url(getThumbnail())
+                .hit(hit)
+                .build();
+    }
+    private String getThumbnail(){
+        if (!ObjectUtils.isEmpty(imageList)){
+            for (PostImage img : imageList){
+                if (img.getActiveImgUrl().isPresent()){
+                    return img.getActiveImgUrl().get();
+                }
+            }
+        }
+        return null;
+    }
 }
+

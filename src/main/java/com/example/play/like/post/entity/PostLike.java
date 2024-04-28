@@ -1,6 +1,7 @@
 package com.example.play.like.post.entity;
 
 import com.example.play.global.common.entity.BaseEntity;
+import com.example.play.like.post.dto.ResponseLike;
 import com.example.play.member.entity.Member;
 import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
@@ -13,7 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
 public class PostLike extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,5 +30,11 @@ public class PostLike extends BaseEntity {
     public int deleteLike() {
         isActive = 0;
         return isActive;
+    }
+    public ResponseLike entityToDto() {
+        return ResponseLike.builder()
+                .id(id)
+                .isActive(isActive)
+                .build();
     }
 }

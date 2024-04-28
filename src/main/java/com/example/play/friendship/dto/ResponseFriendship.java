@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class ResponseFriendship {
-    private ResponseFriendshipDto toFriendship;
-    private ResponseFriendshipDto fromFriendship;
+    private ResponseFriendshipDto friendshipDtoByReceived;
+    private ResponseFriendshipDto friendshipDtoBySend;
 }

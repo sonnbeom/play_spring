@@ -1,6 +1,7 @@
 package com.example.play.friendship.dto;
 
 import com.example.play.friendship.constant.FriendshipStatus;
+import com.example.play.member.dto.ResponseMemberDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +13,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class ResponseFriendshipDto {
     private Long friendshipId;
-    private String memberEmail;
-    private String friendEmail;
+    private ResponseMemberDto senderDto;
+    private ResponseMemberDto receiverDto;
     private FriendshipStatus status;
-    private Long counterpartId;
-    private String friendNickname;
-    private boolean isFrom;
+    private boolean isReceived;
 }

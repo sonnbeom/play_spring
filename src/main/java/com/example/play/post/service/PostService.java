@@ -22,7 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -43,23 +45,23 @@ public class PostService {
         Member member = memberService.findByEmail(email);
         Post post = postMapper.dtoToEntity(postDto, member);
         Post saved = postRepository.save(post);
-        if (!files.isEmpty()){
-            List<ResponseImg> urlS = postImgService.savePostImage(files, saved);
-            return postMapper.entityToDtoWithImage(saved,urlS);
+        if (!ObjectUtils.isEmpty(files)){
+            List<ResponseImg> urls = postImgService.savePostImage(files, saved);
+            return saved.entityToDtoWithImage(urls);
         }
         else {
-            return postMapper.entityToDto(saved);
+            return saved.entityToDto();
         }
     }
     public ResponsePostOne readOne(Long postId) {
         Post post = findById(postId);
         post.upHit();
-        List<ResponseImg> responseImgs = postImgService.readImages(post);
-        return postMapper.entityToDtoWithImage(post, responseImgs);
+        List<ResponseImg> responseImgList = postImgService.readImages(post);
+        return post.entityToDtoWithImage(responseImgList);
     }
     public Post findById(Long postId){
-        Optional<Post> optional = postRepository.findById(postId);
-        return optional.orElseThrow(() -> new PostNotFoundException(postId+"로 ID를 가진 게시글을 조회할 수 없습니다."));
+        return postRepository.findById(postId).
+                orElseThrow(() -> new PostNotFoundException("ID와 일치하는 게시글을 조회할 수 없습니다. postId: "+ postId, HttpStatus.NOT_FOUND));
     }
 
     public ResponsePostDTo readBySort(int page, String sortType) {
@@ -74,48 +76,54 @@ public class PostService {
         return postMapper.pageEntityToDto(postPage);
     }
 
-    public ResponsePostOne update(Long postId , RequestUpdatePostDto updateDto, List<MultipartFile> files,
-                                  List<Long> deleteImageList, String email) {
+    public ResponsePostOne update(Long postId ,
+                                  RequestUpdatePostDto updateDto,
+                                  List<MultipartFile> files,
+                                  List<Long> deleteImageList,
+                                  String email) {
+
         Post post = findById(postId);
-        checkUpdateAuthorization(post, email);
-        if (updateDto.getTitle() != null && !updateDto.getTitle().isEmpty()){
-            post.changeTitle(updateDto.getTitle());
+
+        //업데이트 권한 체크
+        checkUpdateAuthorization(post ,email, postId);
+
+        if (!ObjectUtils.isEmpty(updateDto.getTitle())){
+            post.updateTitle(updateDto.getTitle());
         }
-        if (updateDto.getContent() != null && !updateDto.getContent().isEmpty()){
-            post.changeContent(updateDto.getContent());
+        if (!ObjectUtils.isEmpty(updateDto.getContent())){
+            post.updateContent(updateDto.getContent());
         }
+
         List<ResponseImg> imgList = postImgService.update(post, deleteImageList, files);
-        return postMapper.entityToDtoWithImage(post, imgList);
+        return post.entityToDtoWithImage(imgList);
     }
-    private void checkUpdateAuthorization(Post post, String email){
+    private void checkUpdateAuthorization(Post post, String email, Long postId){
         Member member = memberService.findByEmail(email);
-        if (!post.getMember().equals(member)){
-            log.info("게시글을 작성하지 않은 멤버가 해당 게시글을 업데이트하고자 했습니다 게시글 아이디, 멤버 아이디 : {}", post.getId(), member.getId());
-            throw new PostUpdateException("유저가 해당 게시글을 업데이트할 수 있는 권한이 없습니다."+post.getId()+ member.getId());
+
+        if (!post.checkAuthorization(member)){
+            log.info("게시글을 작성하지 않은 멤버가 해당 게시글을 업데이트하고자 했습니다 게시글 아이디, 멤버 이메일 : {}", postId, email);
+            throw new PostUpdateException("유저가 해당 게시글을 업데이트할 수 있는 권한이 없습니다. " +
+                    "postId: " + postId + " email: "+email, HttpStatus.FORBIDDEN);
         }
     }
     public int delete(Long postId, String email) {
         Post post = findById(postId);
-        checkDeleteAuthorization(post, email);
-        post.changeIsActive();
+
+        checkDeleteAuthorization(post, email, postId);
         postImgService.deleteImg(post);
-        return post.getIsActive();
+        return post.changeIsActive();
     }
-    private void checkDeleteAuthorization(Post post, String email){
+    private void checkDeleteAuthorization(Post post, String email, Long postId){
         Member member = memberService.findByEmail(email);
-        if (!post.getMember().equals(member)){
-            log.info("게시글을 작성하지 않은 멤버가 해당 게시글을 삭제하고자 했습니다 게시글 아이디, 멤버 아이디 : {}", post.getId(), member.getId());
-            throw new PostDeleteException("유저가 해당 게시글을 삭제할 수 있는 권한이 없습니다."+post.getId()+ member.getId());
+        if (!post.checkAuthorization(member)){
+            log.info("게시글을 작성하지 않은 멤버가 해당 게시글을 삭제하고자 했습니다 게시글 아이디, 이메일 : {}", postId, email);
+            throw new PostDeleteException("유저가 해당 게시글을 삭제할 수 있는 권한이 없습니다." +
+                    "postId: " + postId + " email: "+email, HttpStatus.FORBIDDEN);
         }
     }
-    public ResponsePostOne entityToDto(Post post){
-        List<ResponseImg> imgList = postImgService.readImages(post);
-        return postMapper.entityToDtoWithImage(post, imgList);
-    }
-
-    public ResponsePostDTo getLikedPosts(String username, int page) {
+    public ResponsePostDTo getLikedPosts(String email, int page) {
+        Member member = memberService.findByEmail(email);
         Pageable pageable = PageRequest.of(page ,PageSize.size);
-        Member member = memberService.findByEmail(username);
         Page<Post> likedPostPage = customPostRepository.findLikedPosts(member, pageable);
         return postMapper.pageEntityToDto(likedPostPage);
     }

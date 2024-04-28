@@ -109,11 +109,13 @@ public class CustomPostRepositoryImpl implements CustomPostRepository {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
         JPAQuery<Long> countQuery = jpaQueryFactory
                 .select(post.count())
                 .from(post)
                 .innerJoin(post.postLikes, postLike)
                 .where(postLike.member.eq(member));
+
         return PageableExecutionUtils.getPage(posts, pageable, countQuery::fetchOne);
     }
 }

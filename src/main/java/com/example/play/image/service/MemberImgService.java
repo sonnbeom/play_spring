@@ -7,7 +7,6 @@ import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.entity.MemberImage;
 import com.example.play.image.exception.MemberImgException;
 import com.example.play.image.exception.MinioUploadException;
-import com.example.play.image.mapper.MemberImgMapper;
 import com.example.play.image.repository.MemberImgCustomRepository;
 import com.example.play.image.repository.MemberImgRepository;
 import com.example.play.member.entity.Member;
@@ -20,7 +19,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,6 @@ import java.util.Optional;
 public class MemberImgService {
     private final MinioServiceProvider minioServiceProvider;
     private final MemberImgRepository memberImgRepository;
-    private final MemberImgMapper memberImgMapper;
     private final MemberImgCustomRepository memberImgCustomRepository;
 
     public ResponseMemberImg findByMember(Member member) {
@@ -41,7 +39,7 @@ public class MemberImgService {
         }
         else {
             MemberImage memberImage = img.get(0);
-            return memberImgMapper.entityToDto(memberImage);
+            return memberImage.entityToDto();
         }
     }
 
@@ -77,7 +75,7 @@ public class MemberImgService {
         // 2, 4
         if (!ObjectUtils.isEmpty(profile)){
             MemberImage memberImage = saveMemberImg(updateMember, profile);
-            return memberImgMapper.entityToDto(memberImage);
+            return memberImage.entityToDto();
         }
         if (deleteFileId != null){
             changeStatus(deleteFileId, updateMember);
@@ -93,18 +91,17 @@ public class MemberImgService {
             deleteImg.changeStatus();
         }
     }
-    public int changeStatusByMember(Member member){
+    public int delete(Member member){
         List<MemberImage> deleteImgList = memberImgCustomRepository.findByMember(member);
         if (!deleteImgList.isEmpty() && deleteImgList.size()==1){
             MemberImage memberImage = deleteImgList.get(0);
-            memberImage.changeStatus();
-            return memberImage.getIsActive();
+            return memberImage.changeStatus();
         }else {
             throw new MemberImgException("삭제하려는 멤버의 프로필이 1개 이상입니다.", HttpStatus.BAD_REQUEST);
         }
     }
 
-    public List<MemberImage> findImgListByIdList(List<Long> toMemberIdList) {
-        return memberImgCustomRepository.findImgsByIdList(toMemberIdList);
+    public List<MemberImage> findImgListByIdList(List<Member> memberList) {
+        return memberImgCustomRepository.findImgsByMemberList(memberList);
     }
 }

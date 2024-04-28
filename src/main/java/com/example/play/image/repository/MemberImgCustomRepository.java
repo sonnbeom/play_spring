@@ -10,5 +10,5 @@ public interface MemberImgCustomRepository {
     List<MemberImage> findByMember(Member member);
     List<MemberImage> findByIdAndMember(Long id, Member member);
 
-    List<MemberImage> findImgsByIdList(List<Long> toMemberIdList);
+    List<MemberImage> findImgsByMemberList(List<Member> memberList);
 }

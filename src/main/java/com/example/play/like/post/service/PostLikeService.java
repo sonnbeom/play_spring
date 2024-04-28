@@ -15,6 +15,7 @@ import com.example.play.post.entity.Post;
 import com.example.play.post.service.PostService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -32,6 +33,7 @@ public class PostLikeService {
     private final PostLikeMapper postLikeMapper;
     private final PostLikeRepository postLikeRepository;
     public ResponsePostLikeDto createLike(RequestLike likeRequest, String email) {
+
         Post post = postService.findById(likeRequest.getPostId());
         Member member = memberService.findByEmail(email);
         List<PostLike> postLike = postLikeCustomRepository.findByPostAndMember(post, member);
@@ -39,20 +41,28 @@ public class PostLikeService {
         if (duplicateCheck(postLike)){
             PostLike like = postLikeMapper.createLike(post, member);
             PostLike savedLike = postLikeRepository.save(like);
-            post.upLike();
-            ResponsePostOne responsePostOne = postService.entityToDto(post);
-            ResponseLike responseLike = postLikeMapper.entityToDto(savedLike);
+
+            post.upLikeCount();
+
+            ResponsePostOne responsePostOne = post.entityToDto();
+            ResponseLike responseLike = savedLike.entityToDto();
+
             return ResponsePostLikeDto.builder()
                     .responsePostOne(responsePostOne)
                     .responseLike(responseLike)
                     .likeStatus(CREATE)
                     .build();
+
         }else if (postLike.size() == 1){
+
             PostLike deleteLike = postLike.get(0);
             deleteLike.deleteLike();
-            post.downLike();
-            ResponsePostOne responsePostOne = postService.entityToDto(post);
-            ResponseLike responseLike = postLikeMapper.entityToDto(deleteLike);
+
+            post.downLikeCount();
+
+            ResponsePostOne responsePostOne = post.entityToDto();
+            ResponseLike responseLike = deleteLike.entityToDto();
+
             return ResponsePostLikeDto.builder()
                     .responsePostOne(responsePostOne)
                     .responseLike(responseLike)
@@ -60,7 +70,7 @@ public class PostLikeService {
                     .build();
         }else {
             throw new PostLikeException("멤버가 해당 게시물에 좋아요를 누른 좋아요가 1개가 아닙니다. " +
-                    "likeRequest: {}",likeRequest);
+                    "likeRequest: {}"+likeRequest.getPostId(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     private boolean duplicateCheck(List<PostLike> postLike){

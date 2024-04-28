@@ -50,6 +50,7 @@ public class MinioServiceProvider {
                     .build();
         }
         catch (Exception e) {
+            // 미니오 exception을 만들어서 그걸 던지자!
             log.info("fileUploadException{}", e.getMessage());
             e.printStackTrace();
             return new ImageDto().builder()

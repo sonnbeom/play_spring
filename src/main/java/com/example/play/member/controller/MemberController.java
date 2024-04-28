@@ -4,13 +4,10 @@ import com.example.play.jwt.dto.CustomUserDetails;
 import com.example.play.jwt.service.JwtService;
 import com.example.play.member.dto.*;
 import com.example.play.member.service.MemberService;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -31,12 +28,12 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<Long> createMember(@Valid @RequestPart("memberDto") RequestMemberDto memberDto,
+    public ResponseEntity createMember(@Valid @RequestPart("memberDto") RequestCreateMemberDto memberDto,
                                                          BindingResult bindingResult,
                                                          @RequestPart(value = "profile", required = false) MultipartFile profile){
 
-        Long savedId = memberService.createMember(memberDto, profile);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedId);
+        memberService.createMember(memberDto, profile);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{memberId}")
@@ -46,7 +43,7 @@ public class MemberController {
     }
     @PatchMapping("/{memberId}")
     public ResponseEntity<ResponseMemberDto> updateMember(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                          @RequestPart(value = "updateDto", required = false) RequestMemberUpdateDto updateDto,
+                                                          @RequestPart(value = "updateDto", required = false) RequestUpdateMemberDto updateDto,
                                                           @RequestPart(value = "file", required = false)MultipartFile profile,
                                                           @RequestPart(value = "deleteFile", required = false) Long deleteFile){
         ResponseMemberDto updatedDto = memberService.updateMember(userDetails.getUsername(), updateDto, profile, deleteFile);

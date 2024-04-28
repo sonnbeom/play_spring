@@ -1,7 +1,6 @@
 package com.example.play.chat.dto;
 
 
-import com.example.play.chat.domain.ChatMessage;
 import lombok.*;
 
 @Builder

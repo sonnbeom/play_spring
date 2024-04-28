@@ -27,8 +27,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath email = createString("email");
 
-    public final ListPath<com.example.play.friendship.entity.Friendship, com.example.play.friendship.entity.QFriendship> friendshipList = this.<com.example.play.friendship.entity.Friendship, com.example.play.friendship.entity.QFriendship>createList("friendshipList", com.example.play.friendship.entity.Friendship.class, com.example.play.friendship.entity.QFriendship.class, PathInits.DIRECT2);
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final NumberPath<Integer> isActive = createNumber("isActive", Integer.class);
@@ -48,7 +46,11 @@ public class QMember extends EntityPathBase<Member> {
 
     public final ListPath<com.example.play.post.entity.Post, com.example.play.post.entity.QPost> postList = this.<com.example.play.post.entity.Post, com.example.play.post.entity.QPost>createList("postList", com.example.play.post.entity.Post.class, com.example.play.post.entity.QPost.class, PathInits.DIRECT2);
 
+    public final ListPath<com.example.play.friendship.entity.Friendship, com.example.play.friendship.entity.QFriendship> receivedFriendships = this.<com.example.play.friendship.entity.Friendship, com.example.play.friendship.entity.QFriendship>createList("receivedFriendships", com.example.play.friendship.entity.Friendship.class, com.example.play.friendship.entity.QFriendship.class, PathInits.DIRECT2);
+
     public final EnumPath<com.example.play.member.role.Role> role = createEnum("role", com.example.play.member.role.Role.class);
+
+    public final ListPath<com.example.play.friendship.entity.Friendship, com.example.play.friendship.entity.QFriendship> sentFriendships = this.<com.example.play.friendship.entity.Friendship, com.example.play.friendship.entity.QFriendship>createList("sentFriendships", com.example.play.friendship.entity.Friendship.class, com.example.play.friendship.entity.QFriendship.class, PathInits.DIRECT2);
 
     public QMember(String variable) {
         super(Member.class, forVariable(variable));

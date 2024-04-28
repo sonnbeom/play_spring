@@ -19,23 +19,5 @@ public class ResponsePostPageDto {
     private int likeCount;
     private int hit;
     private String url;
-    public ResponsePostPageDto(Post post) {
-        this.id = post.getId();
-        this.title = post.getTitle();
-        this.likeCount = post.getLikeCount();
-        this.hit = post.getHit();
-        this.url = getThumbnail(post);
-    }
-    private String getThumbnail(Post post){
-        List<PostImage> imageList = post.getImageList();
 
-        if (imageList != null && !imageList.isEmpty()){
-            for (PostImage img : imageList){
-                if (img.getIsActive() == 1){
-                    return img.getUrl();
-                }
-            }
-        }
-        return null;
-    }
 }

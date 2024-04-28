@@ -2,34 +2,25 @@ package com.example.play.auth.service;
 
 import com.example.play.auth.dto.RequestLoginDto;
 import com.example.play.jwt.dto.TokenDto;
-import com.example.play.jwt.entity.RefreshToken;
 import com.example.play.jwt.exception.RefreshTokenReissueException;
-import com.example.play.jwt.repository.TokenRepository;
 import com.example.play.jwt.service.JwtService;
 import com.example.play.member.entity.Member;
-import com.example.play.member.exception.MemberNotFoundException;
 import com.example.play.member.repository.MemberRepository;
 import com.example.play.member.service.MemberService;
 import com.example.play.redis.service.RedisService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
 
-import static com.example.play.jwt.constant.HeaderConstant.AUTHORIZATION;
-import static com.example.play.jwt.constant.HeaderConstant.BEARER;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final MemberRepository memberRepository;
     private final JwtService jwtService;
-    private final TokenRepository tokenRepository;
     private final MemberService memberService;
     private final RedisService redisService;
 
@@ -38,9 +29,9 @@ public class AuthService {
         Member member = memberService.findByEmail(loginDto.getEmail());
         memberService.checkPassword(loginDto.getPassword(), member);
 
-        TokenDto tokenDto = jwtService.provideToken(member.getEmail(), member.getRole());
+        TokenDto tokenDto = jwtService.provideToken(loginDto.getEmail(), member.getRoleForToken());
 
-        saveRefreshToken(member, tokenDto);
+        saveRefreshToken(loginDto.getEmail(), tokenDto);
 
         return tokenDto;
     }
@@ -55,22 +46,22 @@ public class AuthService {
         String email = jwtService.extractEmail(refreshToken);
         Member member = memberService.findByEmail(email);
 
-        String refreshToken_redis = redisService.getValues(member.getEmail());
+        String refreshToken_redis = redisService.getValues(email);
 
         if (!refreshToken_redis.equals(refreshToken)){
-            throw new RefreshTokenReissueException("Refresh token doesn't match", HttpStatus.BAD_REQUEST);
+            throw new RefreshTokenReissueException("Redis에 있는 refreshToken과 클라이언트가 요구하는 refreshToken이 매칭되지 않습니다. ", HttpStatus.BAD_REQUEST);
         }
 
-        redisService.deleteValues(member.getEmail());
+        redisService.deleteValues(email);
 
-        tokenDto = jwtService.provideToken(member.getEmail(), member.getRole());
-        saveRefreshToken(member, tokenDto);
+        tokenDto = jwtService.provideToken(email, member.getRoleForToken());
+        saveRefreshToken(email, tokenDto);
 
         return tokenDto == null? Optional.empty() : Optional.of(tokenDto);
     }
-    private void saveRefreshToken(Member member, TokenDto tokenDto){
+    private void saveRefreshToken(String email, TokenDto tokenDto){
         redisService.setValuesWithTimeOut(
-                member.getEmail(),
+                email,
                 tokenDto.getRefreshToken(),
                 tokenDto.getRefreshTokenExpirationTime());
     }

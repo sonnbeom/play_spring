@@ -17,8 +17,8 @@ public class ResponsePostOne {
     private String title;
     private String content;
     private int hit;
-    private int like;
+    private int likeCount;
     @Builder.Default
-    private List<ResponseImg> responseImgs = new ArrayList<>();
+    private List<ResponseImg> responseImgList = new ArrayList<>();
     private LocalDateTime createdAt;
 }
