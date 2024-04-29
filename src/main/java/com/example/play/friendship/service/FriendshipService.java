@@ -17,9 +17,13 @@ import com.example.play.member.service.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.*;
+
+import static com.example.play.friendship.constant.FriendshipPageSize.*;
 import static com.example.play.image.dto.ResponseMemberImg.Status.*;
 
 @Service
@@ -46,9 +50,10 @@ public class FriendshipService {
         return friendship.entityToDto();
     }
 
-    public List<ResponseFriendshipWithImg> getWaitingFriendList(String email) {
+    public List<ResponseFriendshipWithImg> getWaitingFriendList(String email, int page) {
         //친구 요청 목록을 조회하고자 하는 멤버 조회
         Member member = memberService.findByEmail(email);
+        Pageable pageable = PageRequest.of(page, size);
 
        // 해당 멤버의 친구 대기 요청 목록 조회
         List<Friendship> friendshipList = friendshipCustomRepository.findWaitinFrinedshipList(member);
