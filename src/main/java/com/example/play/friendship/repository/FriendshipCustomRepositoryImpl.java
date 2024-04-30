@@ -6,6 +6,7 @@ import com.example.play.member.entity.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class FriendshipCustomRepositoryImpl implements FriendshipCustomRepositor
 
     // 받은 친구 신청 리스트 조회
     @Override
-    public List<Friendship> findWaitinFrinedshipList(Member member) {
+    public List<Friendship> findWaitinFrinedshipList(Member member, Pageable pageable) {
         return jpaQueryFactory.selectFrom(friendship)
                 .innerJoin(friendship.receiver).fetchJoin()
                 .innerJoin(friendship.sender).fetchJoin()

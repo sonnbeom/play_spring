@@ -56,7 +56,7 @@ public class FriendshipService {
         Pageable pageable = PageRequest.of(page, size);
 
        // 해당 멤버의 친구 대기 요청 목록 조회
-        List<Friendship> friendshipList = friendshipCustomRepository.findWaitinFrinedshipList(member);
+        List<Friendship> friendshipList = friendshipCustomRepository.findWaitinFrinedshipList(member, pageable);
 
         // key: 친구 멤버, value: 친구 이미지
         Map<Member, MemberImage> friendImg = findFriendImg(friendshipList);
