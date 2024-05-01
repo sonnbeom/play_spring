@@ -26,6 +26,7 @@ public class FriendshipCustomRepositoryImpl implements FriendshipCustomRepositor
     // 받은 친구 신청 리스트 조회
     @Override
     public List<Friendship> findWaitinFrinedshipList(Member member, Pageable pageable) {
+        List<Friendship> = jpaQueryFactory.selectFrom();
         return jpaQueryFactory.selectFrom(friendship)
                 .innerJoin(friendship.receiver).fetchJoin()
                 .innerJoin(friendship.sender).fetchJoin()
