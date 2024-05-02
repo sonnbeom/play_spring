@@ -3,7 +3,7 @@ package com.example.play.post.service;
 import com.example.play.image.dto.ResponseImg;
 import com.example.play.image.service.PostImgService;
 import com.example.play.member.entity.Member;
-import com.example.play.member.service.MemberService;
+import com.example.play.member.service.MemberServiceImpl;
 import com.example.play.post.constant.PageSize;
 import com.example.play.post.dto.RequestPostDto;
 import com.example.play.post.dto.ResponsePostOne;
@@ -28,7 +28,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +38,10 @@ public class PostService {
     private final PostMapper postMapper;
     private final CustomPostRepository customPostRepository;
     private final PostImgService postImgService;
-    private final MemberService memberService;
+    private final MemberServiceImpl memberServiceImpl;
 
     public ResponsePostOne create(RequestPostDto postDto, List<MultipartFile> files, String email) {
-        Member member = memberService.findByEmail(email);
+        Member member = memberServiceImpl.findByEmail(email);
         Post post = postMapper.dtoToEntity(postDto, member);
         Post saved = postRepository.save(post);
         if (!ObjectUtils.isEmpty(files)){
@@ -98,7 +97,7 @@ public class PostService {
         return post.entityToDtoWithImage(imgList);
     }
     private void checkUpdateAuthorization(Post post, String email, Long postId){
-        Member member = memberService.findByEmail(email);
+        Member member = memberServiceImpl.findByEmail(email);
 
         if (!post.checkAuthorization(member)){
             log.info("게시글을 작성하지 않은 멤버가 해당 게시글을 업데이트하고자 했습니다 게시글 아이디, 멤버 이메일 : {}", postId, email);
@@ -114,7 +113,7 @@ public class PostService {
         return post.changeIsActive();
     }
     private void checkDeleteAuthorization(Post post, String email, Long postId){
-        Member member = memberService.findByEmail(email);
+        Member member = memberServiceImpl.findByEmail(email);
         if (!post.checkAuthorization(member)){
             log.info("게시글을 작성하지 않은 멤버가 해당 게시글을 삭제하고자 했습니다 게시글 아이디, 이메일 : {}", postId, email);
             throw new PostDeleteException("유저가 해당 게시글을 삭제할 수 있는 권한이 없습니다." +
@@ -122,7 +121,7 @@ public class PostService {
         }
     }
     public ResponsePostDTo getLikedPosts(String email, int page) {
-        Member member = memberService.findByEmail(email);
+        Member member = memberServiceImpl.findByEmail(email);
         Pageable pageable = PageRequest.of(page ,PageSize.size);
         Page<Post> likedPostPage = customPostRepository.findLikedPosts(member, pageable);
         return postMapper.pageEntityToDto(likedPostPage);

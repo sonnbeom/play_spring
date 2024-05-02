@@ -3,7 +3,7 @@ package com.example.play.member.controller;
 import com.example.play.jwt.dto.CustomUserDetails;
 import com.example.play.jwt.service.JwtService;
 import com.example.play.member.dto.*;
-import com.example.play.member.service.MemberService;
+import com.example.play.member.service.MemberServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/member")
 @Slf4j
 public class MemberController {
-    private final MemberService memberService;
+    private final MemberServiceImpl memberServiceImpl;
     private final JwtService jwtService;
 
     @GetMapping("/admin")
@@ -32,13 +32,13 @@ public class MemberController {
                                                          BindingResult bindingResult,
                                                          @RequestPart(value = "profile", required = false) MultipartFile profile){
 
-        memberService.createMember(memberDto, profile);
+        memberServiceImpl.createMember(memberDto, profile);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{memberId}")
     public ResponseEntity<ResponseMemberDto> readMember(@AuthenticationPrincipal CustomUserDetails userDetails){
-        ResponseMemberDto dto =  memberService.readMember(userDetails.getUsername());
+        ResponseMemberDto dto =  memberServiceImpl.readMember(userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
     @PatchMapping("/{memberId}")
@@ -46,12 +46,12 @@ public class MemberController {
                                                           @RequestPart(value = "updateDto", required = false) RequestUpdateMemberDto updateDto,
                                                           @RequestPart(value = "file", required = false)MultipartFile profile,
                                                           @RequestPart(value = "deleteFile", required = false) Long deleteFile){
-        ResponseMemberDto updatedDto = memberService.updateMember(userDetails.getUsername(), updateDto, profile, deleteFile);
+        ResponseMemberDto updatedDto = memberServiceImpl.updateMember(userDetails.getUsername(), updateDto, profile, deleteFile);
         return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
     @DeleteMapping("/{memberId}")
     public ResponseEntity<ResponseDeleteMemberDto> deleteMember(@AuthenticationPrincipal CustomUserDetails userDetails){
-        ResponseDeleteMemberDto deleted = memberService.deleteMember(userDetails.getUsername());
+        ResponseDeleteMemberDto deleted = memberServiceImpl.deleteMember(userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(deleted);
     }
 }

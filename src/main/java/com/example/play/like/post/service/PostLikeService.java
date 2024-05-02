@@ -9,7 +9,7 @@ import com.example.play.like.post.mapper.PostLikeMapper;
 import com.example.play.like.post.repository.PostLikeCustomRepository;
 import com.example.play.like.post.repository.PostLikeRepository;
 import com.example.play.member.entity.Member;
-import com.example.play.member.service.MemberService;
+import com.example.play.member.service.MemberServiceImpl;
 import com.example.play.post.dto.ResponsePostOne;
 import com.example.play.post.entity.Post;
 import com.example.play.post.service.PostService;
@@ -29,13 +29,13 @@ import static com.example.play.like.post.dto.ResponsePostLikeDto.LikeStatus.*;
 public class PostLikeService {
     private final PostLikeCustomRepository postLikeCustomRepository;
     private final PostService postService;
-    private final MemberService memberService;
+    private final MemberServiceImpl memberServiceImpl;
     private final PostLikeMapper postLikeMapper;
     private final PostLikeRepository postLikeRepository;
     public ResponsePostLikeDto createLike(RequestLike likeRequest, String email) {
 
         Post post = postService.findById(likeRequest.getPostId());
-        Member member = memberService.findByEmail(email);
+        Member member = memberServiceImpl.findByEmail(email);
         List<PostLike> postLike = postLikeCustomRepository.findByPostAndMember(post, member);
 
         if (duplicateCheck(postLike)){

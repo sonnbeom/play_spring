@@ -29,6 +29,7 @@ public class PostController {
     public ResponseEntity<ResponsePostOne> create(@Valid @RequestPart("postDto") RequestPostDto postDto,
                                     @RequestPart(value = "files", required = false) List<MultipartFile> files,
                                     @AuthenticationPrincipal CustomUserDetails customUser){
+
         ResponsePostOne response = postService.create(postDto ,files, customUser.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

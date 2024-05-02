@@ -28,8 +28,9 @@ public class FriendshipController {
     }
     // 페이징 처리해야함.
     @GetMapping("/received")
-    public ResponseEntity<List<ResponseFriendshipWithImg>> getWaitingFriendship(@AuthenticationPrincipal CustomUserDetails userDetails){
-        List<ResponseFriendshipWithImg> result = friendshipService.getWaitingFriendList(userDetails.getUsername());
+    public ResponseEntity<List<ResponseFriendshipWithImg>> getWaitingFriendship(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                                @RequestParam(defaultValue = "0") int page){
+        List<ResponseFriendshipWithImg> result = friendshipService.getWaitingFriendList(userDetails.getUsername(), page);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
     

@@ -12,14 +12,18 @@ import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.entity.MemberImage;
 import com.example.play.image.service.MemberImgService;
 import com.example.play.member.entity.Member;
-import com.example.play.member.service.MemberService;
+import com.example.play.member.service.MemberServiceImpl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.*;
+
+import static com.example.play.friendship.constant.FriendshipPageSize.*;
 import static com.example.play.image.dto.ResponseMemberImg.Status.*;
 
 @Service
@@ -29,15 +33,15 @@ import static com.example.play.image.dto.ResponseMemberImg.Status.*;
 public class FriendshipService {
     private final FriendshipCustomRepository friendshipCustomRepository;
     private final FriendshipRepository friendshipRepository;
-    private final MemberService memberService;
+    private final MemberServiceImpl memberServiceImpl;
     private final FriendshipMapper friendshipMapper;
     private final MemberImgService memberImgService;
 
     // 친구 요청 생성
     public ResponseFriendshipDto create(RequestFriendship requestFriendship, String senderEmail) {
         // 친구요청 보내는 이와 받는 이를 조회 isFrom = true : 보내는 사람
-        Member sender = memberService.findByEmail(senderEmail);
-        Member receiver = memberService.findByEmail(requestFriendship.getReceiver());
+        Member sender = memberServiceImpl.findByEmail(senderEmail);
+        Member receiver = memberServiceImpl.findByEmail(requestFriendship.getReceiver());
         //친구 요청 보내는 사람의 엔티티 생성
         Friendship friendship = friendshipMapper.dtoToEntity(sender, receiver);
         //친구 요청 받는 사람의 엔티티 생성
@@ -46,12 +50,13 @@ public class FriendshipService {
         return friendship.entityToDto();
     }
 
-    public List<ResponseFriendshipWithImg> getWaitingFriendList(String email) {
+    public List<ResponseFriendshipWithImg> getWaitingFriendList(String email, int page) {
         //친구 요청 목록을 조회하고자 하는 멤버 조회
-        Member member = memberService.findByEmail(email);
+        Member member = memberServiceImpl.findByEmail(email);
+        Pageable pageable = PageRequest.of(page, size);
 
        // 해당 멤버의 친구 대기 요청 목록 조회
-        List<Friendship> friendshipList = friendshipCustomRepository.findWaitinFrinedshipList(member);
+        List<Friendship> friendshipList = friendshipCustomRepository.findWaitinFrinedshipList(member, pageable);
 
         // key: 친구 멤버, value: 친구 이미지
         Map<Member, MemberImage> friendImg = findFriendImg(friendshipList);
@@ -64,7 +69,7 @@ public class FriendshipService {
     // 친구 신청 승인
     public ResponseFriendshipDto approveFriendship(Long friendshipId, String email) {
         Friendship friendship = findById(friendshipId);
-        Member member = memberService.findByEmail(email);
+        Member member = memberServiceImpl.findByEmail(email);
         // 로그인한 유저가 친구신청을 받을 수 있느지 확인하는 메소드
         if (!friendship.isAuthorized(member)){
             throw new FriendshipApproveException("해당 유저의 권한으로 친구 신청을 승인할 수 없습니다. friendshipId: "+ friendship +"유저 이메일: " + email, HttpStatus.UNAUTHORIZED);
@@ -75,7 +80,7 @@ public class FriendshipService {
     }
 
     public List<ResponseFriendshipWithImg> findFriendList(String email) {
-        Member member = memberService.findByEmail(email);
+        Member member = memberServiceImpl.findByEmail(email);
         List<Friendship> friendshipList = friendshipCustomRepository.findFriendListByMember(member);
         Map<Member, MemberImage> friendImg = findFriendImg(friendshipList);
         List<ResponseFriendshipWithImg> dtoList = mappingFriendshipWithImg(friendshipList, friendImg);
@@ -132,7 +137,7 @@ public class FriendshipService {
 
     public void deleteFriendship(RequestDeleteFriendship requestDeleteFriendship, String email) {
         Friendship friendship = findById(requestDeleteFriendship.getFriendshipId());
-        Member member = memberService.findByEmail(email);
+        Member member = memberServiceImpl.findByEmail(email);
         if (!friendship.isAuthorized(member)){
             throw new FriendshipDeleteException("해당 유저의 권한으로 친구 신청을 삭제할 수 없습니다.friendshipId: " + friendship + "멤버 이메일: "+email, HttpStatus.UNAUTHORIZED);
         }
