@@ -5,8 +5,7 @@ import com.example.play.jwt.dto.TokenDto;
 import com.example.play.jwt.exception.RefreshTokenReissueException;
 import com.example.play.jwt.service.JwtService;
 import com.example.play.member.entity.Member;
-import com.example.play.member.repository.MemberRepository;
-import com.example.play.member.service.MemberService;
+import com.example.play.member.service.MemberServiceImpl;
 import com.example.play.redis.service.RedisService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +20,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthService {
     private final JwtService jwtService;
-    private final MemberService memberService;
+    private final MemberServiceImpl memberServiceImpl;
     private final RedisService redisService;
 
     public TokenDto authorize(RequestLoginDto loginDto) {
 
-        Member member = memberService.findByEmail(loginDto.getEmail());
-        memberService.checkPassword(loginDto.getPassword(), member);
+        Member member = memberServiceImpl.findByEmail(loginDto.getEmail());
+        memberServiceImpl.checkPassword(loginDto.getPassword(), member);
 
         TokenDto tokenDto = jwtService.provideToken(loginDto.getEmail(), member.getRoleForToken());
 
@@ -44,7 +43,7 @@ public class AuthService {
         }
 
         String email = jwtService.extractEmail(refreshToken);
-        Member member = memberService.findByEmail(email);
+        Member member = memberServiceImpl.findByEmail(email);
 
         String refreshToken_redis = redisService.getValues(email);
 
