@@ -1,6 +1,5 @@
 package com.example.play.friendship.controller;
 
-import com.example.play.friendship.constant.FriendshipDeleteStatus;
 import com.example.play.friendship.dto.*;
 import com.example.play.friendship.service.FriendshipService;
 import com.example.play.jwt.dto.CustomUserDetails;

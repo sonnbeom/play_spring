@@ -5,80 +5,24 @@ import com.example.play.chat.domain.ChatRoom;
 import com.example.play.chat.dto.ChatDtoUpdate;
 import com.example.play.chat.dto.ChatMessageDto;
 import com.example.play.chat.dto.ChatMessageResponseDto;
-import com.example.play.chat.exception.ChatException;
-import com.example.play.chat.exception.ChatRoomException;
-import com.example.play.chat.repository.ChatMessageRepository;
-import com.example.play.chat.repository.ChatRoomRepository;
-import com.example.play.chat.repository.CustomChatMessageRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.play.chat.constant.ChatConstant.CHAT_SIZE;
+public interface ChatMessageService {
 
-@Service
-@Transactional
-@Log4j2
-@RequiredArgsConstructor
-public class ChatMessageService {
-    private final ChatMessageRepository chatMessageRepository;
-    private final CustomChatMessageRepository customChatMessageRepository;
-    private final ChatRoomRepository chatRoomRepository;
-    public List<ChatMessageResponseDto> findByRoom(ChatRoom chatRoom) {
-        List<ChatMessage> chatMessage = customChatMessageRepository.findByRoomNumber(chatRoom);
-        List<ChatMessageResponseDto> dtoList = new ArrayList<>();
-        for (ChatMessage c : chatMessage){
-            ChatMessageResponseDto chatDto = c.entityToDto();
-            dtoList.add(chatDto);
-        }
-        return dtoList;
-    }
+    //채팅방과 연관있는 메시지 조회 (채팅방 만들시에 연관되어있는 채팅 가져오기)
+    List<ChatMessageResponseDto> findByRoom(ChatRoom chatRoom);
 
-    public void save(ChatMessageDto chatMessageDto, Long chatRoomId) {
-        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new ChatRoomException("해당 id로 chatRoom을 조회할 수 없습니다. " + chatRoomId, HttpStatus.NOT_FOUND));
-        ChatMessage chatMessage = new ChatMessage(chatMessageDto, chatRoom);
-        chatMessageRepository.save(chatMessage);
-    }
-    public List<ChatMessageResponseDto> getChats(int page, Long chatRoomId) {
-        Pageable pageable = PageRequest.of(page , CHAT_SIZE);
-        Page<ChatMessage> chatMessages =  customChatMessageRepository.getChats(pageable, chatRoomId);
-        List<ChatMessageResponseDto> dtoList = new ArrayList<>();
-        if (ObjectUtils.isEmpty(chatMessages)){
-            return dtoList;
-        }
-        for (ChatMessage c : chatMessages){
-            ChatMessageResponseDto dto = c.entityToDto();
-            dtoList.add(dto);
-        }
-        return dtoList;
-    }
+    // 채팅 메시지 저장
+    void save(ChatMessageDto chatMessageDto, Long chatRoomId);
 
-    public List<ChatMessageResponseDto> findByRoomIdList(List<Long> chatRoomIdList) {
-        List<ChatMessage> chatMessages = customChatMessageRepository.getChatsByRoomIdList(chatRoomIdList);
-        List<ChatMessageResponseDto> dtoList = new ArrayList<>();
+    // 하나의 채팅방에 있는 채팅들 조회하기 (채팅방 들어갔을 시)
+    List<ChatMessageResponseDto> getChats(int page, Long chatRoomId);
 
-        for (ChatMessage c: chatMessages){
-            ChatMessageResponseDto dto = c.entityToDto();
-            dtoList.add(dto);
-        }
-        return dtoList;
-    }
+    // 채팅방마다 채팅 가져오기 -> 가장 최근 메시지
+//    List<ChatMessageResponseDto> findByRoomChatRoomList(List<ChatRoom> chatRoomList);
+    List<ChatMessage> findByRoomChatRoomList(List<ChatRoom> chatRoomList);
 
-    public Long updateChat(ChatDtoUpdate chatDto, Long chatId) {
-        ChatMessage chatMessage = chatMessageRepository.findById(chatId).orElseThrow(()-> new ChatException("해당 ID를 가진 chat을 조회할 수 없습니다: "+ chatId, HttpStatus.NOT_FOUND));
-        if (chatDto.getMsg() != null && !chatDto.getMsg().isEmpty()){
-            return chatMessage.updateMsg(chatDto);
-        }
-        return 0L;
-    }
+    //채팅 업데이트
+    Long updateChat(ChatDtoUpdate chatDto, Long chatId);
 }

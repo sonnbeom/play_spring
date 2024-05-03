@@ -7,7 +7,6 @@ import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -31,7 +30,7 @@ public class PostLike extends BaseEntity {
         isActive = 0;
         return isActive;
     }
-    public ResponseLike entityToDto() {
+    public ResponseLike toDto() {
         return ResponseLike.builder()
                 .id(id)
                 .isActive(isActive)

@@ -28,7 +28,7 @@ public class PostImage extends BaseEntity {
     public void changeStatus(){
         isActive = 0;
     }
-    public ResponseImg entityToDto(){
+    public ResponseImg toDto(){
         return ResponseImg.builder()
                 .id(id)
                 .url(url)

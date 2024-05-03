@@ -10,7 +10,6 @@ import com.example.play.post.dto.ResponsePostPageDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.ObjectUtils;
 
@@ -66,7 +65,7 @@ public class Post extends BaseEntity {
         }
         return false;
     }
-    public ResponsePostOne entityToDto(){
+    public ResponsePostOne toDto(){
         return ResponsePostOne.builder()
                 .id(id)
                 .content(content)
@@ -76,7 +75,7 @@ public class Post extends BaseEntity {
                 .createdAt(getCreatedAt())
                 .build();
     }
-    public ResponsePostOne entityToDtoWithImage(List<ResponseImg> responseImgList) {
+    public ResponsePostOne ToDtoWithImage(List<ResponseImg> responseImgList) {
         return ResponsePostOne.builder()
                 .id(id)
                 .content(content)

@@ -2,18 +2,14 @@ package com.example.play.friendship.entity;
 
 import com.example.play.friendship.constant.FriendshipStatus;
 import com.example.play.friendship.dto.ResponseFriendshipDto;
-import com.example.play.friendship.exception.FriendshipApproveException;
 import com.example.play.global.common.entity.BaseEntity;
-import com.example.play.image.dto.ResponseImg;
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.entity.MemberImage;
 import com.example.play.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
@@ -39,11 +35,11 @@ public class Friendship extends BaseEntity {
     public void acceptFriendshipRequest(){
         this.status = status.ACCEPTED;
     }
-    public ResponseFriendshipDto entityToDto() {
+    public ResponseFriendshipDto toDto() {
         return ResponseFriendshipDto.builder()
                 .status(status)
-                .senderDto(sender.entityToDtoWithoutImg())
-                .receiverDto(receiver.entityToDtoWithoutImg())
+                .senderDto(sender.toDtoWithOutImg())
+                .receiverDto(receiver.toDtoWithOutImg())
                 .build();
     }
     public void createSendMemberList(List<Member> memberListBySend) {
@@ -59,7 +55,7 @@ public class Friendship extends BaseEntity {
 
     public Optional<ResponseMemberImg> isExistSenderImg(Map<Member, MemberImage> map) {
         if (map.containsKey(sender)){
-            return Optional.of(map.get(sender).entityToDto());
+            return Optional.of(map.get(sender).toDto());
         }
         else return Optional.empty();
     }

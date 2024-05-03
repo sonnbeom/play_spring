@@ -11,7 +11,6 @@ import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -88,14 +87,14 @@ public class Member extends BaseEntity {
     public boolean isPassWordMatch(String password, PasswordEncoder passwordEncoder){
         return passwordEncoder.matches(password, this.password);
     }
-    public ResponseMemberDto entityToDtoWithoutImg(){
+    public ResponseMemberDto toDtoWithOutImg(){
         return ResponseMemberDto.builder()
                 .id(id)
                 .nickname(nickname)
                 .name(name)
                 .build();
     }
-    public ResponseMemberDto entityToDto(ResponseMemberImg img){
+    public ResponseMemberDto toDto(ResponseMemberImg img){
         return ResponseMemberDto.builder()
                 .id(id)
                 .email(email)

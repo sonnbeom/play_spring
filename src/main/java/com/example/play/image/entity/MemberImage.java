@@ -37,7 +37,7 @@ public class MemberImage extends BaseEntity {
     public void createMapWithMember(Map<Member, MemberImage> map) {
         map.put(member, this);
     }
-    public ResponseMemberImg entityToDto() {
+    public ResponseMemberImg toDto() {
             return new ResponseMemberImg().builder()
                     .status(NOT_DEFAULT)
                     .id(id)
