@@ -1,97 +1,16 @@
 package com.example.play.chat.service;
 
-import com.example.play.chat.domain.ChatRoom;
-import com.example.play.chat.dto.*;
-import com.example.play.chat.repository.ChatRoomRepository;
-import com.example.play.chat.repository.CustomChatRoomRepository;
-import com.example.play.member.entity.Member;
-import com.example.play.member.service.MemberServiceImpl;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.example.play.chat.dto.ChatRoomWithMessageDto;
+import com.example.play.chat.dto.ChatRoomsWithChatsDto;
+import com.example.play.chat.dto.RequestChatRoomDto;
 
-import java.util.*;
+import java.util.List;
 
-import static com.example.play.chat.constant.ChatRoomConstant.CHAT_ROOM_SIZE;
+public interface ChatRoomService {
 
+    // 채팅방 생성
+    ChatRoomWithMessageDto makeRoom(RequestChatRoomDto requestChatRoomDto, String email);
 
-@Service
-@Transactional
-@RequiredArgsConstructor
-@Slf4j
-public class ChatRoomService {
-    private final ChatRoomRepository chatRoomRepository;
-    private final CustomChatRoomRepository customChatRoomRepository;
-    private final MemberServiceImpl memberServiceImpl;
-    private final ChatMessageService chatMessageService;
-    public ChatRoomWithMessageDto makeRoom(RequestChatRoomDto requestChatRoomDto, String email) {
-        Member fromMember = memberServiceImpl.findByEmail(email);
-        Member toMember = memberServiceImpl.findByEmail(requestChatRoomDto.getOtherEmail());
-
-        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByMemberAndOther(fromMember, toMember);
-
-        if (optionalChatRoom.isPresent()){
-            ChatRoom chatRoom = optionalChatRoom.get();
-            List<ChatMessageResponseDto> chatMessage =  chatMessageService.findByRoom(chatRoom);
-
-            ChatRoomDto roomDto = chatRoom.toDto();
-
-            ChatRoomWithMessageDto chatRoomWithMessageDto = ChatRoomWithMessageDto.builder()
-                    .chatRoomDto(roomDto)
-                    .chatMessage(chatMessage)
-                    .build();
-
-            return chatRoomWithMessageDto;
-        }else {
-            ChatRoom chatRoom = createRoom(fromMember, toMember);
-            ChatRoomDto chatRoomDto = chatRoom.toDto();
-
-            ChatRoomWithMessageDto chatRoomWithMessageDto = ChatRoomWithMessageDto.builder()
-                    .chatRoomDto(chatRoomDto)
-                    .build();
-
-            return chatRoomWithMessageDto;
-        }
-    }
-    private ChatRoom createRoom(Member fromMember, Member toMember){
-        ChatRoom chatRoom = ChatRoom.builder()
-                .fromMember(fromMember)
-                .toMember(toMember)
-                .build();
-        return this.chatRoomRepository.save(chatRoom);
-    }
-    public List<ChatRoomsWithChatsDto> getChatRooms(int page, String memberEmail) {
-        Member member = memberServiceImpl.findByEmail(memberEmail);
-        Pageable pageable = PageRequest.of(page, CHAT_ROOM_SIZE);
-        Page<ChatRoom> chatRooms = customChatRoomRepository.findRooms(member, pageable);
-
-        List<Long> chatRoomIdList = new ArrayList<>();
-        Map<Long, ChatRoomsWithChatsDto> map = new HashMap<>();
-
-        for (ChatRoom chatRoom: chatRooms){
-
-            chatRoomIdList.add(chatRoom.getId());
-
-            ChatRoomsWithChatsDto chatRoomsWithChatsDto = ChatRoomsWithChatsDto.builder()
-                    .chatRoomDto(chatRoom.toDto())
-                    .chatMessage(new ChatMessageResponseDto())
-                    .build();
-
-            map.put(chatRoom.getId(), chatRoomsWithChatsDto);
-        }
-
-        List<ChatMessageResponseDto> chatDtoList = chatMessageService.findByRoomIdList(chatRoomIdList);
-
-        for (ChatMessageResponseDto chatMessageDto: chatDtoList){
-            if (map.containsKey(chatMessageDto.getChatRoomId())){
-                ChatRoomsWithChatsDto chatRoomsWithChatsDto = map.get(chatMessageDto.getChatRoomId());
-                chatRoomsWithChatsDto.insertChatMessage(chatMessageDto);
-            }
-        }
-        return new ArrayList<>(map.values());
-    }
+    // 멤버의 채팅방 리스트 가져오기
+    List<ChatRoomsWithChatsDto> getChatRooms(int page, String memberEmail);
 }

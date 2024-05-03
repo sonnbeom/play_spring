@@ -2,13 +2,12 @@ package com.example.play.chat.controller;
 
 import com.example.play.chat.dto.ChatDtoUpdate;
 import com.example.play.chat.dto.ChatMessageResponseDto;
+
 import com.example.play.chat.service.ChatMessageService;
-import com.example.play.jwt.dto.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -17,7 +17,6 @@ import java.util.List;
 public class ChatRoom extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     private Long id;
     @ManyToOne
     @JoinColumn(name = "my_id")

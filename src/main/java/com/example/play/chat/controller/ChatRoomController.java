@@ -3,6 +3,7 @@ package com.example.play.chat.controller;
 import com.example.play.chat.dto.ChatRoomWithMessageDto;
 import com.example.play.chat.dto.ChatRoomsWithChatsDto;
 import com.example.play.chat.dto.RequestChatRoomDto;
+
 import com.example.play.chat.service.ChatRoomService;
 import com.example.play.jwt.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;

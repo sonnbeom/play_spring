@@ -25,13 +25,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class MemberServiceImpl {
+public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
     private final MemberImgService memberImgService;
     private final MemberCustomRepository memberCustomRepository;
 
+    @Override
     public void createMember(RequestCreateMemberDto memberDto, MultipartFile profile) {
         duplicateCheck(memberDto);
         Member member = memberMapper.dtoToMember(memberDto);
@@ -50,12 +51,14 @@ public class MemberServiceImpl {
         }
     }
 
+    @Override
     public ResponseMemberDto readMember(String email) {
         Member member = findByEmail(email);
         ResponseMemberImg img = memberImgService.findByMember(member);
-        return member.entityToDto(img);
+        return member.toDto(img);
     }
 
+    @Override
     public ResponseMemberDto updateMember(String email, RequestUpdateMemberDto updateDto, MultipartFile profile, Long deleteFile) {
         Member member = findByEmail(email);
         if (!ObjectUtils.isEmpty(updateDto.getNickname())) {
@@ -68,9 +71,10 @@ public class MemberServiceImpl {
             member.changeEmail(updateDto.getEmail());
         }
         ResponseMemberImg img = memberImgService.updateStatus(profile, deleteFile, member);
-        return member.entityToDto(img);
+        return member.toDto(img);
     }
 
+    @Override
     public ResponseDeleteMemberDto deleteMember(String email) {
         Member member = findByEmail(email);
         int imgStatus = memberImgService.delete(member);
@@ -78,11 +82,13 @@ public class MemberServiceImpl {
         return memberMapper.deleteResponse(statusResult, imgStatus);
     }
 
+    @Override
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundException(email + "을 가진 유저를 조회할 수 없습니다.", HttpStatus.NOT_FOUND));
     }
 
+    @Override
     public void checkPassword(String password, Member member) {
         if (!member.isPassWordMatch(password, passwordEncoder)){
             log.info("비밀번호가 일치하지 않습니다. 입력 비밀번호 실제 비밀번호: {}", password);

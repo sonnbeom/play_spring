@@ -11,7 +11,7 @@ public interface CustomChatMessageRepository {
 
     Page<ChatMessage> getChats(Pageable pageable, Long chatRoomId);
 
-    List<ChatMessage> getChatsByRoomIdList(List<Long> chatRoomIdList);
+    List<ChatMessage> getChatsByRoomList(List<ChatRoom> chatRoomList);
 
     List<ChatMessage> findByRoomNumber(ChatRoom chatRoom);
 }

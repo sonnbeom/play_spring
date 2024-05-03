@@ -47,7 +47,7 @@ public class CustomChatMessageRepositoryImpl implements CustomChatMessageReposit
     }
 
     @Override
-    public List<ChatMessage> getChatsByRoomIdList(List<Long> chatRoomIdList) {
+    public List<ChatMessage> getChatsByRoomList(List<ChatRoom> chatRoomList) {
         QChatMessage subChat = new QChatMessage("subChat");
         List<ChatMessage> chatMessages = jpaQueryFactory
                 .selectFrom(chatMessage)
@@ -55,9 +55,8 @@ public class CustomChatMessageRepositoryImpl implements CustomChatMessageReposit
                         JPAExpressions
                                 .select(subChat.createdAt.max())
                                 .from(subChat)
-                                .where(subChat.chatRoom.id.in(chatRoomIdList))
+                                .where(subChat.chatRoom.in(chatRoomList))
                                 .groupBy(subChat.chatRoom.id)
-
                 ))
                 .fetch();
         return chatMessages;

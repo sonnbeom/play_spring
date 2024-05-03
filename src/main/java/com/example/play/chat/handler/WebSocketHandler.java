@@ -2,14 +2,11 @@ package com.example.play.chat.handler;
 
 import com.example.play.chat.dto.ChatMessageDto;
 import com.example.play.chat.exception.ChatRoomException;
+
 import com.example.play.chat.service.ChatMessageService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.shaded.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
-import netscape.javascript.JSObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;

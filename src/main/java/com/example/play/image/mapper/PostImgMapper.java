@@ -16,7 +16,7 @@ public class PostImgMapper {
     public List<ResponseImg> entityToDto(List<PostImage> postImages) {
         List<ResponseImg> responseImgList = new ArrayList<>();
         for (PostImage postImage : postImages){
-            ResponseImg responseImg = postImage.entityToDto();
+            ResponseImg responseImg = postImage.toDto();
             responseImgList.add(responseImg);
         }
         return responseImgList;
