@@ -10,6 +10,11 @@ class MemberControllerTest {
     @Test
     @DisplayName("컨트롤러: 멤버 생성 테스트")
     void memberCreateTest(){
+        // given
 
+        // when
+
+
+        // then
     }
 }
