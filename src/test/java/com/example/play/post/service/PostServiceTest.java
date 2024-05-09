@@ -9,4 +9,9 @@ class PostServiceTest {
     void postCreateTest(){
 
     }
+    @DisplayName("서비스 레이어에서 게시글이 성공적으로 업데이트되는지 테스트")
+    @Test
+    void postUpdateTest(){
+
+    }
 }
