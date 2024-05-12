@@ -20,4 +20,5 @@ class PostServiceTest {
 
     }
     // 검색, 정렬, 단일 게시글 get => test 예정
+
 }
