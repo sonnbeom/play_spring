@@ -50,7 +50,7 @@ public class PostServiceImpl implements PostService{
             return saved.ToDtoWithImage(urls);
         }
         else {
-            return saved.entityToDto();
+            return saved.toDto();
         }
     }
     @Override

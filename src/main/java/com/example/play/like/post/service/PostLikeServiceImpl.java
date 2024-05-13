@@ -45,7 +45,7 @@ public class PostLikeServiceImpl implements PostLikeService{
 
             post.upLikeCount();
 
-            ResponsePostOne responsePostOne = post.entityToDto();
+            ResponsePostOne responsePostOne = post.toDto();
             ResponseLike responseLike = savedLike.toDto();
 
             return ResponsePostLikeDto.builder()
@@ -61,7 +61,7 @@ public class PostLikeServiceImpl implements PostLikeService{
 
             post.downLikeCount();
 
-            ResponsePostOne responsePostOne = post.entityToDto();
+            ResponsePostOne responsePostOne = post.toDto();
             ResponseLike responseLike = deleteLike.toDto();
 
             return ResponsePostLikeDto.builder()
@@ -75,10 +75,6 @@ public class PostLikeServiceImpl implements PostLikeService{
         }
     }
     private boolean duplicateCheck(List<PostLike> postLike){
-        if (ObjectUtils.isEmpty(postLike)){
-            return true;
-        }else {
-            return false;
-        }
+        return ObjectUtils.isEmpty(postLike);
     }
 }
