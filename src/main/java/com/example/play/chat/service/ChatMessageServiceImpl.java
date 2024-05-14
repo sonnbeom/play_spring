@@ -39,7 +39,7 @@ public class ChatMessageServiceImpl implements ChatMessageService{
         List<ChatMessage> chatMessage = customChatMessageRepository.findByRoomNumber(chatRoom);
         List<ChatMessageResponseDto> dtoList = new ArrayList<>();
         for (ChatMessage c : chatMessage){
-            ChatMessageResponseDto chatDto = c.entityToDto();
+            ChatMessageResponseDto chatDto = c.toDto();
             dtoList.add(chatDto);
         }
         return dtoList;
@@ -62,7 +62,7 @@ public class ChatMessageServiceImpl implements ChatMessageService{
             return dtoList;
         }
         for (ChatMessage c : chatMessages){
-            ChatMessageResponseDto dto = c.entityToDto();
+            ChatMessageResponseDto dto = c.toDto();
             dtoList.add(dto);
         }
         return dtoList;

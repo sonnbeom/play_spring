@@ -27,7 +27,6 @@ public class MemberController {
 
     @PostMapping("/join")
     public ResponseEntity createMember(@Valid @RequestPart("memberDto") RequestCreateMemberDto memberDto,
-                                                         BindingResult bindingResult,
                                                          @RequestPart(value = "profile", required = false) MultipartFile profile){
 
         memberService.createMember(memberDto, profile);
@@ -35,8 +34,8 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<ResponseMemberDto> readMember(@AuthenticationPrincipal CustomUserDetails userDetails){
-        ResponseMemberDto dto =  memberService.readMember(userDetails.getUsername());
+    public ResponseEntity<ResponseMemberDto> getMember(@AuthenticationPrincipal CustomUserDetails userDetails){
+        ResponseMemberDto dto =  memberService.getMember(userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
     @PatchMapping("/{memberId}")

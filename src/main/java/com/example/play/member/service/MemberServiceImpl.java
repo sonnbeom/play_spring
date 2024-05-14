@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public ResponseMemberDto readMember(String email) {
+    public ResponseMemberDto getMember(String email) {
         Member member = findByEmail(email);
         ResponseMemberImg img = memberImgService.findByMember(member);
         return member.toDto(img);

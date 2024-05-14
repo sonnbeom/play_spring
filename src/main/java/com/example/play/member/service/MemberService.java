@@ -13,7 +13,7 @@ public interface MemberService {
     void createMember(RequestCreateMemberDto memberDto, MultipartFile profile);
 
     // 멤버 정보 불러오기
-    ResponseMemberDto readMember(String email);
+    ResponseMemberDto getMember(String email);
 
     // 멤버 업데이트
     ResponseMemberDto updateMember(String email, RequestUpdateMemberDto updateDto, MultipartFile profile, Long deleteFile);
