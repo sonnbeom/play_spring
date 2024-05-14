@@ -98,7 +98,7 @@ class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("test name"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("test@email.com"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.nickname").value("test nickname"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.img.status").value(ResponseMemberImg.Status.DEFAULT));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.img.status").value("DEFAULT"));
     }
     private MockMultipartFile  getMemberDtoPart() throws JsonProcessingException {
         RequestCreateMemberDto memberDto = new RequestCreateMemberDto("test name", "test email", "test pwd", "test nickname");
