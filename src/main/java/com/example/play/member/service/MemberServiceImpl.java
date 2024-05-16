@@ -61,14 +61,14 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public ResponseMemberDto updateMember(String email, RequestUpdateMemberDto updateDto, MultipartFile profile, Long deleteFile) {
         Member member = findByEmail(email);
-        if (!ObjectUtils.isEmpty(updateDto.getNickname())) {
-            member.changeNickname(updateDto.getNickname());
+        if (updateDto.isUpdateNicknamePresent()){
+            updateDto.sendNicknameToMember(member);
         }
-        if (!ObjectUtils.isEmpty(updateDto.getPassword())) {
-            member.changePassword(passwordEncoder.encode(updateDto.getPassword()));
+        if (updateDto.isUpdatePwdPresent()){
+            updateDto.sendUpdatePwdToMember(member);
         }
-        if (!ObjectUtils.isEmpty(updateDto.getEmail())) {
-            member.changeEmail(updateDto.getEmail());
+        if (updateDto.isUpdateEmailPresent()){
+            updateDto.sendUpdateEmailToMember(member);
         }
         ResponseMemberImg img = memberImgService.updateStatus(profile, deleteFile, member);
         return member.toDto(img);

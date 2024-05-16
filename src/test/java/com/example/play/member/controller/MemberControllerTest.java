@@ -3,6 +3,7 @@ package com.example.play.member.controller;
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.member.constant.TestMemberUrl;
 import com.example.play.member.dto.RequestCreateMemberDto;
+import com.example.play.member.dto.RequestUpdateMemberDto;
 import com.example.play.member.dto.ResponseMemberDto;
 import com.example.play.member.service.MemberService;
 import com.example.play.mock.WithCustomMockUser;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
@@ -100,6 +102,40 @@ class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.nickname").value("test nickname"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.img.status").value("DEFAULT"));
     }
+    @Test
+    @DisplayName("컨트롤러 멤버 정보 수정하기")
+    @WithCustomMockUser
+    void testMemberUpdate() throws Exception {
+        //given
+
+        //수정하고자 하는 멤버 데이터
+        RequestUpdateMemberDto updateMemberDto = new RequestUpdateMemberDto("test nickname", "test@email.com", "test pwd");
+        MockMultipartFile updateMemberDtoPart = getUpdateMemberDtoPart(updateMemberDto);
+        // 수정하고자 하는 멤버 이미지
+        MockMultipartFile updateFile = new MockMultipartFile("file", "", "image/jpeg", "JPG content".getBytes());
+        // 삭제하고자 하는 멤버 이미지
+        MockMultipartFile deleteFile = new MockMultipartFile("deleteFile", "", "application/json", "1".getBytes());
+
+        ResponseMemberDto responseMemberDto = new ResponseMemberDto(1L,"name", "test@email.com", "test nickname", new ResponseMemberImg(ResponseMemberImg.Status.NOT_DEFAULT));
+        Mockito.when(memberService.updateMember(Mockito.anyString(), any(RequestUpdateMemberDto.class), any(MultipartFile.class), Mockito.anyLong())).thenReturn(responseMemberDto);
+
+       /*
+        when then
+        */
+        mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PATCH ,PATCH_MEMBER_URL, 1L)
+                .file(updateMemberDtoPart)
+                .file(updateFile)
+                .file(deleteFile)
+                .with(csrf()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.nickname").value("test nickname"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("test@email.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.img.status").value("NOT_DEFAULT"));
+
+    }
+
     private MockMultipartFile  getMemberDtoPart() throws JsonProcessingException {
         RequestCreateMemberDto memberDto = new RequestCreateMemberDto("test name", "test email", "test pwd", "test nickname");
         MockMultipartFile  memberDtoPart =  new MockMultipartFile("memberDto","memberDto", "application/json", objectMapper.writeValueAsBytes(memberDto));
@@ -107,5 +143,8 @@ class MemberControllerTest {
     }
     private MockMultipartFile getFile(){
         return new MockMultipartFile("profile", "filename.jpg", "image/jpeg", "JPG content".getBytes());
+    }
+    private MockMultipartFile getUpdateMemberDtoPart(RequestUpdateMemberDto dto) throws JsonProcessingException {
+        return new MockMultipartFile("updateDto", "", "application/json", objectMapper.writeValueAsBytes(dto));
     }
 }
