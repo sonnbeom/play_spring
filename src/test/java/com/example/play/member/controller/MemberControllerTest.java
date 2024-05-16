@@ -107,28 +107,32 @@ class MemberControllerTest {
     @WithCustomMockUser
     void testMemberUpdate() throws Exception {
         //given
+
+        //수정하고자 하는 멤버 데이터
         RequestUpdateMemberDto updateMemberDto = new RequestUpdateMemberDto("test nickname", "test@email.com", "test pwd");
-        MockMultipartFile updateFile = getFile();
-        Long deleteFileId = 1L;
+        MockMultipartFile updateMemberDtoPart = getUpdateMemberDtoPart(updateMemberDto);
+        // 수정하고자 하는 멤버 이미지
+        MockMultipartFile updateFile = new MockMultipartFile("file", "", "image/jpeg", "JPG content".getBytes());
+        // 삭제하고자 하는 멤버 이미지
+        MockMultipartFile deleteFile = new MockMultipartFile("deleteFile", "", "application/json", "1".getBytes());
+
         ResponseMemberDto responseMemberDto = new ResponseMemberDto(1L,"name", "test@email.com", "test nickname", new ResponseMemberImg(ResponseMemberImg.Status.NOT_DEFAULT));
-        Mockito.when(memberService.updateMember("test@email.com", updateMemberDto, updateFile, deleteFileId)).thenReturn(responseMemberDto);
+        Mockito.when(memberService.updateMember(Mockito.anyString(), any(RequestUpdateMemberDto.class), any(MultipartFile.class), Mockito.anyLong())).thenReturn(responseMemberDto);
 
        /*
         when then
         */
         mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PATCH ,PATCH_MEMBER_URL, 1L)
+                .file(updateMemberDtoPart)
                 .file(updateFile)
-                .param("updateDto", objectMapper.writeValueAsString(updateMemberDto))
-                .param("deleteFile", String.valueOf(deleteFileId))
-                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .file(deleteFile)
                 .with(csrf()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("test nickname"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("test@email.com"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.nickname").value("test nickname"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.img").value("NOT_DEFAULT"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("test@email.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.img.status").value("NOT_DEFAULT"));
 
     }
 
@@ -139,5 +143,8 @@ class MemberControllerTest {
     }
     private MockMultipartFile getFile(){
         return new MockMultipartFile("profile", "filename.jpg", "image/jpeg", "JPG content".getBytes());
+    }
+    private MockMultipartFile getUpdateMemberDtoPart(RequestUpdateMemberDto dto) throws JsonProcessingException {
+        return new MockMultipartFile("updateDto", "", "application/json", objectMapper.writeValueAsBytes(dto));
     }
 }

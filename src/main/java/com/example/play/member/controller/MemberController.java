@@ -42,8 +42,8 @@ public class MemberController {
     public ResponseEntity<ResponseMemberDto> updateMember(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                           @RequestPart(value = "updateDto", required = false) RequestUpdateMemberDto updateDto,
                                                           @RequestPart(value = "file", required = false)MultipartFile profile,
-                                                          @RequestPart(value = "deleteFile", required = false) Long deleteFile){
-        ResponseMemberDto updatedDto = memberService.updateMember(userDetails.getUsername(), updateDto, profile, deleteFile);
+                                                          @RequestPart(value = "deleteFile", required = false) Long deleteFileId){
+        ResponseMemberDto updatedDto = memberService.updateMember(userDetails.getUsername(), updateDto, profile, deleteFileId);
         return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
     @DeleteMapping("/{memberId}")
