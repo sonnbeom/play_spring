@@ -1,14 +1,12 @@
 package com.example.play.image.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode
 public class ResponseMemberImg {
     private Status status;
     private Long id;
