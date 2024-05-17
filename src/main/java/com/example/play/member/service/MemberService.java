@@ -13,13 +13,13 @@ public interface MemberService {
     void createMember(RequestCreateMemberDto memberDto, MultipartFile profile);
 
     // 멤버 정보 불러오기
-    ResponseMemberDto getMember(String email);
+    ResponseMemberDto getMember(String email, Long memberId);
 
     // 멤버 업데이트
     ResponseMemberDto updateMember(String email, RequestUpdateMemberDto updateDto, MultipartFile profile, Long deleteFile);
 
     // 멤버 삭제
-    ResponseDeleteMemberDto deleteMember(String email);
+    ResponseDeleteMemberDto deleteMember(String email, Long memberId);
 
     // 멤버 찾기
     Member findByEmail(String email);

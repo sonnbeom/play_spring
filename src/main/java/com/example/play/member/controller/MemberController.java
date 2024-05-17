@@ -34,8 +34,9 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<ResponseMemberDto> getMember(@AuthenticationPrincipal CustomUserDetails userDetails){
-        ResponseMemberDto dto =  memberService.getMember(userDetails.getUsername());
+    public ResponseEntity<ResponseMemberDto> getMember(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                       @PathVariable Long memberId){
+        ResponseMemberDto dto =  memberService.getMember(userDetails.getUsername(), memberId);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
     @PatchMapping("/{memberId}")
@@ -47,8 +48,9 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<ResponseDeleteMemberDto> deleteMember(@AuthenticationPrincipal CustomUserDetails userDetails){
-        ResponseDeleteMemberDto deleted = memberService.deleteMember(userDetails.getUsername());
+    public ResponseEntity<ResponseDeleteMemberDto> deleteMember(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                @PathVariable Long memberId){
+        ResponseDeleteMemberDto deleted = memberService.deleteMember(userDetails.getUsername(), memberId);
         return ResponseEntity.status(HttpStatus.OK).body(deleted);
     }
 }
