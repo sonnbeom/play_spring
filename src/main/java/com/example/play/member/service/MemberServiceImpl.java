@@ -52,8 +52,9 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public ResponseMemberDto getMember(String email) {
+    public ResponseMemberDto getMember(String email, Long memberId) {
         Member member = findByEmail(email);
+        member.checkGetAuthority(memberId);
         ResponseMemberImg img = memberImgService.findByMember(member);
         return member.toDto(img);
     }
@@ -75,8 +76,9 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public ResponseDeleteMemberDto deleteMember(String email) {
+    public ResponseDeleteMemberDto deleteMember(String email, Long memberId) {
         Member member = findByEmail(email);
+        member.checkDeleteAuthority(memberId);
         int imgStatus = memberImgService.delete(member);
         int statusResult = member.changeStatus();
         return memberMapper.deleteResponse(statusResult, imgStatus);

@@ -4,6 +4,7 @@ import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.member.constant.TestMemberUrl;
 import com.example.play.member.dto.RequestCreateMemberDto;
 import com.example.play.member.dto.RequestUpdateMemberDto;
+import com.example.play.member.dto.ResponseDeleteMemberDto;
 import com.example.play.member.dto.ResponseMemberDto;
 import com.example.play.member.service.MemberService;
 import com.example.play.mock.WithCustomMockUser;
@@ -22,6 +23,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
@@ -36,6 +38,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.example.play.member.constant.TestMemberUrl.*;
+import static com.example.play.member.dto.ResponseDeleteMemberDto.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -75,7 +78,7 @@ class MemberControllerTest {
         /*
         when then
         */
-        mockMvc.perform(MockMvcRequestBuilders.multipart(JOIN_URL)
+        mockMvc.perform(MockMvcRequestBuilders.multipart(TEST_MEMBER_JOIN_URL)
                         .file(memberDtoPart)
                         .file(profile)
                         .with(csrf()))
@@ -88,12 +91,12 @@ class MemberControllerTest {
     void testGetMember() throws Exception {
         //given
         ResponseMemberDto dto = new ResponseMemberDto(1L, "test name", "test@email.com", "test nickname", new ResponseMemberImg(ResponseMemberImg.Status.DEFAULT));
-        Mockito.when(memberService.getMember("test@email.com")).thenReturn(dto);
+        Mockito.when(memberService.getMember(Mockito.anyString(), Mockito.anyLong())).thenReturn(dto);
 
         /*
         when then
         */
-        mockMvc.perform(MockMvcRequestBuilders.get(GET_MEMBER_URL, 1))
+        mockMvc.perform(MockMvcRequestBuilders.get(TEST_MEMBER_GET_URL, 1))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
@@ -122,7 +125,7 @@ class MemberControllerTest {
        /*
         when then
         */
-        mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PATCH ,PATCH_MEMBER_URL, 1L)
+        mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PATCH ,TEST_MEMBER_PATCH_URL, 1L)
                 .file(updateMemberDtoPart)
                 .file(updateFile)
                 .file(deleteFile)
@@ -133,6 +136,26 @@ class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.nickname").value("test nickname"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("test@email.com"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.img.status").value("NOT_DEFAULT"));
+
+    }
+    @Test
+    @DisplayName("컨트롤러 멤버 정보 삭제하기")
+    @WithCustomMockUser
+    void testMemberDelete() throws Exception {
+        //given
+        ResponseDeleteMemberDto deleteMemberDto = new ResponseDeleteMemberDto(STATUS.DELETED, STATUS.DELETED);
+        Mockito.when(memberService.deleteMember(Mockito.anyString(), Mockito.anyLong())).thenReturn(deleteMemberDto);
+
+        /*
+        when then
+        */
+        mockMvc.perform(MockMvcRequestBuilders.delete(TEST_MEMBER_DELETE_URL, 1)
+                .with(csrf()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.memberStatus").value("DELETED"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.memberImgStatus").value("DELETED"));
+
 
     }
 

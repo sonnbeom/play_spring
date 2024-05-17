@@ -6,12 +6,15 @@ import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.entity.MemberImage;
 import com.example.play.like.post.entity.PostLike;
 import com.example.play.member.dto.ResponseMemberDto;
+import com.example.play.member.exception.MemberDeleteAuthorityException;
+import com.example.play.member.exception.MemberGetAuthorityException;
 import com.example.play.member.role.Role;
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -116,4 +119,15 @@ public class Member extends BaseEntity {
                 .build();
     }
 
+    public void checkDeleteAuthority(Long memberId) {
+        if (memberId != id){
+            throw new MemberDeleteAuthorityException("해당 아이디가 로그인한 멤버가 일치하지 않습니다. 삭제 시도 아이디: "+ memberId, HttpStatus.FORBIDDEN);
+        }
+    }
+
+    public void checkGetAuthority(Long memberId) {
+        if (memberId != memberId){
+            throw new MemberGetAuthorityException("해당 아이디가 로그인한 멤버의 아이디와 일치하지 않습니다. 열람 시도 아이디"+ memberId, HttpStatus.FORBIDDEN);
+        }
+    }
 }
