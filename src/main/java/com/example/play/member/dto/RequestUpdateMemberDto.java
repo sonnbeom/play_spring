@@ -28,9 +28,9 @@ public class RequestUpdateMemberDto {
         member.changeNickname(nickname);
     }
     public void sendUpdatePwdToMember(Member member) {
-        member.changeNickname(nickname);
+        member.changePassword(password);
     }
     public void sendUpdateEmailToMember(Member member) {
-        member.changeNickname(nickname);
+        member.changeEmail(email);
     }
 }

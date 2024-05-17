@@ -3,12 +3,11 @@ package com.example.play.member.service;
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.service.MemberImgService;
 import com.example.play.member.dto.RequestCreateMemberDto;
+import com.example.play.member.dto.RequestUpdateMemberDto;
 import com.example.play.member.dto.ResponseMemberDto;
 import com.example.play.member.entity.Member;
 import com.example.play.member.memberMapper.MemberMapper;
 import com.example.play.member.repository.MemberRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
+
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
     @InjectMocks
@@ -83,11 +82,7 @@ class MemberServiceTest {
         String testEmail = "test@email.com";
         Long testMemberId = 1L;
         Member testMember = getTestMember();
-        ResponseMemberImg responseMemberImg = ResponseMemberImg.builder()
-                .id(1L)
-                .url("testUrl")
-                .status(ResponseMemberImg.Status.NOT_DEFAULT)
-                .build();
+        ResponseMemberImg responseMemberImg = getTestResponseMemberImg();
 
         Mockito.when(memberRepository.findByEmail(testEmail)).thenReturn(Optional.of(testMember));
         Mockito.when(memberImgService.findByMember(testMember)).thenReturn(responseMemberImg);
@@ -103,6 +98,38 @@ class MemberServiceTest {
         assertEquals("testNickname", expectedDto.getNickname());
         assertEquals(responseMemberImg, expectedDto.getImg());
     }
+    @Test
+    @DisplayName("멤버 서비스: 멤버 업데이트")
+    void updateMemberTest(){
+        //given
+        String testEmail = "test@email.com";
+        RequestUpdateMemberDto updateMemberDto = Mockito.mock(RequestUpdateMemberDto.class);
+        Member member = Mockito.mock(Member.class);
+        ResponseMemberImg responseImg = getTestResponseMemberImg();
+        Long deleteFileId = 1L;
+        MockMultipartFile updateProfile = new MockMultipartFile("profile", "", "profile.jpg", "profile".getBytes());
+
+        Mockito.when(memberRepository.findByEmail(testEmail)).thenReturn(Optional.ofNullable(member));
+        Mockito.when(updateMemberDto.isUpdateNicknamePresent()).thenReturn(true);
+        Mockito.when(updateMemberDto.isUpdatePwdPresent()).thenReturn(true);
+        Mockito.when(updateMemberDto.isUpdateEmailPresent()).thenReturn(true);
+        Mockito.when(memberImgService.updateStatus(updateProfile, deleteFileId, member)).thenReturn(responseImg);
+        Mockito.when(member.toDto(responseImg)).thenReturn(new ResponseMemberDto(1L, "newNickName", "newEmail", "newNickname",responseImg));
+
+
+        //when
+        ResponseMemberDto result = memberServiceImpl.updateMember(testEmail, updateMemberDto, updateProfile, deleteFileId);
+
+        //then
+        assertNotNull(result);
+        assertEquals("newNickname", result.getNickname());
+        Mockito.verify(memberImgService).updateStatus(updateProfile, deleteFileId, member);
+        Mockito.verify(updateMemberDto).sendUpdateEmailToMember(member);
+        Mockito.verify(updateMemberDto).sendNicknameToMember(member);
+        Mockito.verify(updateMemberDto).sendUpdatePwdToMember(member);
+
+
+    }
     private Member getTestMember(){
         return Member.builder()
                 .email("test@email.com")
@@ -110,6 +137,13 @@ class MemberServiceTest {
                 .nickname("testNickname")
                 .isActive(1)
                 .password("testPwd")
+                .build();
+    }
+    private ResponseMemberImg getTestResponseMemberImg(){
+        return ResponseMemberImg.builder()
+                .id(1L)
+                .url("testUrl")
+                .status(ResponseMemberImg.Status.NOT_DEFAULT)
                 .build();
     }
 }
