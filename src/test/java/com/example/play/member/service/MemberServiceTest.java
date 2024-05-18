@@ -130,6 +130,11 @@ class MemberServiceTest {
 
 
     }
+    @Test
+    @DisplayName("서비스: 멤버 삭제 테스트")
+    void deleteMemberTest(){
+
+    }
     private Member getTestMember(){
         return Member.builder()
                 .email("test@email.com")
