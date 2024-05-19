@@ -133,7 +133,11 @@ class MemberServiceTest {
     @Test
     @DisplayName("서비스: 멤버 삭제 테스트")
     void deleteMemberTest(){
+        //given
 
+        //when
+
+        //then
     }
     private Member getTestMember(){
         return Member.builder()
