@@ -1,9 +1,6 @@
 package com.example.play.post.service;
 
-import com.example.play.post.dto.RequestPostDto;
-import com.example.play.post.dto.RequestUpdatePostDto;
-import com.example.play.post.dto.ResponsePostDTo;
-import com.example.play.post.dto.ResponsePostOne;
+import com.example.play.post.dto.*;
 import com.example.play.post.entity.Post;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +31,7 @@ public interface PostService {
                            String email);
 
     // 게시글 삭제하기
-    int delete(Long postId, String email);
+    ResponseDeletePostDTo delete(Long postId, String email);
 
     // 내가 좋아요한 게시글 가져오기
     ResponsePostDTo getLikedPosts(String email, int page);

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -23,7 +22,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,6 +30,7 @@ import java.util.List;
 
 
 import static com.example.play.post.constant.EndPointUrl.*;
+import static com.example.play.post.dto.ResponseDeletePostDTo.DeleteStatus.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
@@ -94,8 +93,6 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.responseImgList[1].id").value(2L))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.responseImgList[1].url").value("test/path/2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt").value(time.format(DateTimeFormatter.ISO_DATE_TIME)));
-
-
     }
     @DisplayName("게시글 컨트롤러: 단일 게시글을 성공적으로 가져오는지 테스트")
     @Test
@@ -119,11 +116,6 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.likeCount").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.responseImgList").value(Matchers.empty()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt").value(time.format(DateTimeFormatter.ISO_DATE_TIME)));
-
-    }
-    @DisplayName("사용자가 좋아요한 게시글을 성공적으로 가져오는지 테스트")
-    @Test
-    void getLikedPosts(){
 
     }
     @DisplayName("게시글 컨트롤러: 검색 조건에 맞는 게시글을 성공적으로 검색하는지 테스트")
@@ -156,16 +148,11 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].likeCount").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].url").value("second url"));
     }
-    @DisplayName("특정 조건으로 정렬된 게시글을 성공적으로 가져오는지 테스트")
-    @Test
-    void getPostsSorted(){
-
-    }
     @DisplayName("포스트 컨트롤러: 게시글을 정상적으로 수정하는지 테스트")
     @Test
     @WithCustomMockUser
     void patchPostTest() throws Exception {
-        //when
+        //given
         //업데이트 하는 게시글 객체
         RequestUpdatePostDto requestUpdatePostDto = new RequestUpdatePostDto("update title", "update content");
         MockMultipartFile mockUpdatePostDto = new MockMultipartFile("updatePostDto", "", "application/json", objectMapper.writeValueAsBytes(requestUpdatePostDto));
@@ -197,6 +184,29 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.likeCount").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.responseImgList").value(Matchers.empty()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt").value(time.format(DateTimeFormatter.ISO_DATE_TIME)));
+    }
+    @DisplayName("포스트 컨트롤러: 게시글이 정상적으로 삭제되는지 테스트")
+    @Test
+    @WithCustomMockUser
+    void testPostDelete() throws Exception {
+        //given
+        ResponseDeletePostDTo deletePostDTo = ResponseDeletePostDTo.builder().
+                id(1L).hit(1).content("content").isActive(0).status(DELETED).title("title").likeCount(1).build();
+        Mockito.when(postServiceImpl.delete(Mockito.anyLong(), Mockito.anyString())).thenReturn(deletePostDTo);
+        //when && then
+        mockMvc.perform(MockMvcRequestBuilders.delete(TEST_POST_DELETE_URL, 1)
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.hit").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value("content"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.isActive").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("DELETED"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("title"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.likeCount").value(1));
+
 
 
     }

@@ -5,6 +5,7 @@ import com.example.play.image.dto.ResponseImg;
 import com.example.play.image.entity.PostImage;
 import com.example.play.like.post.entity.PostLike;
 import com.example.play.member.entity.Member;
+import com.example.play.post.dto.ResponseDeletePostDTo;
 import com.example.play.post.dto.ResponsePostOne;
 import com.example.play.post.dto.ResponsePostPageDto;
 import jakarta.persistence.*;
@@ -15,6 +16,8 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.play.post.dto.ResponseDeletePostDTo.DeleteStatus.*;
 
 @Entity
 @NoArgsConstructor
@@ -104,6 +107,17 @@ public class Post extends BaseEntity {
             }
         }
         return null;
+    }
+    public ResponseDeletePostDTo toDeleteDto(){
+        return ResponseDeletePostDTo.builder()
+                .id(id)
+                .status(DELETED)
+                .hit(hit)
+                .isActive(isActive)
+                .likeCount(likeCount)
+                .content(content)
+                .title(title)
+                .build();
     }
 }
 
