@@ -2,10 +2,7 @@ package com.example.play.post.controller;
 
 import com.example.play.image.dto.ResponseImg;
 import com.example.play.mock.WithCustomMockUser;
-import com.example.play.post.dto.RequestPostDto;
-import com.example.play.post.dto.ResponsePostDTo;
-import com.example.play.post.dto.ResponsePostOne;
-import com.example.play.post.dto.ResponsePostPageDto;
+import com.example.play.post.dto.*;
 import com.example.play.post.service.PostServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
@@ -162,6 +159,45 @@ class PostControllerTest {
     @DisplayName("특정 조건으로 정렬된 게시글을 성공적으로 가져오는지 테스트")
     @Test
     void getPostsSorted(){
+
+    }
+    @DisplayName("포스트 컨트롤러: 게시글을 정상적으로 수정하는지 테스트")
+    @Test
+    @WithCustomMockUser
+    void patchPostTest() throws Exception {
+        //when
+        //업데이트 하는 게시글 객체
+        RequestUpdatePostDto requestUpdatePostDto = new RequestUpdatePostDto("update title", "update content");
+        MockMultipartFile mockUpdatePostDto = new MockMultipartFile("updatePostDto", "", "application/json", objectMapper.writeValueAsBytes(requestUpdatePostDto));
+        // 이미지
+        MockMultipartFile fileOne = new MockMultipartFile("files", "files.jpg", "image/jpg", "image.jpg".getBytes());
+        MockMultipartFile fileTwo = new MockMultipartFile("files", "files.jpg", "image/jpeg", "image.jpeg".getBytes());
+
+        LocalDateTime time = LocalDateTime.now();
+        ResponsePostOne responsePostOne = new ResponsePostOne(1L, "update title", "update content", 1, 1, new ArrayList<>(), time);
+
+        List<Long> deleteFileList = new ArrayList<>();
+        deleteFileList.add(1L); deleteFileList.add(2L);
+        MockMultipartFile deleteFileIdList = new MockMultipartFile("deleteFileList", "", "application/json", objectMapper.writeValueAsBytes(deleteFileList));
+        Mockito.when(postServiceImpl.update(Mockito.anyLong(), Mockito.any(RequestUpdatePostDto.class), Mockito.anyList(), Mockito.anyList(), Mockito.anyString())).thenReturn(responsePostOne);
+
+        //when && then
+        mockMvc.perform(MockMvcRequestBuilders.multipart(HttpMethod.PATCH, TEST_POST_PATCH_URL, 1L)
+                .file(fileOne)
+                .file(fileTwo)
+                .file(mockUpdatePostDto)
+                .file(deleteFileIdList)
+                .with(csrf()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("update title"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value("update content"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.hit").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.likeCount").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.responseImgList").value(Matchers.empty()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt").value(time.format(DateTimeFormatter.ISO_DATE_TIME)));
+
 
     }
 
