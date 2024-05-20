@@ -3,7 +3,9 @@ package com.example.play.post.controller;
 import com.example.play.image.dto.ResponseImg;
 import com.example.play.mock.WithCustomMockUser;
 import com.example.play.post.dto.RequestPostDto;
+import com.example.play.post.dto.ResponsePostDTo;
 import com.example.play.post.dto.ResponsePostOne;
+import com.example.play.post.dto.ResponsePostPageDto;
 import com.example.play.post.service.PostServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
@@ -32,9 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import static com.example.play.post.constant.EndPointUrl.TEST_POST_CREATE_URL;
-import static com.example.play.post.constant.EndPointUrl.TEST_POST_GET_ONE_URL;
-
+import static com.example.play.post.constant.EndPointUrl.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
@@ -55,7 +55,7 @@ class PostControllerTest {
     }
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @DisplayName("게시글이 성공적으로 생성되는지 테스트")
+    @DisplayName("게시글 컨트롤러: 게시글이 성공적으로 생성되는지 테스트")
     @Test
     @WithCustomMockUser
     void postCreateTest() throws Exception {
@@ -100,7 +100,7 @@ class PostControllerTest {
 
 
     }
-    @DisplayName("단일 게시글을 성공적으로 가져오는지 테스트")
+    @DisplayName("게시글 컨트롤러: 단일 게시글을 성공적으로 가져오는지 테스트")
     @Test
     @WithCustomMockUser
     void getPostTest() throws Exception {
@@ -129,10 +129,35 @@ class PostControllerTest {
     void getLikedPosts(){
 
     }
-    @DisplayName("검색 조건에 맞는 게시글을 성공적으로 검색하는지 테스트")
+    @DisplayName("게시글 컨트롤러: 검색 조건에 맞는 게시글을 성공적으로 검색하는지 테스트")
     @Test
-    void getPostsBySearch(){
-
+    @WithCustomMockUser
+    void getPostsBySearch() throws Exception {
+        //given
+        ResponsePostPageDto postDto_1 = new ResponsePostPageDto(1L, "first title", 1, 1, "first url");
+        ResponsePostPageDto postDto_2 = new ResponsePostPageDto(2L, "second title", 2, 2, "second url");
+        List<ResponsePostPageDto> list = new ArrayList<>();
+        list.add(postDto_1); list.add(postDto_2);
+        ResponsePostDTo responsePostDTo = new ResponsePostDTo<>(0, 1, list);
+        Mockito.when(postServiceImpl.readBySearch(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(responsePostDTo);
+        //when && then
+        mockMvc.perform(MockMvcRequestBuilders.get(TEST_POST_SEARCH_URL)
+                .param("page", String.valueOf(0))
+                .param("type", "type")
+                .param("keyword", "keyword")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.currentPage").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[0].title").value("first title"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[0].likeCount").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[0].url").value("first url"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].id").value(2L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].title").value("second title"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].likeCount").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].url").value("second url"));
     }
     @DisplayName("특정 조건으로 정렬된 게시글을 성공적으로 가져오는지 테스트")
     @Test
