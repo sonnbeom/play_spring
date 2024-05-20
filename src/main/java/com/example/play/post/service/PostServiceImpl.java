@@ -5,10 +5,7 @@ import com.example.play.image.service.PostImgService;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
 import com.example.play.post.constant.PageSize;
-import com.example.play.post.dto.RequestPostDto;
-import com.example.play.post.dto.ResponsePostOne;
-import com.example.play.post.dto.ResponsePostDTo;
-import com.example.play.post.dto.RequestUpdatePostDto;
+import com.example.play.post.dto.*;
 import com.example.play.post.entity.Post;
 import com.example.play.post.exception.PostDeleteException;
 import com.example.play.post.exception.PostNotFoundException;
@@ -112,12 +109,16 @@ public class PostServiceImpl implements PostService{
         }
     }
     @Override
-    public int delete(Long postId, String email) {
+    public ResponseDeletePostDTo delete(Long postId, String email) {
         Post post = findById(postId);
 
         checkDeleteAuthorization(post, email, postId);
         postImgService.deleteImg(post);
-        return post.changeIsActive();
+        int deleteSuccess = post.changeIsActive();
+        if (deleteSuccess != 1){
+            throw new PostDeleteException("게시글이 삭제 되지 않았습니다. 게시글 id: " + postId, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return post.toDeleteDto();
     }
     private void checkDeleteAuthorization(Post post, String email, Long postId){
         Member member = memberService.findByEmail(email);

@@ -1,10 +1,7 @@
 package com.example.play.post.controller;
 
 import com.example.play.jwt.dto.CustomUserDetails;
-import com.example.play.post.dto.RequestPostDto;
-import com.example.play.post.dto.ResponsePostOne;
-import com.example.play.post.dto.ResponsePostDTo;
-import com.example.play.post.dto.RequestUpdatePostDto;
+import com.example.play.post.dto.*;
 import com.example.play.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,9 +65,9 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(responseOne);
     }
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Integer> delete(@PathVariable("postId")Long postId,
+    public ResponseEntity<ResponseDeletePostDTo> delete(@PathVariable("postId")Long postId,
                                           @AuthenticationPrincipal CustomUserDetails userDetails){
-        int deleteSuccess = postService.delete(postId, userDetails.getUsername());
-        return ResponseEntity.status(HttpStatus.OK).body(deleteSuccess);
+        ResponseDeletePostDTo result = postService.delete(postId, userDetails.getUsername());
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }
