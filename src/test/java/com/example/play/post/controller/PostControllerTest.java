@@ -1,8 +1,11 @@
 package com.example.play.post.controller;
 
+import com.example.play.image.dto.ResponseImg;
 import com.example.play.mock.WithCustomMockUser;
+import com.example.play.post.dto.RequestPostDto;
 import com.example.play.post.dto.ResponsePostOne;
 import com.example.play.post.service.PostServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,20 +15,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
+import java.util.List;
 
+
+import static com.example.play.post.constant.EndPointUrl.TEST_POST_CREATE_URL;
 import static com.example.play.post.constant.EndPointUrl.TEST_POST_GET_ONE_URL;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
 @WebMvcTest(PostController.class)
@@ -43,10 +53,51 @@ class PostControllerTest {
                 .apply(springSecurity())
                 .build();
     }
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @DisplayName("게시글이 성공적으로 생성되는지 테스트")
     @Test
-    void postCreateTest(){
+    @WithCustomMockUser
+    void postCreateTest() throws Exception {
+        //when
+
+        // 이미지
+        MockMultipartFile fileOne = new MockMultipartFile("files", "files.jpg", "image/jpg", "image.jpg".getBytes());
+        MockMultipartFile fileTwo = new MockMultipartFile("files", "files.jpg", "image/jpeg", "image.jpeg".getBytes());
+        // 게시글
+        RequestPostDto requestPostDto = new RequestPostDto("test tile", "test content");
+        MockMultipartFile mockPostDto = new MockMultipartFile("postDto", "postDto", "application/json", objectMapper.writeValueAsBytes(requestPostDto));
+        // 결과
+        LocalDateTime time = LocalDateTime.now();
+
+        List<ResponseImg> listImg = new ArrayList<>();
+        ResponseImg firstImg = new ResponseImg(1L, "test/path/1");
+        ResponseImg secondImg = new ResponseImg(2L, "test/path/2");
+        listImg.add(firstImg); listImg.add(secondImg);
+
+        ResponsePostOne responsePostOne = new ResponsePostOne(1L, "test title", "test content", 1, 1, listImg, time);
+
+        Mockito.when(postServiceImpl.create(Mockito.any(RequestPostDto.class), Mockito.anyList(), Mockito.anyString())).thenReturn(responsePostOne);
+
+        //given && then
+        mockMvc.perform(MockMvcRequestBuilders.multipart(TEST_POST_CREATE_URL)
+                .file(fileOne)
+                .file(fileTwo)
+                .file(mockPostDto)
+                .with(csrf()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("test title"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value("test content"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.hit").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.likeCount").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.responseImgList[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.responseImgList[0].url").value("test/path/1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.responseImgList[1].id").value(2L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.responseImgList[1].url").value("test/path/2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt").value(time.format(DateTimeFormatter.ISO_DATE_TIME)));
+
 
     }
     @DisplayName("단일 게시글을 성공적으로 가져오는지 테스트")
