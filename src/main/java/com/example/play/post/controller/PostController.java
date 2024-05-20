@@ -34,7 +34,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<ResponsePostOne> readOne(@PathVariable("postId") Long postId){
+    public ResponseEntity<ResponsePostOne> getOne(@PathVariable("postId") Long postId){
         ResponsePostOne responsePostDto = postService.readOne(postId);
         return ResponseEntity.status(HttpStatus.OK).body(responsePostDto);
     }
