@@ -4,6 +4,7 @@ import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.service.MemberImgService;
 import com.example.play.member.dto.RequestCreateMemberDto;
 import com.example.play.member.dto.RequestUpdateMemberDto;
+import com.example.play.member.dto.ResponseDeleteMemberDto;
 import com.example.play.member.dto.ResponseMemberDto;
 import com.example.play.member.entity.Member;
 import com.example.play.member.memberMapper.MemberMapper;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
+import static com.example.play.member.dto.ResponseDeleteMemberDto.STATUS.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -134,10 +136,28 @@ class MemberServiceTest {
     @DisplayName("서비스: 멤버 삭제 테스트")
     void deleteMemberTest(){
         //given
+        String testEmail = "test@email.com";
+        Long testMemberId = 1L;
+        Member mockMember = Mockito.mock(Member.class);
+        ResponseDeleteMemberDto responseDeleteMemberDto = new ResponseDeleteMemberDto(DELETED, DELETED);
+
+        Mockito.when(memberRepository.findByEmail(testEmail)).thenReturn(Optional.ofNullable(mockMember));
+        Mockito.doNothing().when(mockMember).checkDeleteAuthority(testMemberId);
+        Mockito.when(memberImgService.delete(mockMember)).thenReturn(0);
+        Mockito.when(mockMember.changeStatus()).thenReturn(0);
+        Mockito.when(memberMapper.deleteResponse(0,0)).thenReturn(responseDeleteMemberDto);
 
         //when
+        ResponseDeleteMemberDto result = memberServiceImpl.deleteMember(testEmail, testMemberId);
 
         //then
+        Mockito.verify(mockMember).checkDeleteAuthority(testMemberId);
+        Mockito.verify(mockMember).changeStatus();
+        Mockito.verify(memberImgService).delete(mockMember);
+        assertNotNull(result);
+        assertEquals(result.getMemberStatus(), DELETED);
+        assertEquals(result.getMemberImgStatus(), DELETED);
+        assertEquals(responseDeleteMemberDto ,result);
     }
     private Member getTestMember(){
         return Member.builder()
