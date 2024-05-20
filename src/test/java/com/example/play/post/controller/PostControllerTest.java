@@ -128,13 +128,43 @@ class PostControllerTest {
         List<ResponsePostPageDto> list = new ArrayList<>();
         list.add(postDto_1); list.add(postDto_2);
         ResponsePostDTo responsePostDTo = new ResponsePostDTo<>(0, 1, list);
+        Mockito.when(postServiceImpl.readBySort(Mockito.anyInt(), Mockito.anyString())).thenReturn(responsePostDTo);
+
+        //when && then
+        mockMvc.perform(MockMvcRequestBuilders.get(TEST_POST_SORT_URL)
+                .param("page", String.valueOf(0))
+                .param("sortType", "sortType")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.currentPage").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[0].title").value("first title"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[0].likeCount").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[0].url").value("first url"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].id").value(2L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].title").value("second title"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].likeCount").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].url").value("second url"));
+    }
+    @DisplayName("게시글 컨트롤러: 정렬 조건에 맞는 게시글을 성공적으로 검색하는지 테스트")
+    @Test
+    @WithCustomMockUser
+    void getPostsBySort() throws Exception {
+        //given
+        ResponsePostPageDto postDto_1 = new ResponsePostPageDto(1L, "first title", 1, 1, "first url");
+        ResponsePostPageDto postDto_2 = new ResponsePostPageDto(2L, "second title", 2, 2, "second url");
+        List<ResponsePostPageDto> list = new ArrayList<>();
+        list.add(postDto_1); list.add(postDto_2);
+        ResponsePostDTo responsePostDTo = new ResponsePostDTo<>(0, 1, list);
         Mockito.when(postServiceImpl.readBySearch(Mockito.anyInt(), Mockito.anyString(), Mockito.anyString())).thenReturn(responsePostDTo);
         //when && then
         mockMvc.perform(MockMvcRequestBuilders.get(TEST_POST_SEARCH_URL)
-                .param("page", String.valueOf(0))
-                .param("type", "type")
-                .param("keyword", "keyword")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .param("page", String.valueOf(0))
+                        .param("type", "type")
+                        .param("keyword", "keyword")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.currentPage").value(0))
