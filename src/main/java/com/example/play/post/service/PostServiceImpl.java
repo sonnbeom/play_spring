@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService{
         Post saved = postRepository.save(post);
         if (!ObjectUtils.isEmpty(files)){
             List<ResponseImg> urls = postImgService.savePostImage(files, saved);
-            return saved.ToDtoWithImage(urls);
+            return saved.toDtoWithImage(urls);
         }
         else {
             return saved.toDto();
@@ -55,7 +55,7 @@ public class PostServiceImpl implements PostService{
         Post post = findById(postId);
         post.upHit();
         List<ResponseImg> responseImgList = postImgService.readImages(post);
-        return post.ToDtoWithImage(responseImgList);
+        return post.toDtoWithImage(responseImgList);
     }
     @Override
     public Post findById(Long postId){
@@ -97,7 +97,7 @@ public class PostServiceImpl implements PostService{
         }
 
         List<ResponseImg> imgList = postImgService.update(post, deleteImageList, files);
-        return post.ToDtoWithImage(imgList);
+        return post.toDtoWithImage(imgList);
     }
     private void checkUpdateAuthorization(Post post, String email, Long postId){
         Member member = memberService.findByEmail(email);
