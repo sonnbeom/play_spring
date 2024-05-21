@@ -5,6 +5,7 @@ import com.example.play.image.service.PostImgService;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
 import com.example.play.post.dto.RequestPostDto;
+import com.example.play.post.dto.RequestUpdatePostDto;
 import com.example.play.post.dto.ResponsePostDTo;
 import com.example.play.post.dto.ResponsePostOne;
 import com.example.play.post.entity.Post;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -123,9 +125,34 @@ class PostServiceTest {
     @DisplayName("서비스 레이어에서 게시글이 성공적으로 업데이트되는지 테스트")
     @Test
     void testPostUpdate(){
+        //given
+        RequestUpdatePostDto updatePostDto = new RequestUpdatePostDto("update title", "update content");
+        List<MultipartFile> files = new ArrayList<>();
+        files.add(Mockito.mock(MultipartFile.class));
+        List<Long> deleteImgList = new ArrayList<>();
+        deleteImgList.add(1L);
+        Member testMember = getTestMember();
+        Post testPost = getTestPostWithMember(testMember);
+        List<ResponseImg> imgList = Collections.singletonList(new ResponseImg(1L, "url"));
 
+
+        Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(testPost));
+        Mockito.when(memberService.findByEmail(Mockito.anyString())).thenReturn(testMember);
+        Mockito.when(postImgService.update(Mockito.any(Post.class), Mockito.anyList(), Mockito.anyList())).thenReturn(imgList);
+
+        //when
+        ResponsePostOne result =postServiceImpl.update(1L, updatePostDto, files, deleteImgList, "test@email.com");
+
+        //then
+        assertEquals(result.getTitle(), updatePostDto.getTitle());
+        assertEquals(result.getContent(), updatePostDto.getContent());
+        assertEquals(result.getResponseImgList().get(0).getUrl(), imgList.get(0).getUrl());
+
+        Mockito.verify(postRepository).findById(Mockito.anyLong());
+        Mockito.verify(memberService).findByEmail(Mockito.anyString());
+        Mockito.verify(postImgService).update(Mockito.any(Post.class), Mockito.anyList(), Mockito.anyList());
     }
-    @DisplayName("서비스 레이어에서 게시글이 성공적으로 삭제되는지 테스트")
+    @DisplayName("포스트 서비스 게시글이 성공적으로 삭제되는지 테스트")
     @Test
     void testPostDelete(){
 
@@ -140,6 +167,17 @@ class PostServiceTest {
                 .password("testPwd")
                 .build();
     }
+    private Post getTestPostWithMember(Member member){
+        return Post.builder()
+                .id(1L)
+                .hit(1)
+                .content("content")
+                .title("title")
+                .isActive(1)
+                .member(member)
+                .build();
+
+        }
     private Post getTestPost(){
         return Post.builder()
                 .id(1L)
