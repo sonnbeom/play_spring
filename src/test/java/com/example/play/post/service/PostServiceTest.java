@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -76,6 +77,27 @@ class PostServiceTest {
         Mockito.verify(postRepository).save(Mockito.any(Post.class));
         Mockito.verify(postImgService).savePostImage(Mockito.anyList(), Mockito.any(Post.class));
 
+    }
+    @DisplayName("포스트 서비스: 단일 게시글을 가져오기")
+    @Test
+    void getPost(){
+        //given
+        Long postId = 1L;
+        Post post = getTestPost();
+        List<ResponseImg> imgList = new ArrayList<>();
+        imgList.add(new ResponseImg(1L, "test url"));
+
+         Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(post));
+         Mockito.when(postImgService.readImages(Mockito.any(Post.class))).thenReturn(imgList);
+
+         //when
+        ResponsePostOne result = postServiceImpl.readOne(postId);
+
+        //then
+        Mockito.verify(postRepository).findById(Mockito.anyLong());
+        Mockito.verify(postImgService).readImages(Mockito.any(Post.class));
+        assertEquals(result.getResponseImgList().size(), 1);
+        assertEquals(result.getId(), 1);
     }
     @DisplayName("서비스 레이어에서 게시글이 성공적으로 업데이트되는지 테스트")
     @Test
