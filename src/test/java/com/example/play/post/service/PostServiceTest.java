@@ -4,10 +4,7 @@ import com.example.play.image.dto.ResponseImg;
 import com.example.play.image.service.PostImgService;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
-import com.example.play.post.dto.RequestPostDto;
-import com.example.play.post.dto.RequestUpdatePostDto;
-import com.example.play.post.dto.ResponsePostDTo;
-import com.example.play.post.dto.ResponsePostOne;
+import com.example.play.post.dto.*;
 import com.example.play.post.entity.Post;
 import com.example.play.post.postMapper.PostMapper;
 import com.example.play.post.repository.CustomPostRepository;
@@ -152,9 +149,24 @@ class PostServiceTest {
         Mockito.verify(memberService).findByEmail(Mockito.anyString());
         Mockito.verify(postImgService).update(Mockito.any(Post.class), Mockito.anyList(), Mockito.anyList());
     }
-    @DisplayName("포스트 서비스 게시글이 성공적으로 삭제되는지 테스트")
+    @DisplayName("포스트 서비스: 게시글이 성공적으로 삭제되는지 테스트")
     @Test
     void testPostDelete(){
+        //given
+        Member testMember = getTestMember();
+        Post testPost = getTestPostWithMember(testMember);
+
+        Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(testPost));
+        Mockito.when(memberService.findByEmail(Mockito.anyString())).thenReturn(testMember);
+        Mockito.doNothing().when(postImgService).deleteImg(Mockito.any(Post.class));
+
+        //when
+        ResponseDeletePostDTo result = postServiceImpl.delete(1L, "test@email.com");
+        //then
+        assertEquals(result.getIsActive(), 0);
+        assertEquals(result.getId(), 1L);
+        Mockito.verify(postRepository).findById(Mockito.anyLong());
+        Mockito.verify(postImgService).deleteImg(Mockito.any(Post.class));
 
     }
     // 검색, 정렬, 단일 게시글 get => test 예정
