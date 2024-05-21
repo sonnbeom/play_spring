@@ -5,6 +5,7 @@ import com.example.play.image.service.PostImgService;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
 import com.example.play.post.dto.RequestPostDto;
+import com.example.play.post.dto.ResponsePostDTo;
 import com.example.play.post.dto.ResponsePostOne;
 import com.example.play.post.entity.Post;
 import com.example.play.post.postMapper.PostMapper;
@@ -18,6 +19,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -87,8 +90,8 @@ class PostServiceTest {
         List<ResponseImg> imgList = new ArrayList<>();
         imgList.add(new ResponseImg(1L, "test url"));
 
-         Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(post));
-         Mockito.when(postImgService.readImages(Mockito.any(Post.class))).thenReturn(imgList);
+        Mockito.when(postRepository.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(post));
+        Mockito.when(postImgService.readImages(Mockito.any(Post.class))).thenReturn(imgList);
 
          //when
         ResponsePostOne result = postServiceImpl.readOne(postId);
@@ -98,6 +101,24 @@ class PostServiceTest {
         Mockito.verify(postImgService).readImages(Mockito.any(Post.class));
         assertEquals(result.getResponseImgList().size(), 1);
         assertEquals(result.getId(), 1);
+    }
+    @DisplayName("포스트 서비스: 검색을 통해 게시글 가져오기")
+    @Test
+    void getPostBySearch(){
+        //given
+        Pageable pageable = mock(Pageable.class);
+        String type = "type";
+        String keywokd= "keyword";
+        Page<Post> postPage = mock(Page.class);
+        ResponsePostDTo responsePostDTo = new ResponsePostDTo<>();
+        Mockito.when(customPostRepository.findBySearch(Mockito.any(Pageable.class), Mockito.anyString(), Mockito.anyString())).thenReturn(postPage);
+        Mockito.when(postMapper.pageEntityToDto(Mockito.any(Page.class))).thenReturn(responsePostDTo);
+
+        //when
+        postServiceImpl.readBySearch(1, type, keywokd);
+        //then
+        Mockito.verify(customPostRepository).findBySearch(Mockito.any(Pageable.class), Mockito.anyString(), Mockito.anyString());
+        Mockito.verify(postMapper).pageEntityToDto(Mockito.any(Page.class));
     }
     @DisplayName("서비스 레이어에서 게시글이 성공적으로 업데이트되는지 테스트")
     @Test
