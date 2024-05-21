@@ -169,6 +169,27 @@ class PostServiceTest {
         Mockito.verify(postImgService).deleteImg(Mockito.any(Post.class));
 
     }
+    @Test
+    @DisplayName("포스트 서비스 좋아요 한 게시글을 페이징처리하여 가져오는지 테스트")
+    void getLikedPosts(){
+        //given
+        Member testMember = getTestMember();
+        Page<Post> postPage = mock(Page.class);
+        ResponsePostDTo responsePostDTo = mock(ResponsePostDTo.class);
+        int currentPage = 0;
+
+        Mockito.when(memberService.findByEmail(Mockito.anyString())).thenReturn(testMember);
+        Mockito.when(customPostRepository.findLikedPosts(Mockito.any(Member.class), Mockito.any(Pageable.class))).thenReturn(postPage);
+        Mockito.when(postMapper.pageEntityToDto(Mockito.any(Page.class))).thenReturn(responsePostDTo);
+        //when
+        ResponsePostDTo result = postServiceImpl.getLikedPosts("tese@email.com", currentPage);
+        //then
+        assertEquals(result.getCurrentPage(), currentPage);
+        Mockito.verify(memberService).findByEmail(Mockito.anyString());
+        Mockito.verify(customPostRepository).findLikedPosts(Mockito.any(Member.class), Mockito.any(Pageable.class));
+        Mockito.verify(postMapper).pageEntityToDto(Mockito.any(Page.class));
+
+    }
     // 검색, 정렬, 단일 게시글 get => test 예정
     private Member getTestMember(){
         return Member.builder()
