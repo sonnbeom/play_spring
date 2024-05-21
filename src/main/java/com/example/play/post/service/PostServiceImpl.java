@@ -90,10 +90,10 @@ public class PostServiceImpl implements PostService{
         checkUpdateAuthorization(post ,email, postId);
 
         if (!ObjectUtils.isEmpty(updateDto.getTitle())){
-            post.updateTitle(updateDto.getTitle());
+            updateDto.sendUpdateTitleToPost(post);
         }
         if (!ObjectUtils.isEmpty(updateDto.getContent())){
-            post.updateContent(updateDto.getContent());
+            updateDto.sendUpdateContent(post);
         }
 
         List<ResponseImg> imgList = postImgService.update(post, deleteImageList, files);
