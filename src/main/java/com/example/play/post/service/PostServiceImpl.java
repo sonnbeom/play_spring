@@ -115,7 +115,7 @@ public class PostServiceImpl implements PostService{
         checkDeleteAuthorization(post, email, postId);
         postImgService.deleteImg(post);
         int deleteSuccess = post.changeIsActive();
-        if (deleteSuccess != 1){
+        if (deleteSuccess != 0){
             throw new PostDeleteException("게시글이 삭제 되지 않았습니다. 게시글 id: " + postId, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return post.toDeleteDto();
