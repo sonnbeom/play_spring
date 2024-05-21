@@ -66,7 +66,7 @@ class MemberControllerTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
     @Test
-    @DisplayName("컨트롤러: 멤버 생성 테스트")
+    @DisplayName("멤버 컨트롤러: 멤버 생성 테스트")
     @WithMockUser
     void testMemberCreate() throws Exception {
         // given
