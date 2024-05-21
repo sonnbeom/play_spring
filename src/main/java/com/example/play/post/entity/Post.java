@@ -78,7 +78,7 @@ public class Post extends BaseEntity {
                 .createdAt(getCreatedAt())
                 .build();
     }
-    public ResponsePostOne ToDtoWithImage(List<ResponseImg> responseImgList) {
+    public ResponsePostOne toDtoWithImage(List<ResponseImg> responseImgList) {
         return ResponsePostOne.builder()
                 .id(id)
                 .content(content)
