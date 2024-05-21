@@ -1,10 +1,11 @@
 package com.example.play.like.post.dto;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+
+@Getter
+@AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class RequestLike {
     private Long postId;
 }
