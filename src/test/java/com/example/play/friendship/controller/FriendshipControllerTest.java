@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.play.friendship.constant.EndPointUrl.*;
+import static com.example.play.friendship.constant.FriendshipStatus.ACCEPTED;
 import static com.example.play.friendship.constant.FriendshipStatus.WAITING;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -97,6 +98,22 @@ class FriendshipControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].friendshipDto.status").value("WAITING"));
 
 
+    }
+    @Test
+    @DisplayName("친구 컨트롤러: 친구 요청 승인")
+    @WithCustomMockUser
+    void testApproveFriendship() throws Exception {
+        //given
+        ResponseFriendshipDto result = ResponseFriendshipDto.builder().friendshipId(1L).status(ACCEPTED).build();
+        when(friendshipService.approveFriendship(Mockito.anyLong(), Mockito.anyString())).thenReturn(result);
+
+        //when && then
+        mockMvc.perform(MockMvcRequestBuilders.post(TEST_APPROVE_FRIENDSHIP_URL, 1)
+                .with(csrf()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.friendshipId").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("ACCEPTED"));
     }
 
 }
