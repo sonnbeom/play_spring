@@ -115,5 +115,22 @@ class FriendshipControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.friendshipId").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("ACCEPTED"));
     }
+    @Test
+    @DisplayName("친구 컨트롤러: 친구 리스트 불러오기")
+    @WithCustomMockUser
+    void testGetFriendList() throws Exception {
+        //given
+        List<ResponseFriendshipWithImg> result = new ArrayList<>();
+        ResponseFriendshipDto dto = ResponseFriendshipDto.builder().status(ACCEPTED).build();
+        ResponseFriendshipWithImg responseFriendshipWithImg = ResponseFriendshipWithImg.builder().friendshipDto(dto).img(new ResponseMemberImg()).build();
+        result.add(responseFriendshipWithImg);
+        when(friendshipService.findFriendList(Mockito.anyString())).thenReturn(result);
+        //when && then
+        mockMvc.perform(MockMvcRequestBuilders.get(TEST_GET_APPROVE_FRIENDSHIP_URL)
+                .with(csrf()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].friendshipDto.status").value("ACCEPTED"));
+    }
 
 }
