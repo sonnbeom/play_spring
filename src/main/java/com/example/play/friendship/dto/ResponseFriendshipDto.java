@@ -16,5 +16,5 @@ public class ResponseFriendshipDto {
     private ResponseMemberDto senderDto;
     private ResponseMemberDto receiverDto;
     private FriendshipStatus status;
-    private boolean isReceived;
+    private boolean received;
 }
