@@ -94,6 +94,7 @@ public class Member extends BaseEntity {
         return ResponseMemberDto.builder()
                 .id(id)
                 .nickname(nickname)
+                .email(email)
                 .name(name)
                 .build();
     }
