@@ -2,6 +2,7 @@ package com.example.play.friendship.controller;
 
 import com.example.play.friendship.constant.EndPointUrl;
 import com.example.play.friendship.constant.FriendshipStatus;
+import com.example.play.friendship.dto.RequestDeleteFriendship;
 import com.example.play.friendship.dto.RequestFriendship;
 import com.example.play.friendship.dto.ResponseFriendshipDto;
 import com.example.play.friendship.dto.ResponseFriendshipWithImg;
@@ -132,5 +133,20 @@ class FriendshipControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].friendshipDto.status").value("ACCEPTED"));
     }
+    @Test
+    @DisplayName("친구 컨트롤러: 친구 삭제하기")
+    @WithCustomMockUser
+    void testDeleteFriendship() throws Exception {
+        //given
+        RequestDeleteFriendship requestDeleteFriendship = RequestDeleteFriendship.builder().friendshipId(1L).build();
+        doNothing().when(friendshipService).deleteFriendship(Mockito.any(RequestDeleteFriendship.class), Mockito.anyString());
 
+        //when && then
+        mockMvc.perform(MockMvcRequestBuilders.delete(TEST_DELETE_FRIENDSHIP_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf())
+                .content(objectMapper.writeValueAsString(requestDeleteFriendship)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
 }
