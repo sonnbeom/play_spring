@@ -16,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static com.example.play.friendship.constant.FriendshipStatus.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -57,6 +59,27 @@ public class FriendshipServiceTest {
         verify(memberService, times(2)).findByEmail(anyString());
         verify(friendshipMapper).dtoToEntity(any(Member.class), any(Member.class));
         verify(friendshipRepository).save(any(Friendship.class));
+    }
+    @Test
+    @DisplayName("친구 서비스: 친구 요청이 제대로 수락되는지 테스트")
+    void testFriendshipApprove(){
+        //given
+        String receiverEmail = "receiver@email.com";
+        String senderEmail = "sender@email.com";
+        Member sender = getTestSender(senderEmail);
+        Member receiver = getTestReceiver(receiverEmail);
+        Friendship friendship = Friendship.builder().sender(sender).receiver(receiver).status(WAITING).build();
+        when(memberService.findByEmail(anyString())).thenReturn(receiver);
+        when(friendshipRepository.findById(anyLong())).thenReturn(Optional.ofNullable(friendship));
+        //when
+        ResponseFriendshipDto result = friendshipService.approveFriendship(1L, receiverEmail);
+        //then
+        assertEquals(result.getReceiverDto().getEmail(), receiverEmail);
+        assertEquals(result.getStatus(), ACCEPTED);
+        verify(memberService).findByEmail(anyString());
+        verify(friendshipRepository).findById(anyLong());
+
+
     }
     private Member getTestSender(String email){
         return Member.builder()
