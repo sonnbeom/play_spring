@@ -47,10 +47,12 @@ public class FriendshipServiceTest {
         //given
         String receiverEmail = "receiver@email.com";
         String senderEmail = "sender@email.com";
-        RequestFriendship requestFriendship = new RequestFriendship(receiverEmail);
         Member sender = getTestSender(senderEmail);
         Member receiver = getTestReceiver(receiverEmail);
+
+        RequestFriendship requestFriendship = new RequestFriendship(receiverEmail);
         Friendship friendship = Friendship.builder().sender(sender).receiver(receiver).status(WAITING).build();
+
         when(memberService.findByEmail(anyString())).thenReturn(sender);
         when(memberService.findByEmail(anyString())).thenReturn(receiver);
         when(friendshipMapper.dtoToEntity(any(Member.class), any(Member.class))).thenReturn(friendship);
@@ -89,7 +91,7 @@ public class FriendshipServiceTest {
     @DisplayName("친구 서비스: 대기 중인 친구요청 불러오기")
     void tesGetFriendshipWaitingList(){
         //given
-        // 친구요청 리시버
+        // 친구요청 받은 멤버
         String receiverEmail = "receiver@email.com";
         Member receiver = getTestReceiver(receiverEmail);
         // 친구 요청 보낸 멤버 1
@@ -98,20 +100,16 @@ public class FriendshipServiceTest {
         // 친구 요청 보낸 멤버 2
         String secondSenderEmail = "secondSender@email.com";
         Member secondSender = getTestSender(secondSenderEmail);
-        // DB 조회시 반환될 친구 리스트
-        Friendship friendship_1 = Friendship.builder().receiver(receiver).sender(sender).status(WAITING).build();
-        Friendship friendship_2 = Friendship.builder().receiver(receiver).sender(secondSender).status(WAITING).build();
-        List<Friendship> list = new ArrayList<>();
-        list.add(friendship_1); list.add(friendship_2);
-        // 친구요청한 멤버들의 사진을 멤버 이미지 서비스에서 가져옴
-        MemberImage memberImage_1 = new MemberImage(1L, "test url", 1, sender);
-        MemberImage memberImage_2 = new MemberImage(2L, "test url2", 1, secondSender);
-        List<MemberImage> memberImageList = new ArrayList<>();
-        memberImageList.add(memberImage_1); memberImageList.add(memberImage_2);
+
+        // DB 조회시 반환될 친구 리스트 (수락된 친구 리스트)
+        List<Friendship> friendshipList = getWaitingFriendshipList(receiver, sender, secondSender);
+
+        // 친구요청한 멤버들의 사진 (이미지 서비스에서 가져옴)
+        List<MemberImage> friendsImgList = getFriendsImgList(sender, secondSender);
 
         when(memberService.findByEmail(anyString())).thenReturn(receiver);
-        when(friendshipCustomRepository.findWaitinFrinedshipList(any(Member.class), any(Pageable.class))).thenReturn(list);
-        when(memberImgService.findImgListByIdList(anyList())).thenReturn(memberImageList);
+        when(friendshipCustomRepository.findWaitinFrinedshipList(any(Member.class), any(Pageable.class))).thenReturn(friendshipList);
+        when(memberImgService.findImgListByIdList(anyList())).thenReturn(friendsImgList);
 
         //when
         List<ResponseFriendshipWithImg> result = friendshipService.getWaitingFriendList(receiverEmail, 0);
@@ -127,6 +125,66 @@ public class FriendshipServiceTest {
         verify(memberService).findByEmail(anyString());
         verify(friendshipCustomRepository).findWaitinFrinedshipList(any(Member.class), any(Pageable.class));
         verify(memberImgService).findImgListByIdList(anyList());
+    }
+    @Test
+    @DisplayName("친구 서비스: 친구 리스트 불러는지 테스트")
+    void getFriendList(){
+        //given
+        // 친구요청 받은 멤버
+        String receiverEmail = "receiver@email.com";
+        Member receiver = getTestReceiver(receiverEmail);
+        // 친구 요청 보낸 멤버 1
+        String senderEmail = "sender@email.com";
+        Member sender = getTestSender(senderEmail);
+        // 친구 요청 보낸 멤버 2
+        String secondSenderEmail = "secondSender@email.com";
+        Member secondSender = getTestSender(secondSenderEmail);
+        // DB 조회시 반환될 친구 리스트 (수락된 친구 리스트)
+        List<Friendship> friendshipList = getFriendshipList(receiver, sender, secondSender);
+
+        // 친구요청한 멤버들의 사진 (이미지 서비스에서 가져옴)
+        List<MemberImage> friendsImgList = getFriendsImgList(sender, secondSender);
+
+        when(memberService.findByEmail(anyString())).thenReturn(receiver);
+        when(friendshipCustomRepository.findFriendListByMember(any(Member.class))).thenReturn(friendshipList);
+        when(memberImgService.findImgListByIdList(anyList())).thenReturn(friendsImgList);
+
+        //when
+        List<ResponseFriendshipWithImg> result = friendshipService.findFriendList(receiverEmail);
+
+        //then
+        assertEquals(result.size(), 2);
+        assertEquals(result.get(0).getFriendshipDto().getStatus(), ACCEPTED);
+        assertEquals(result.get(1).getFriendshipDto().getStatus(), ACCEPTED);
+        assertEquals(result.get(0).getFriendshipDto().getReceiverDto().getEmail(), receiverEmail);
+        assertEquals(result.get(1).getFriendshipDto().getReceiverDto().getEmail(), receiverEmail);
+        assertEquals(result.get(0).getImg().getUrl(), "test url");
+        assertEquals(result.get(1).getImg().getUrl(), "test url2");
+        verify(memberService).findByEmail(anyString());
+        verify(friendshipCustomRepository).findFriendListByMember(any(Member.class));
+        verify(memberImgService).findImgListByIdList(anyList());
+
+    }
+    private List<Friendship> getWaitingFriendshipList(Member receiver, Member sender, Member secondSender){
+        Friendship friendship_1 = Friendship.builder().receiver(receiver).sender(sender).status(WAITING).build();
+        Friendship friendship_2 = Friendship.builder().receiver(receiver).sender(secondSender).status(WAITING).build();
+        List<Friendship> list = new ArrayList<>();
+        list.add(friendship_1); list.add(friendship_2);
+        return list;
+    }
+    private List<MemberImage> getFriendsImgList(Member sender, Member secondSender){
+        MemberImage memberImage_1 = new MemberImage(1L, "test url", 1, sender);
+        MemberImage memberImage_2 = new MemberImage(2L, "test url2", 1, secondSender);
+        List<MemberImage> memberImageList = new ArrayList<>();
+        memberImageList.add(memberImage_1); memberImageList.add(memberImage_2);
+        return memberImageList;
+    }
+    private List<Friendship> getFriendshipList(Member receiver, Member sender, Member secondSender){
+        Friendship friendship_1 = Friendship.builder().receiver(receiver).sender(sender).status(ACCEPTED).build();
+        Friendship friendship_2 = Friendship.builder().receiver(receiver).sender(secondSender).status(ACCEPTED).build();
+        List<Friendship> list = new ArrayList<>();
+        list.add(friendship_1); list.add(friendship_2);
+        return list;
     }
     private Member getTestSender(String email){
         return Member.builder()
