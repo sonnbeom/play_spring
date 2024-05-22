@@ -220,27 +220,5 @@ class PostServiceTest {
                 .isActive(1)
                 .build();
     }
-    private RequestPostDto getRequestPostDto(){
-        return new RequestPostDto("test content", "test title");
-    }
-    private ResponsePostOne getTestResponsePostOne() {
-
-        ResponseImg firstImg = new ResponseImg(1L, "first url");
-        ResponseImg secondImg = new ResponseImg(1L, "first url");
-        List<ResponseImg> list = new ArrayList<>();
-        list.add(firstImg); list.add(secondImg);
-        return ResponsePostOne.builder()
-                .id(1L)
-                .content("content")
-                .title("title")
-                .hit(1)
-                .responseImgList(list)
-                .likeCount(1)
-                .createdAt(LocalDateTime.now())
-                .build();
-    }
-    private MultipartFile getImgSample(){
-        return new MockMultipartFile("img", "", "img.jpg", "img".getBytes());
-    }
 
 }
