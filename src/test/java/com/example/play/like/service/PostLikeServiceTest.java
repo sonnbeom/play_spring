@@ -3,6 +3,7 @@ package com.example.play.like.service;
 import com.example.play.like.post.dto.RequestLike;
 import com.example.play.like.post.dto.ResponsePostLikeDto;
 import com.example.play.like.post.entity.PostLike;
+import com.example.play.like.post.exception.PostLikeException;
 import com.example.play.like.post.mapper.PostLikeMapper;
 import com.example.play.like.post.repository.PostLikeCustomRepository;
 import com.example.play.like.post.repository.PostLikeRepository;
@@ -47,7 +48,7 @@ public class PostLikeServiceTest {
     private PostLikeRepository postLikeRepository;
     @Test
     @DisplayName("게시글 좋아요 서비스: 좋아요 생성")
-    void createPostLike(){
+    void testCreatePostLike(){
         //given
         int likeCount = 0;
         Post testPost = getTestPostForCreateLike(likeCount);
@@ -77,20 +78,24 @@ public class PostLikeServiceTest {
     }
     @Test
     @DisplayName("게시글 좋아요 서비스: 좋아요 취소")
-    void deletePostLike(){
+    void testDeletePostLike(){
         //given
         int likeCount = 1;
         Post testPost = getTestPostForDeleteLike(likeCount);
         Member testMember = getTestMember();
         RequestLike requestLike = new RequestLike(1L);
+
         PostLike postLike = PostLike.builder().id(1L).post(testPost).isActive(1).member(testMember).build();
         List<PostLike> postLikeList = new ArrayList<>();
         postLikeList.add(postLike);
+
         when(postService.findById(Mockito.anyLong())).thenReturn(testPost);
         when(memberService.findByEmail(Mockito.anyString())).thenReturn(testMember);
         when(postLikeCustomRepository.findByPostAndMember(Mockito.any(Post.class), Mockito.any(Member.class))).thenReturn(postLikeList);
+
         //when
         ResponsePostLikeDto result = postLikeService.createLike(requestLike, "test@email.com");
+
         //then
         verify(postService).findById(Mockito.anyLong());
         verify(memberService).findByEmail(Mockito.anyString());
@@ -98,6 +103,27 @@ public class PostLikeServiceTest {
         assertEquals(result.getLikeStatus(), DELETE);
         assertEquals(result.getResponseLike().getIsActive(), 0);
         assertEquals(result.getResponsePostOne().getLikeCount(), likeCount-1);
+    }
+    @Test
+    @DisplayName("게시글 좋아요 서비스: 멤버가 누른 좋아요가 한개 초과일 경우 예외를 던짐")
+    void testThrowPostLikeException(){
+        //given
+        Post testPost = getTestPostForDeleteLike(2);
+        Member testMember = getTestMember();
+        RequestLike requestLike = new RequestLike(1L);
+
+        PostLike postLike_1 = PostLike.builder().id(1L).post(testPost).isActive(1).member(testMember).build();
+        PostLike postLike_2 = PostLike.builder().id(2L).post(testPost).isActive(1).member(testMember).build();
+        List<PostLike> postLikeList = new ArrayList<>();
+        postLikeList.add(postLike_1); postLikeList.add(postLike_2);
+
+        when(postService.findById(Mockito.anyLong())).thenReturn(testPost);
+        when(memberService.findByEmail(Mockito.anyString())).thenReturn(testMember);
+        when(postLikeCustomRepository.findByPostAndMember(Mockito.any(Post.class), Mockito.any(Member.class))).thenReturn(postLikeList);
+
+        //when && then
+        assertThrows(PostLikeException.class, ()->
+            postLikeService.createLike(requestLike, "test@email.com"));
     }
     private Member getTestMember(){
         return Member.builder()
