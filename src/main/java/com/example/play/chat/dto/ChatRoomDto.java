@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ChatRoomDto {
     private Long chatRoomId;
-    private String nickName;
+    private String nickname;
     private String otherNickname;
 }

@@ -36,7 +36,6 @@ public class ChatMessage extends BaseEntity {
         return ChatMessageResponseDto.builder()
                 .id(id)
                 .msg(msg)
-                .chatRoomDto(chatRoom.toDto())
                 .dateTime(getCreatedAt())
                 .build();
     }

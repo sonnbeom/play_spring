@@ -34,7 +34,7 @@ public class ChatRoom extends BaseEntity {
     public ChatRoomDto toDto() {
         return ChatRoomDto.builder()
                 .chatRoomId(id)
-                .nickName(member.getNicknameForChatRoomDto())
+                .nickname(member.getNicknameForChatRoomDto())
                 .otherNickname(other.getNicknameForChatRoomDto())
                 .build();
     }

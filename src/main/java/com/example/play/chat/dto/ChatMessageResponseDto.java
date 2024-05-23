@@ -15,6 +15,6 @@ import java.time.LocalDateTime;
 public class ChatMessageResponseDto {
     private Long id;
     private String msg;
-    private ChatRoomDto chatRoomDto;
+//    private ChatRoomDto chatRoomDto;
     private LocalDateTime dateTime;
 }

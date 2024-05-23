@@ -24,7 +24,7 @@ public class ChatRoomController {
     public ResponseEntity<?> createRoom(@RequestBody RequestChatRoomDto chatRoomDto,
                                         @AuthenticationPrincipal CustomUserDetails userDetails){
         ChatRoomWithMessageDto chatRoomWithMessageDto = chatRoomService.makeRoom(chatRoomDto, userDetails.getUsername());
-        return ResponseEntity.status(HttpStatus.OK).body(chatRoomWithMessageDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(chatRoomWithMessageDto);
     }
     @GetMapping()
     public ResponseEntity<?> getChatRooms(@AuthenticationPrincipal CustomUserDetails userDetails,
