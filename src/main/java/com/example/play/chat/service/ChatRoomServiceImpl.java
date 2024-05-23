@@ -73,7 +73,6 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         Page<ChatRoom> chatRooms = customChatRoomRepository.findRooms(member, pageable);
 
         List<ChatRoom> chatRoomList = new ArrayList<>();
-//        Map<Long, ChatRoomsWithChatsDto> map = new HashMap<>();
         Map<ChatRoom, ChatRoomsWithChatsDto> map = new HashMap<>();
 
         for (ChatRoom chatRoom: chatRooms){
@@ -85,11 +84,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                     .chatMessage(new ChatMessageResponseDto())
                     .build();
 
-//            map.put(chatRoom.getId(), chatRoomsWithChatsDto);
             map.put(chatRoom, chatRoomsWithChatsDto);
         }
-
-//        List<ChatMessageResponseDto> chatDtoList = chatMessageService.findByRoomChatRoomList(chatRoomList);
         List<ChatMessage> chatList = chatMessageService.findByRoomChatRoomList(chatRoomList);
 
         for (ChatMessage chatMessage : chatList){
@@ -98,12 +94,6 @@ public class ChatRoomServiceImpl implements ChatRoomService{
                 optionalChatRoomsWithChatsDto.get().insertChatMessage(chatMessage.toDto());
             }
         }
-//        for (ChatMessageResponseDto chatMessageDto: chatDtoList){
-//            if (map.containsKey(chatMessageDto.getChatRoomId())){
-//                ChatRoomsWithChatsDto chatRoomsWithChatsDto = map.get(chatMessageDto.getChatRoomId());
-//                chatRoomsWithChatsDto.insertChatMessage(chatMessageDto);
-//            }
-//        }
         return new ArrayList<>(map.values());
     }
 }
