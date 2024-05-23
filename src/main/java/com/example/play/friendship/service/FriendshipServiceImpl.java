@@ -142,10 +142,10 @@ public class FriendshipServiceImpl implements FriendshipService{
     public void deleteFriendship(RequestDeleteFriendship requestDeleteFriendship, String email) {
         Friendship friendship = findById(requestDeleteFriendship.getFriendshipId());
         Member member = memberService.findByEmail(email);
-        if (!friendship.isAuthorized(member)){
-            throw new FriendshipDeleteException("해당 유저의 권한으로 친구 신청을 삭제할 수 없습니다.friendshipId: " + friendship + "멤버 이메일: "+email, HttpStatus.UNAUTHORIZED);
-        }
         // 삭제 권한이 있는지 확인
+        if (!friendship.isAuthorized(member)){
+            throw new FriendshipDeleteException("해당 유저의 권한으로 친구 신청을 삭제할 수 없습니다. :멤버 이메일: "+email, HttpStatus.UNAUTHORIZED);
+        }
         friendshipRepository.delete(friendship);
     }
 }

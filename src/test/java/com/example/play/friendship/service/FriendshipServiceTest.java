@@ -1,5 +1,6 @@
 package com.example.play.friendship.service;
 
+import com.example.play.friendship.dto.RequestDeleteFriendship;
 import com.example.play.friendship.dto.RequestFriendship;
 import com.example.play.friendship.dto.ResponseFriendshipDto;
 import com.example.play.friendship.dto.ResponseFriendshipWithImg;
@@ -16,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
 
@@ -165,6 +165,28 @@ public class FriendshipServiceTest {
         verify(memberImgService).findImgListByIdList(anyList());
 
     }
+    @Test
+    @DisplayName("친구 서비스: 친구가 제대로 삭제 되는지 테스트")
+    void testDeleteFriendship(){
+        //given
+        // 친구요청 받은 멤버
+        String receiverEmail = "receiver@email.com";
+        Member receiver = getTestReceiver(receiverEmail);
+        // 친구 요청 보낸 멤버
+        String senderEmail = "sender@email.com";
+        Member sender = getTestSender(senderEmail);
+
+        Friendship friendship = Friendship.builder().receiver(receiver).status(ACCEPTED).sender(sender).build();
+        RequestDeleteFriendship requestDeleteFriendship = RequestDeleteFriendship.builder().friendshipId(1L).build();
+
+        when(friendshipRepository.findById(anyLong())).thenReturn(Optional.ofNullable(friendship));
+        when(memberService.findByEmail(anyString())).thenReturn(receiver);
+        //when
+        friendshipService.deleteFriendship(requestDeleteFriendship, receiverEmail);
+        //then
+        verify(friendshipRepository).delete(any(Friendship.class));
+    }
+
     private List<Friendship> getWaitingFriendshipList(Member receiver, Member sender, Member secondSender){
         Friendship friendship_1 = Friendship.builder().receiver(receiver).sender(sender).status(WAITING).build();
         Friendship friendship_2 = Friendship.builder().receiver(receiver).sender(secondSender).status(WAITING).build();
