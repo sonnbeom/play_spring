@@ -61,9 +61,6 @@ public class Friendship extends BaseEntity {
     }
 
     public boolean isAuthorized(Member member) {
-        if (receiver.equals(member)){
-            return true;
-        }
-        return false;
+        return receiver.equals(member) || sender.equals(member);
     }
 }
