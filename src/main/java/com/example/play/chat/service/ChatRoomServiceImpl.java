@@ -31,10 +31,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     private final ChatMessageService chatMessageService;
     @Override
     public ChatRoomWithMessageDto makeRoom(RequestChatRoomDto requestChatRoomDto, String email) {
-        Member fromMember = memberService.findByEmail(email);
-        Member toMember = memberService.findByEmail(requestChatRoomDto.getOtherEmail());
+        Member member = memberService.findByEmail(email);
+        Member other = memberService.findByEmail(requestChatRoomDto.getOtherEmail());
 
-        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByMemberAndOther(fromMember, toMember);
+        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findByMemberAndOther(member, other);
 
         if (optionalChatRoom.isPresent()){
             ChatRoom chatRoom = optionalChatRoom.get();
@@ -49,7 +49,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 
             return chatRoomWithMessageDto;
         }else {
-            ChatRoom chatRoom = createRoom(fromMember, toMember);
+            ChatRoom chatRoom = createRoom(member, other);
             ChatRoomDto chatRoomDto = chatRoom.toDto();
 
             ChatRoomWithMessageDto chatRoomWithMessageDto = ChatRoomWithMessageDto.builder()
@@ -59,10 +59,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
             return chatRoomWithMessageDto;
         }
     }
-    private ChatRoom createRoom(Member fromMember, Member toMember){
+    private ChatRoom createRoom(Member member, Member other){
         ChatRoom chatRoom = ChatRoom.builder()
-                .fromMember(fromMember)
-                .toMember(toMember)
+                .member(member)
+                .other(other)
                 .build();
         return this.chatRoomRepository.save(chatRoom);
     }
