@@ -1,8 +1,8 @@
-package com.example.play.chat.service;
+package com.example.play.chatroom.service;
 
-import com.example.play.chat.dto.ChatRoomWithMessageDto;
-import com.example.play.chat.dto.ChatRoomsWithChatsDto;
-import com.example.play.chat.dto.RequestChatRoomDto;
+import com.example.play.chatroom.dto.ChatRoomWithMessageDto;
+import com.example.play.chatroom.dto.ChatRoomsWithChatsDto;
+import com.example.play.chatroom.dto.RequestChatRoomDto;
 
 import java.util.List;
 

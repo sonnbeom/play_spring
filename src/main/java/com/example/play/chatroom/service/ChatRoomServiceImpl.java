@@ -1,10 +1,15 @@
-package com.example.play.chat.service;
+package com.example.play.chatroom.service;
 
 import com.example.play.chat.domain.ChatMessage;
-import com.example.play.chat.domain.ChatRoom;
+import com.example.play.chat.service.ChatMessageService;
+import com.example.play.chatroom.domain.ChatRoom;
 import com.example.play.chat.dto.*;
-import com.example.play.chat.repository.ChatRoomRepository;
-import com.example.play.chat.repository.CustomChatRoomRepository;
+import com.example.play.chatroom.repository.ChatRoomRepository;
+import com.example.play.chatroom.repository.CustomChatRoomRepository;
+import com.example.play.chatroom.dto.ChatRoomDto;
+import com.example.play.chatroom.dto.ChatRoomWithMessageDto;
+import com.example.play.chatroom.dto.ChatRoomsWithChatsDto;
+import com.example.play.chatroom.dto.RequestChatRoomDto;
 import com.example.play.member.entity.Member;
 import com.example.play.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static com.example.play.chat.constant.ChatRoomConstant.CHAT_ROOM_SIZE;
+import static com.example.play.chatroom.constant.ChatRoomConstant.CHAT_ROOM_SIZE;
 
 
 @Service

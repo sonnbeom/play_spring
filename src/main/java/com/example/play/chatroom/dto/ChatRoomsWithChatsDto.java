@@ -1,6 +1,7 @@
-package com.example.play.chat.dto;
+package com.example.play.chatroom.dto;
 
 
+import com.example.play.chat.dto.ChatMessageResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
 package com.example.play.chat.repository;
 
 import com.example.play.chat.domain.ChatMessage;
-import com.example.play.chat.domain.ChatRoom;
+import com.example.play.chatroom.domain.ChatRoom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
