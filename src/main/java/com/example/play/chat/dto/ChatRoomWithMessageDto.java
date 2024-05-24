@@ -14,7 +14,6 @@ import java.util.List;
 
 // 채팅방 하나에 채팅 여러개
 @Getter
-@Setter
 @NoArgsConstructor
 public class ChatRoomWithMessageDto {
 

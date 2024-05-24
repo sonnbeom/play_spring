@@ -6,6 +6,7 @@ import com.example.play.chat.dto.ChatMessageResponseDto;
 import com.example.play.chat.dto.ChatRoomsWithChatsDto;
 import com.example.play.global.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,8 @@ import java.util.Optional;
 @NoArgsConstructor
 @Entity
 @Slf4j
+@Builder
+@AllArgsConstructor
 public class ChatMessage extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
