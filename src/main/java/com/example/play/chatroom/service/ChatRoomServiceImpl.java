@@ -4,6 +4,7 @@ import com.example.play.chat.domain.ChatMessage;
 import com.example.play.chat.service.ChatMessageService;
 import com.example.play.chatroom.domain.ChatRoom;
 import com.example.play.chat.dto.*;
+import com.example.play.chatroom.exception.ChatRoomException;
 import com.example.play.chatroom.repository.ChatRoomRepository;
 import com.example.play.chatroom.repository.CustomChatRoomRepository;
 import com.example.play.chatroom.dto.ChatRoomDto;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +65,10 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 
             return chatRoomWithMessageDto;
         }
+    }
+    public ChatRoom findById(Long id){
+        return chatRoomRepository.findById(id)
+                .orElseThrow(() -> new ChatRoomException("해당 id로 chatRoom을 조회할 수 없습니다. " + id, HttpStatus.NOT_FOUND));
     }
     private ChatRoom createRoom(Member member, Member other){
         ChatRoom chatRoom = ChatRoom.builder()
