@@ -24,7 +24,7 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
 
     public final com.example.play.global.common.entity.QBaseEntity _super = new com.example.play.global.common.entity.QBaseEntity(this);
 
-    public final QChatRoom chatRoom;
+    public final com.example.play.chatroom.domain.QChatRoom chatRoom;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -56,7 +56,7 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
 
     public QChatMessage(Class<? extends ChatMessage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.chatRoom = inits.isInitialized("chatRoom") ? new QChatRoom(forProperty("chatRoom"), inits.get("chatRoom")) : null;
+        this.chatRoom = inits.isInitialized("chatRoom") ? new com.example.play.chatroom.domain.QChatRoom(forProperty("chatRoom"), inits.get("chatRoom")) : null;
     }
 
 }

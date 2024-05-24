@@ -1,14 +1,14 @@
 package com.example.play.chat.service;
 
 import com.example.play.chat.domain.ChatMessage;
-import com.example.play.chat.domain.ChatRoom;
+import com.example.play.chatroom.domain.ChatRoom;
 import com.example.play.chat.dto.ChatDtoUpdate;
 import com.example.play.chat.dto.ChatMessageDto;
 import com.example.play.chat.dto.ChatMessageResponseDto;
 import com.example.play.chat.exception.ChatException;
-import com.example.play.chat.exception.ChatRoomException;
+import com.example.play.chatroom.exception.ChatRoomException;
 import com.example.play.chat.repository.ChatMessageRepository;
-import com.example.play.chat.repository.ChatRoomRepository;
+import com.example.play.chatroom.repository.ChatRoomRepository;
 import com.example.play.chat.repository.CustomChatMessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

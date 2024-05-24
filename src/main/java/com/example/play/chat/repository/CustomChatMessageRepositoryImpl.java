@@ -1,19 +1,17 @@
 package com.example.play.chat.repository;
 
 import com.example.play.chat.domain.ChatMessage;
-import com.example.play.chat.domain.ChatRoom;
+import com.example.play.chatroom.domain.ChatRoom;
 import com.example.play.chat.domain.QChatMessage;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import org.hibernate.query.criteria.JpaSubQuery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
 import java.util.List;
 
 import static com.example.play.chat.domain.QChatMessage.chatMessage;

@@ -1,10 +1,10 @@
-package com.example.play.chat.controller;
+package com.example.play.chatroom.controller;
 
-import com.example.play.chat.dto.ChatRoomWithMessageDto;
-import com.example.play.chat.dto.ChatRoomsWithChatsDto;
-import com.example.play.chat.dto.RequestChatRoomDto;
+import com.example.play.chatroom.dto.ChatRoomWithMessageDto;
+import com.example.play.chatroom.dto.ChatRoomsWithChatsDto;
+import com.example.play.chatroom.dto.RequestChatRoomDto;
 
-import com.example.play.chat.service.ChatRoomService;
+import com.example.play.chatroom.service.ChatRoomService;
 import com.example.play.jwt.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

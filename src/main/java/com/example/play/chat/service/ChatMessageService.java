@@ -1,7 +1,7 @@
 package com.example.play.chat.service;
 
 import com.example.play.chat.domain.ChatMessage;
-import com.example.play.chat.domain.ChatRoom;
+import com.example.play.chatroom.domain.ChatRoom;
 import com.example.play.chat.dto.ChatDtoUpdate;
 import com.example.play.chat.dto.ChatMessageDto;
 import com.example.play.chat.dto.ChatMessageResponseDto;

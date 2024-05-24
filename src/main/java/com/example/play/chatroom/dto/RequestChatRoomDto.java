@@ -1,4 +1,4 @@
-package com.example.play.chat.dto;
+package com.example.play.chatroom.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

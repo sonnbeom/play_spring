@@ -1,16 +1,16 @@
 package com.example.play.chatroom.controller;
 
-import com.example.play.chat.controller.ChatRoomController;
 import com.example.play.chat.dto.*;
-import com.example.play.chat.service.ChatRoomService;
-import com.example.play.chatroom.constant.EndPointUrl;
+import com.example.play.chatroom.service.ChatRoomService;
+import com.example.play.chatroom.dto.ChatRoomDto;
+import com.example.play.chatroom.dto.ChatRoomWithMessageDto;
+import com.example.play.chatroom.dto.ChatRoomsWithChatsDto;
+import com.example.play.chatroom.dto.RequestChatRoomDto;
 import com.example.play.mock.WithCustomMockUser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

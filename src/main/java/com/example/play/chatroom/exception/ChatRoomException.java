@@ -1,4 +1,4 @@
-package com.example.play.chat.exception;
+package com.example.play.chatroom.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

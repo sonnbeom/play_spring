@@ -1,14 +1,10 @@
-package com.example.play.chat.dto;
+package com.example.play.chatroom.dto;
 
-import com.example.play.chat.domain.ChatRoom;
-import com.example.play.member.entity.Member;
-import jakarta.persistence.*;
+import com.example.play.chat.dto.ChatMessageResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

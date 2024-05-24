@@ -1,7 +1,7 @@
 package com.example.play.chat.handler;
 
 import com.example.play.chat.dto.ChatMessageDto;
-import com.example.play.chat.exception.ChatRoomException;
+import com.example.play.chatroom.exception.ChatRoomException;
 
 import com.example.play.chat.service.ChatMessageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
