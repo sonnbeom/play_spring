@@ -27,8 +27,7 @@ public class MemberController {
 
     @PostMapping("/join")
     public ResponseEntity createMember(@Valid @RequestPart("memberDto") RequestCreateMemberDto memberDto,
-                                                         @RequestPart(value = "profile", required = false) MultipartFile profile){
-
+                                     @RequestPart(value = "profile", required = false) MultipartFile profile){
         memberService.createMember(memberDto, profile);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

@@ -87,6 +87,9 @@ public class Member extends BaseEntity {
     public String getNicknameForChatRoomDto(){
         return nickname;
     }
+    public String getNicknameForComment(){
+        return nickname;
+    }
     public boolean isPassWordMatch(String password, PasswordEncoder passwordEncoder){
         return passwordEncoder.matches(password, this.password);
     }

@@ -8,6 +8,7 @@ import com.example.play.chat.dto.ChatMessageResponseDto;
 import com.example.play.chat.exception.ChatException;
 import com.example.play.chatroom.exception.ChatRoomException;
 import com.example.play.chat.repository.ChatMessageRepository;
+import com.example.play.chatroom.exception.ChatRoomNotFoundException;
 import com.example.play.chatroom.repository.ChatRoomRepository;
 import com.example.play.chat.repository.CustomChatMessageRepository;
 import com.example.play.chatroom.service.ChatRoomService;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.play.chat.constant.ChatConstant.CHAT_SIZE;
+import static org.springframework.http.HttpStatus.*;
 
 @Service
 @Transactional
@@ -33,7 +35,7 @@ import static com.example.play.chat.constant.ChatConstant.CHAT_SIZE;
 public class ChatMessageServiceImpl implements ChatMessageService{
     private final ChatMessageRepository chatMessageRepository;
     private final CustomChatMessageRepository customChatMessageRepository;
-    private final ChatRoomService chatRoomService;
+    private final ChatRoomRepository chatRoomRepository;
 
     @Override
     public List<ChatMessageResponseDto> findByRoom(ChatRoom chatRoom) {
@@ -48,7 +50,9 @@ public class ChatMessageServiceImpl implements ChatMessageService{
 
     @Override
     public void save(ChatMessageDto chatMessageDto, Long chatRoomId) {
-        ChatRoom chatRoom = chatRoomService.findById(chatRoomId);
+
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).
+                orElseThrow(() -> new ChatRoomNotFoundException("해당 id로 채팅방을 조회할 수 없습니다.id: " + chatRoomId, NOT_FOUND));
         ChatMessage chatMessage = new ChatMessage(chatMessageDto, chatRoom);
         chatMessageRepository.save(chatMessage);
     }
@@ -75,7 +79,7 @@ public class ChatMessageServiceImpl implements ChatMessageService{
 
     @Override
     public Long updateChat(ChatDtoUpdate chatDto, Long chatId) {
-        ChatMessage chatMessage = chatMessageRepository.findById(chatId).orElseThrow(()-> new ChatException("해당 ID를 가진 chat을 조회할 수 없습니다: "+ chatId, HttpStatus.NOT_FOUND));
+        ChatMessage chatMessage = chatMessageRepository.findById(chatId).orElseThrow(()-> new ChatException("해당 ID를 가진 chat을 조회할 수 없습니다: "+ chatId, NOT_FOUND));
         if (chatDto.getMsg() != null && !chatDto.getMsg().isEmpty()){
             return chatMessage.updateMsg(chatDto);
         }

@@ -5,6 +5,7 @@ import com.example.play.chat.service.ChatMessageService;
 import com.example.play.chatroom.domain.ChatRoom;
 import com.example.play.chat.dto.*;
 import com.example.play.chatroom.exception.ChatRoomException;
+import com.example.play.chatroom.exception.ChatRoomNotFoundException;
 import com.example.play.chatroom.repository.ChatRoomRepository;
 import com.example.play.chatroom.repository.CustomChatRoomRepository;
 import com.example.play.chatroom.dto.ChatRoomDto;
@@ -68,7 +69,7 @@ public class ChatRoomServiceImpl implements ChatRoomService{
     }
     public ChatRoom findById(Long id){
         return chatRoomRepository.findById(id)
-                .orElseThrow(() -> new ChatRoomException("해당 id로 chatRoom을 조회할 수 없습니다. " + id, HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ChatRoomNotFoundException("해당 id로 chatRoom을 조회할 수 없습니다. " + id, HttpStatus.NOT_FOUND));
     }
     private ChatRoom createRoom(Member member, Member other){
         ChatRoom chatRoom = ChatRoom.builder()
