@@ -8,16 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-public class ResponseCommentDto {
+public class ResponseComment {
     private Long id;
     private String content;
     private String nickname;
     private LocalDateTime time;
     private Long parentId;
-    private List<ResponseCommentDto> childList = new ArrayList<>();
+    private List<ResponseComment> childList = new ArrayList<>();
 
     @Builder
-    public ResponseCommentDto(Long id, String content, String nickname, LocalDateTime time, Long parentId) {
+    public ResponseComment(Long id, String content, String nickname, LocalDateTime time, Long parentId) {
         this.id = id;
         this.content = content;
         this.nickname = nickname;

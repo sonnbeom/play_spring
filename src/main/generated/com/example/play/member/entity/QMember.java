@@ -22,6 +22,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final com.example.play.global.common.entity.QBaseEntity _super = new com.example.play.global.common.entity.QBaseEntity(this);
 
+    public final ListPath<com.example.play.comment.domain.Comment, com.example.play.comment.domain.QComment> commentList = this.<com.example.play.comment.domain.Comment, com.example.play.comment.domain.QComment>createList("commentList", com.example.play.comment.domain.Comment.class, com.example.play.comment.domain.QComment.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 

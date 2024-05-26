@@ -1,10 +1,10 @@
 package com.example.play.comment.controller;
 
-import com.example.play.comment.dto.RequestCommentDto;
-import com.example.play.comment.dto.ResponseCommentDto;
+import com.example.play.comment.dto.RequestCommentCreate;
+import com.example.play.comment.dto.RequestCommentUpdate;
+import com.example.play.comment.dto.ResponseComment;
 import com.example.play.comment.service.CommentService;
 import com.example.play.jwt.dto.CustomUserDetails;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,16 +27,22 @@ public class CommentController {
     * 3. 댓글 수정
     * 4. 댓글 삭제
     * */
-    @PostMapping()
-    public ResponseEntity<ResponseCommentDto>create(@RequestBody RequestCommentDto commentDto,
-                                                    @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        ResponseCommentDto result = commentService.create(commentDto, customUserDetails.getUsername());
+    @PostMapping
+    public ResponseEntity<ResponseComment>create(@RequestBody RequestCommentCreate commentDto,
+                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        ResponseComment result = commentService.create(commentDto, customUserDetails.getUsername());
         return ResponseEntity.status(CREATED).body(result);
     }
     @GetMapping
-    public ResponseEntity<List<ResponseCommentDto>>getComments(@RequestParam Long postId,
-                                                               @RequestParam(required = false, defaultValue = "0") int page){
-        List<ResponseCommentDto> result = commentService.getComments(postId, page);
+    public ResponseEntity<List<ResponseComment>>getComments(@RequestParam Long postId,
+                                                            @RequestParam(required = false, defaultValue = "0") int page){
+        List<ResponseComment> result = commentService.getComments(postId, page);
+        return ResponseEntity.status(OK).body(result);
+    }
+    @PatchMapping
+    public ResponseEntity<ResponseComment>update(@RequestBody RequestCommentUpdate commentUpdate,
+                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        ResponseComment result = commentService.update(commentUpdate, customUserDetails.getUsername());
         return ResponseEntity.status(OK).body(result);
     }
 }

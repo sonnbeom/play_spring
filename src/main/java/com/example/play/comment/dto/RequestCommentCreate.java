@@ -6,11 +6,10 @@ import com.example.play.post.entity.Post;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @NoArgsConstructor
 @Getter
-public class RequestCommentDto {
+public class RequestCommentCreate {
     @NotNull
     private String content;
     private Long postId;

@@ -1,12 +1,15 @@
 package com.example.play.comment.service;
 
-import com.example.play.comment.dto.RequestCommentDto;
-import com.example.play.comment.dto.ResponseCommentDto;
+import com.example.play.comment.dto.RequestCommentCreate;
+import com.example.play.comment.dto.RequestCommentUpdate;
+import com.example.play.comment.dto.ResponseComment;
 
 import java.util.List;
 
 public interface CommentService {
-    ResponseCommentDto create(RequestCommentDto commentDto, String email);
+    ResponseComment create(RequestCommentCreate commentDto, String email);
 
-    List<ResponseCommentDto> getComments(Long postId, int page);
+    List<ResponseComment> getComments(Long postId, int page);
+
+    ResponseComment update(RequestCommentUpdate commentUpdate, String email);
 }

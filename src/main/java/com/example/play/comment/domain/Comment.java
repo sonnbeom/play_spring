@@ -1,23 +1,23 @@
 package com.example.play.comment.domain;
 
-import com.example.play.comment.dto.ResponseCommentDto;
+import com.example.play.comment.dto.RequestCommentUpdate;
+import com.example.play.comment.dto.ResponseComment;
+import com.example.play.comment.exception.CommentUpdateAuthorizationException;
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.member.entity.Member;
 import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @NoArgsConstructor
-@Slf4j
-@Getter
 public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,8 +43,8 @@ public class Comment extends BaseEntity {
         this.parent = parent;
     }
 
-    public ResponseCommentDto toDto() {
-        return ResponseCommentDto.builder()
+    public ResponseComment toDto() {
+        return ResponseComment.builder()
                 .time(getCreatedAt())
                 .id(id)
                 .content(content)
@@ -59,5 +59,15 @@ public class Comment extends BaseEntity {
         else{
             return parent.id;
         }
+    }
+
+    public void checkUpdateAuthorization(Member member) {
+        if (!this.member.equals(member)){
+            throw new CommentUpdateAuthorizationException("권한이 없는 멤버가 댓글 수정을 시도합니다", HttpStatus.FORBIDDEN);
+        }
+    }
+
+    public void update(RequestCommentUpdate commentUpdate) {
+        this.content = commentUpdate.getContent();
     }
 }
