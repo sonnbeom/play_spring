@@ -1,6 +1,7 @@
 package com.example.play.member.entity;
 
 import com.example.play.auth.dto.SessionMember;
+import com.example.play.comment.domain.Comment;
 import com.example.play.friendship.entity.Friendship;
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.entity.MemberImage;
@@ -13,6 +14,7 @@ import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +25,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +50,8 @@ public class Member extends BaseEntity {
     private List<MemberImage> memberImages = new ArrayList<>();
     @OneToMany(mappedBy = "member")
     private List<PostLike> postLikes =new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<Comment> commentList = new ArrayList<>();
     @Builder
     public Member(String name, String email, String picture, Role role, Integer isActive, String nickname, String password){
         this.name = name;
@@ -134,4 +139,5 @@ public class Member extends BaseEntity {
             throw new MemberGetAuthorityException("해당 아이디가 로그인한 멤버의 아이디와 일치하지 않습니다. 열람 시도 아이디"+ memberId, HttpStatus.FORBIDDEN);
         }
     }
+
 }

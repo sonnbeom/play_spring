@@ -1,8 +1,9 @@
 package com.example.play.comment.service;
 
 import com.example.play.comment.domain.Comment;
-import com.example.play.comment.dto.RequestCommentDto;
-import com.example.play.comment.dto.ResponseCommentDto;
+import com.example.play.comment.dto.RequestCommentCreate;
+import com.example.play.comment.dto.RequestCommentUpdate;
+import com.example.play.comment.dto.ResponseComment;
 import com.example.play.comment.exception.CommentNotFoundException;
 import com.example.play.comment.repository.CommentRespository;
 import com.example.play.comment.repository.CustomCommentRepository;
@@ -36,7 +37,7 @@ public class CommentServiceImpl implements CommentService{
     private final PostService postService;
 
     @Override
-    public ResponseCommentDto create(RequestCommentDto commentDto, String email) {
+    public ResponseComment create(RequestCommentCreate commentDto, String email) {
         Post post = postService.findById(commentDto.getPostId());
         Member member = memberService.findByEmail(email);
         Comment comment;
@@ -51,17 +52,17 @@ public class CommentServiceImpl implements CommentService{
         return saved.toDto();
     }
     @Override
-    public List<ResponseCommentDto> getComments(Long postId, int page) {
+    public List<ResponseComment> getComments(Long postId, int page) {
         Post post = postService.findById(postId);
         Pageable pageable = PageRequest.of(page, COMMENT_PAGE_SIZE);
         Page<Comment> commentList = customCommentRepository.getComments(post, pageable);
-        Map<Long, ResponseCommentDto> map = new HashMap<>();
-        List<ResponseCommentDto> result = new ArrayList<>();
+        Map<Long, ResponseComment> map = new HashMap<>();
+        List<ResponseComment> result = new ArrayList<>();
         commentList.stream().forEach(comment -> {
-            ResponseCommentDto dto = comment.toDto();
+            ResponseComment dto = comment.toDto();
             map.put(dto.getId(), dto);
             if (dto.getParentId() != null){
-                ResponseCommentDto responseCommentDto = map.get(dto.getParentId());
+                ResponseComment responseCommentDto = map.get(dto.getParentId());
                 responseCommentDto.getChildList().add(dto);
             }else {
                 result.add(dto);
@@ -69,10 +70,16 @@ public class CommentServiceImpl implements CommentService{
         });
         return result;
     }
-    /*
-    * 패런트 아이디가 있다! => map.get => dto 에다가 해당 dto 추가
-    *
-    * */
+
+    @Override
+    public ResponseComment update(RequestCommentUpdate commentUpdate, String email) {
+        Member member = memberService.findByEmail(email);
+        Comment comment = findById(commentUpdate.getCommentId());
+        //업데이트 권한 확인
+        comment.checkUpdateAuthorization(member);
+        comment.update(commentUpdate);
+        return comment.toDto();
+    }
 
     private Comment findById(Long commentId){
         return commentRespository.findById(commentId).
