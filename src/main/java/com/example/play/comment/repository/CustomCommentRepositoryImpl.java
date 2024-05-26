@@ -1,12 +1,10 @@
 package com.example.play.comment.repository;
 
 import com.example.play.comment.domain.Comment;
-import com.example.play.comment.domain.QComment;
 import com.example.play.post.entity.Post;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -29,7 +27,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository{
         List<Comment>list = jpaQueryFactory
                 .selectFrom(comment)
                 .where(comment.post.eq(post))
-                .orderBy(comment.createdAt.desc())
+                .orderBy(comment.parent.id.desc().nullsFirst())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

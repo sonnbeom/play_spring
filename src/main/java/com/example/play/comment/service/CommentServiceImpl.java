@@ -1,7 +1,5 @@
 package com.example.play.comment.service;
 
-
-import com.example.play.comment.constant.CommentPageSize;
 import com.example.play.comment.domain.Comment;
 import com.example.play.comment.dto.RequestCommentDto;
 import com.example.play.comment.dto.ResponseCommentDto;
@@ -13,7 +11,6 @@ import com.example.play.member.service.MemberService;
 import com.example.play.post.entity.Post;
 import com.example.play.post.service.PostService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +29,8 @@ import static com.example.play.comment.constant.CommentPageSize.COMMENT_PAGE_SIZ
 @Service
 @Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class CommentServiceImpl implements CommentService{
-    private final CustomCommentRepository customCommentReposiotory;
+    private final CustomCommentRepository customCommentRepository;
     private final CommentRespository commentRespository;
     private final MemberService memberService;
     private final PostService postService;
@@ -52,19 +48,13 @@ public class CommentServiceImpl implements CommentService{
             comment = commentDto.dtoToEntity(post, member);
         }
         Comment saved = commentRespository.save(comment);
-        log.info(saved.getContent());
         return saved.toDto();
     }
-    /*
-    * null 인 애들 first
-        그리고 최신순으로 쿼리 수정
-    * */
-
     @Override
     public List<ResponseCommentDto> getComments(Long postId, int page) {
         Post post = postService.findById(postId);
         Pageable pageable = PageRequest.of(page, COMMENT_PAGE_SIZE);
-        Page<Comment> commentList = customCommentReposiotory.getComments(post, pageable);
+        Page<Comment> commentList = customCommentRepository.getComments(post, pageable);
         Map<Long, ResponseCommentDto> map = new HashMap<>();
         List<ResponseCommentDto> result = new ArrayList<>();
         commentList.stream().forEach(comment -> {

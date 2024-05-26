@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @NoArgsConstructor
 @Getter
-@Slf4j
 public class RequestCommentDto {
     @NotNull
     private String content;
