@@ -4,14 +4,14 @@ import com.example.play.comment.dto.RequestCommentDto;
 import com.example.play.comment.dto.ResponseCommentDto;
 import com.example.play.comment.service.CommentService;
 import com.example.play.jwt.dto.CustomUserDetails;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -30,7 +30,13 @@ public class CommentController {
     @PostMapping()
     public ResponseEntity<ResponseCommentDto>create(@RequestBody RequestCommentDto commentDto,
                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        ResponseCommentDto responseCommentDto = commentService.create(commentDto, customUserDetails.getUsername());
-        return ResponseEntity.status(CREATED).body(responseCommentDto);
+        ResponseCommentDto result = commentService.create(commentDto, customUserDetails.getUsername());
+        return ResponseEntity.status(CREATED).body(result);
+    }
+    @GetMapping
+    public ResponseEntity<List<ResponseCommentDto>>getComments(@RequestParam Long postId,
+                                                               @RequestParam(required = false, defaultValue = "0") int page){
+        List<ResponseCommentDto> result = commentService.getComments(postId, page);
+        return ResponseEntity.status(OK).body(result);
     }
 }

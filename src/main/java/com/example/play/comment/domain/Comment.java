@@ -36,11 +36,11 @@ public class Comment extends BaseEntity {
     private List<Comment> children = new ArrayList<>();
 
     @Builder
-    public Comment(Long id, String content, Member member, Post post, Comment parent) {
-        this.id = id;
+    public Comment(String content, Member member, Post post, Comment parent) {
         this.content = content;
         this.member = member;
         this.post = post;
+        this.parent = parent;
     }
 
     public ResponseCommentDto toDto() {
@@ -53,9 +53,7 @@ public class Comment extends BaseEntity {
                 .build();
     }
     private Long parentCheck(){
-        log.info("패런트 아이디"+ parent.id);
         if (parent == null){
-            log.info("널이냐?");
             return null;
         }
         else{

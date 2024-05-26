@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class ResponseCommentDto {
@@ -12,6 +14,7 @@ public class ResponseCommentDto {
     private String nickname;
     private LocalDateTime time;
     private Long parentId;
+    private List<ResponseCommentDto> childList = new ArrayList<>();
 
     @Builder
     public ResponseCommentDto(Long id, String content, String nickname, LocalDateTime time, Long parentId) {
@@ -20,5 +23,11 @@ public class ResponseCommentDto {
         this.nickname = nickname;
         this.time = time;
         this.parentId = parentId;
+    }
+    public boolean haveParentId(){
+        if (parentId == null){
+            return false;
+        }
+        return true;
     }
 }
