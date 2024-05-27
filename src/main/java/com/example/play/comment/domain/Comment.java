@@ -8,6 +8,7 @@ import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.member.entity.Member;
 import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,8 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
