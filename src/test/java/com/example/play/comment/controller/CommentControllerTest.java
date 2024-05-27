@@ -7,6 +7,7 @@ import com.example.play.comment.service.CommentService;
 import com.example.play.mock.WithCustomMockUser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.example.play.comment.constant.EndPointUrl.TEST_COMMENT_CREATE_URL;
+import static com.example.play.comment.constant.EndPointUrl.TEST_COMMENT_GET_URL;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -65,5 +70,30 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$.content").value("test content"))
                 .andExpect(jsonPath("$.parentId").doesNotExist())
                 .andExpect(jsonPath("$.nickname").value("test nickname"));
+    }
+    @Test
+    @DisplayName("댓글 컨트롤러 get 요청 테스트")
+    @WithCustomMockUser
+    void testGetCommentList() throws Exception {
+        //given
+        ResponseComment comment1 = ResponseComment.builder().id(1L).content("1 content").parentId(null).nickname("test nickname").build();
+        ResponseComment comment2 = ResponseComment.builder().id(2L).content("2 content").parentId(null).nickname("test nickname").build();
+        ResponseComment comment3 = ResponseComment.builder().id(3L).content("child").parentId(1L).nickname("child").build();
+        List<ResponseComment> result = Arrays.asList(comment1, comment2, comment3);
+        when(commentService.getComments(anyLong(),anyInt())).thenReturn(result);
+
+        //when && then
+        mockMvc.perform(get(TEST_COMMENT_GET_URL)
+                .param("postId", "1")
+                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", Matchers.hasSize(3)))
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].content").value("1 content"))
+                .andExpect(jsonPath("$[1].parentId").doesNotExist())
+                .andExpect(jsonPath("$[2].content").value("child"))
+                .andExpect(jsonPath("$[2].parentId").value(1));
+
     }
 }
