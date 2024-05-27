@@ -2,6 +2,7 @@ package com.example.play.comment.controller;
 
 import com.example.play.comment.constant.EndPointUrl;
 import com.example.play.comment.dto.RequestCommentCreate;
+import com.example.play.comment.dto.RequestCommentDelete;
 import com.example.play.comment.dto.RequestCommentUpdate;
 import com.example.play.comment.dto.ResponseComment;
 import com.example.play.comment.service.CommentService;
@@ -114,6 +115,22 @@ public class CommentControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.content").value("update"));
+
+    }
+    @Test
+    @DisplayName("댓글 컨트롤러: 댓글 삭제 테스트")
+    @WithCustomMockUser
+    void testDeleteComment() throws Exception {
+        //given
+        RequestCommentDelete req = RequestCommentDelete.builder().commentId(1L).build();
+        doNothing().when(commentService).delete(any(RequestCommentDelete.class), anyString());
+        //when %% then
+        mockMvc.perform(delete(TEST_COMMENT_DELETE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req))
+                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk());
 
     }
 }

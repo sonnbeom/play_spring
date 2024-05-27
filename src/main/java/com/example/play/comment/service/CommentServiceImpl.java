@@ -83,12 +83,11 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public ResponseComment delete(RequestCommentDelete commentDelete, String email) {
+    public void delete(RequestCommentDelete commentDelete, String email) {
         Member member = memberService.findByEmail(email);
         Comment comment = findById(commentDelete.getCommentId());
         comment.checkDeleteAuthorization(member);
         commentRespository.delete(comment);
-        return null;
     }
 
     private Comment findById(Long commentId){

@@ -47,9 +47,9 @@ public class CommentController {
         return ResponseEntity.status(OK).body(result);
     }
     @DeleteMapping
-    public ResponseEntity<ResponseComment>delete(@RequestBody RequestCommentDelete commentDelete,
+    public ResponseEntity<Void>delete(@RequestBody RequestCommentDelete commentDelete,
                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails){
-        ResponseComment result = commentService.delete(commentDelete, customUserDetails.getUsername());
-        return ResponseEntity.status(OK).body(result);
+        commentService.delete(commentDelete, customUserDetails.getUsername());
+        return ResponseEntity.status(OK).build();
     }
 }
