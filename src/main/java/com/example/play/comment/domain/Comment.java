@@ -2,6 +2,7 @@ package com.example.play.comment.domain;
 
 import com.example.play.comment.dto.RequestCommentUpdate;
 import com.example.play.comment.dto.ResponseComment;
+import com.example.play.comment.exception.CommentDeleteAuthorizationException;
 import com.example.play.comment.exception.CommentUpdateAuthorizationException;
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.member.entity.Member;
@@ -69,5 +70,11 @@ public class Comment extends BaseEntity {
 
     public void update(RequestCommentUpdate commentUpdate) {
         this.content = commentUpdate.getContent();
+    }
+
+    public void checkDeleteAuthorization(Member member) {
+        if (!this.member.equals(member)){
+            throw new CommentDeleteAuthorizationException("권한이 없는 멤버가 댓글 삭제를 시도합니다.", HttpStatus.FORBIDDEN);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.play.comment.controller;
 
 import com.example.play.comment.dto.RequestCommentCreate;
+import com.example.play.comment.dto.RequestCommentDelete;
 import com.example.play.comment.dto.RequestCommentUpdate;
 import com.example.play.comment.dto.ResponseComment;
 import com.example.play.comment.service.CommentService;
@@ -43,6 +44,12 @@ public class CommentController {
     public ResponseEntity<ResponseComment>update(@RequestBody RequestCommentUpdate commentUpdate,
                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails){
         ResponseComment result = commentService.update(commentUpdate, customUserDetails.getUsername());
+        return ResponseEntity.status(OK).body(result);
+    }
+    @DeleteMapping
+    public ResponseEntity<ResponseComment>delete(@RequestBody RequestCommentDelete commentDelete,
+                                                 @AuthenticationPrincipal CustomUserDetails customUserDetails){
+        ResponseComment result = commentService.delete(commentDelete, customUserDetails.getUsername());
         return ResponseEntity.status(OK).body(result);
     }
 }

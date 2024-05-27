@@ -2,6 +2,7 @@ package com.example.play.comment.service;
 
 import com.example.play.comment.domain.Comment;
 import com.example.play.comment.dto.RequestCommentCreate;
+import com.example.play.comment.dto.RequestCommentDelete;
 import com.example.play.comment.dto.RequestCommentUpdate;
 import com.example.play.comment.dto.ResponseComment;
 import com.example.play.comment.exception.CommentNotFoundException;
@@ -79,6 +80,15 @@ public class CommentServiceImpl implements CommentService{
         comment.checkUpdateAuthorization(member);
         comment.update(commentUpdate);
         return comment.toDto();
+    }
+
+    @Override
+    public ResponseComment delete(RequestCommentDelete commentDelete, String email) {
+        Member member = memberService.findByEmail(email);
+        Comment comment = findById(commentDelete.getCommentId());
+        comment.checkDeleteAuthorization(member);
+        commentRespository.delete(comment);
+        return null;
     }
 
     private Comment findById(Long commentId){
