@@ -14,5 +14,5 @@ public interface CommentService {
 
     ResponseComment update(RequestCommentUpdate commentUpdate, String email);
 
-    ResponseComment delete(RequestCommentDelete commentDelete, String email);
+    void delete(RequestCommentDelete commentDelete, String email);
 }
