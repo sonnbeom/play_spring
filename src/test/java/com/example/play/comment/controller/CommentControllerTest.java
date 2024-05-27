@@ -2,6 +2,7 @@ package com.example.play.comment.controller;
 
 import com.example.play.comment.constant.EndPointUrl;
 import com.example.play.comment.dto.RequestCommentCreate;
+import com.example.play.comment.dto.RequestCommentUpdate;
 import com.example.play.comment.dto.ResponseComment;
 import com.example.play.comment.service.CommentService;
 import com.example.play.mock.WithCustomMockUser;
@@ -26,8 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.play.comment.constant.EndPointUrl.TEST_COMMENT_CREATE_URL;
-import static com.example.play.comment.constant.EndPointUrl.TEST_COMMENT_GET_URL;
+import static com.example.play.comment.constant.EndPointUrl.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -72,7 +72,7 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$.nickname").value("test nickname"));
     }
     @Test
-    @DisplayName("댓글 컨트롤러 get 요청 테스트")
+    @DisplayName("댓글 컨트롤러: get 요청 테스트")
     @WithCustomMockUser
     void testGetCommentList() throws Exception {
         //given
@@ -94,6 +94,26 @@ public class CommentControllerTest {
                 .andExpect(jsonPath("$[1].parentId").doesNotExist())
                 .andExpect(jsonPath("$[2].content").value("child"))
                 .andExpect(jsonPath("$[2].parentId").value(1));
+
+    }
+    @Test
+    @DisplayName("댓글 컨트롤러: 댓글 업데이트 테스트")
+    @WithCustomMockUser
+    void testUpdateComment() throws Exception {
+        //given
+        RequestCommentUpdate req = RequestCommentUpdate.builder().commentId(1L).content("update").build();
+        ResponseComment result = ResponseComment.builder().id(1L).content("update").parentId(null).nickname("test nickname").build();
+        when(commentService.update(any(RequestCommentUpdate.class), anyString())).thenReturn(result);
+
+        //when %% then
+        mockMvc.perform(patch(TEST_COMMENT_PATCH_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req))
+                .with(csrf()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.content").value("update"));
 
     }
 }
