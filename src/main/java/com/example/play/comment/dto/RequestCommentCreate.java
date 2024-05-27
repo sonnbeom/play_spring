@@ -4,11 +4,15 @@ import com.example.play.comment.domain.Comment;
 import com.example.play.member.entity.Member;
 import com.example.play.post.entity.Post;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
+@Builder
+@AllArgsConstructor
 public class RequestCommentCreate {
     @NotNull
     private String content;

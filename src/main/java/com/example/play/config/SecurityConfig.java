@@ -7,6 +7,7 @@ import com.example.play.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -52,6 +53,7 @@ public class SecurityConfig{
                         .requestMatchers("/api/v1/member/login").permitAll()
                         .requestMatchers("/api/v1/auth/authenticate").permitAll()
                         .requestMatchers("/api/v1/auth/reissue").permitAll()
+                        .requestMatchers(HttpMethod.GET,"api/v1/comment").permitAll()
                         .requestMatchers("/api/v1/member/admin").hasRole("ADMIN")
                         // 위에서 정의하지 않은 요청은 인증된 사용자만 접근할 수 있음
                         .anyRequest().authenticated());
