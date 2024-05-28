@@ -61,6 +61,15 @@ public class CommentServiceTest {
         verify(commentRespository).findById(anyLong());
         verify(commentRespository).save(any(Comment.class));
     }
+    @Test
+    @DisplayName("댓글 서비스: 댓글 생성 테스트(부모 댓글 존재 x)")
+    void testCreateCommentWithOutParent(){
+        //given
+
+        //when
+
+        //then
+    }
     private Comment getParentComment(Post post){
         return Comment.builder()
                 .id(1L)
