@@ -70,6 +70,15 @@ public class CommentServiceTest {
 
         //then
     }
+    @Test
+    @DisplayName("댓글 서비스: 댓글 업데이트 테스트")
+    void testUpdateComment(){
+        //given
+
+        //when
+
+        //then
+    }
     private Comment getParentComment(Post post){
         return Comment.builder()
                 .id(1L)
