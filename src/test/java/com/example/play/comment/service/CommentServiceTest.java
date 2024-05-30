@@ -61,6 +61,38 @@ public class CommentServiceTest {
         verify(commentRespository).findById(anyLong());
         verify(commentRespository).save(any(Comment.class));
     }
+    @Test
+    @DisplayName("댓글 서비스: 댓글 생성 테스트(부모 댓글 존재 x)")
+    void testCreateCommentWithOutParent(){
+        //given
+        Member member = getTestMember();
+        Post post = getTestPostWithMember(member);
+        Comment comment = getComment(member, post);
+        RequestCommentCreate req = RequestCommentCreate.builder().content("content").postId(1L).build();
+        when(postService.findById(anyLong())).thenReturn(post);
+        when(memberService.findByEmail(anyString())).thenReturn(member);
+        when(commentRespository.save(any(Comment.class))).thenReturn(comment);
+
+        //when
+        ResponseComment res = commentService.create(req, "test@email.com");
+
+        //then
+        assertEquals(res.getId(), 1L);
+        assertEquals(res.getParentId(), null);
+        assertEquals(res.getContent(), "content");
+        verify(postService).findById(anyLong());
+        verify(memberService).findByEmail(anyString());
+        verify(commentRespository).save(any(Comment.class));
+    }
+    @Test
+    @DisplayName("댓글 서비스: 댓글 업데이트 테스트")
+    void testUpdateComment(){
+        //given
+
+        //when
+
+        //then
+    }
     private Comment getParentComment(Post post){
         return Comment.builder()
                 .id(1L)
@@ -75,6 +107,14 @@ public class CommentServiceTest {
                 .content("child content")
                 .member(member)
                 .parent(parent)
+                .build();
+    }
+    private Comment getComment(Member member,Post post){
+        return Comment.builder()
+                .id(1L)
+                .post(post)
+                .content("content")
+                .member(member)
                 .build();
     }
 
