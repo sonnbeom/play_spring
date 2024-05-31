@@ -17,7 +17,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +48,7 @@ public class CommentServiceTest {
         //given
         Member member = getTestMember();
         Post post = getTestPostWithMember(member);
-        Comment parentComment = getParentComment(post);
+        Comment parentComment = getParentComment(post, member);
         Comment comment = getComment(member, post, parentComment);
         RequestCommentCreate req = RequestCommentCreate.builder().content("child content").postId(1L).parentId(1L).build();
         when(postService.findById(anyLong())).thenReturn(post);
@@ -85,6 +92,36 @@ public class CommentServiceTest {
         verify(commentRespository).save(any(Comment.class));
     }
     @Test
+    @DisplayName("댓글 서비스: 해당 게시물과 관련된 댓글 가져오기 테스트")
+    void testGetComments(){
+        //given
+        Member member = getTestMember();
+        Post post = getTestPostWithMember(member);
+        List<Comment> commentList = getComments(member, post);
+        //계층 구조를 테스트 하기 위함
+        Comment parentComment = getParentComment(post, member);
+        Comment child = getComment(member, post, parentComment);
+        commentList.add(parentComment); commentList.add(child);
+        Pageable pageable = PageRequest.of(0,10);
+        Page<Comment> commentPage = new PageImpl<>(commentList, pageable, 10);
+
+        when(postService.findById(anyLong())).thenReturn(post);
+        when(customCommentRepository.getComments(any(Post.class), any(Pageable.class))).thenReturn(commentPage);
+
+        //when
+        List<ResponseComment> result = commentService.getComments(1L, 0);
+
+        //then
+        //대댓글이 댓글 안에 리스트로 존재 대댓글 제외 댓글은 3개
+        assertEquals(result.size(), 3);
+        // 부모 댓글에 자식 댓글 하나
+        assertEquals(result.get(2).getChildList().size(), 1);
+        assertEquals(result.get(2).getContent(), "parent content");
+        assertEquals(result.get(2).getChildList().get(0).getContent(), "child content");
+        verify(postService).findById(anyLong());
+        verify(customCommentRepository).getComments(any(Post.class), any(Pageable.class));
+    }
+    @Test
     @DisplayName("댓글 서비스: 댓글 업데이트 테스트")
     void testUpdateComment(){
         //given
@@ -93,11 +130,19 @@ public class CommentServiceTest {
 
         //then
     }
-    private Comment getParentComment(Post post){
+    private List<Comment> getComments(Member member, Post post){
+        Comment comment1 = Comment.builder().member(member).content("first comment").post(post).build();
+        Comment comment2 = Comment.builder().member(member).content("second comment").post(post).build();
+        List<Comment> list = new ArrayList<>();
+        list.add(comment1); list.add(comment2);
+        return list;
+    }
+    private Comment getParentComment(Post post, Member member){
         return Comment.builder()
                 .id(1L)
                 .post(post)
                 .content("parent content")
+                .member(member)
                 .build();
     }
     private Comment getComment(Member member,Post post, Comment parent){
