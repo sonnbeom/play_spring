@@ -2,6 +2,7 @@ package com.example.play.comment.service;
 
 import com.example.play.comment.domain.Comment;
 import com.example.play.comment.dto.RequestCommentCreate;
+import com.example.play.comment.dto.RequestCommentDelete;
 import com.example.play.comment.dto.RequestCommentUpdate;
 import com.example.play.comment.dto.ResponseComment;
 import com.example.play.comment.repository.CommentRespository;
@@ -141,6 +142,27 @@ public class CommentServiceTest {
         assertEquals(res.getContent(), "update content");
         verify(memberService).findByEmail(anyString());
         verify(commentRespository).findById(anyLong());
+    }
+    @Test
+    @DisplayName("댓글 서비스: 댓글 삭제 테스트")
+    void testDeleteComment(){
+        //given
+        Member member = getTestMember();
+        Post post = getTestPostWithMember(member);
+        Comment comment = getComment(member, post);
+        RequestCommentDelete req = RequestCommentDelete.builder().commentId(1L).build();
+
+        when(memberService.findByEmail(anyString())).thenReturn(member);
+        when(commentRespository.findById(anyLong())).thenReturn(Optional.ofNullable(comment));
+        doNothing().when(commentRespository).delete(any(Comment.class));
+
+        //when
+        commentService.delete(req ,"test@email.com");
+
+        //then
+        verify(memberService).findByEmail(anyString());
+        verify(commentRespository).findById(anyLong());
+        verify(commentRespository).delete(any(Comment.class));
     }
     private List<Comment> getComments(Member member, Post post){
         Comment comment1 = Comment.builder().member(member).content("first comment").post(post).build();
