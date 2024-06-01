@@ -2,6 +2,7 @@ package com.example.play.comment.service;
 
 import com.example.play.comment.domain.Comment;
 import com.example.play.comment.dto.RequestCommentCreate;
+import com.example.play.comment.dto.RequestCommentUpdate;
 import com.example.play.comment.dto.ResponseComment;
 import com.example.play.comment.repository.CommentRespository;
 import com.example.play.comment.repository.CustomCommentRepository;
@@ -92,7 +93,7 @@ public class CommentServiceTest {
         verify(commentRespository).save(any(Comment.class));
     }
     @Test
-    @DisplayName("댓글 서비스: 해당 게시물과 관련된 댓글 가져오기 테스트")
+    @DisplayName("댓글 서비스: 해당 게시물과 관련된 댓글 가져오기 + 대댓글 매핑이 제대로 되는지 테스트")
     void testGetComments(){
         //given
         Member member = getTestMember();
@@ -125,10 +126,21 @@ public class CommentServiceTest {
     @DisplayName("댓글 서비스: 댓글 업데이트 테스트")
     void testUpdateComment(){
         //given
+        Member member = getTestMember();
+        Post post = getTestPostWithMember(member);
+        Comment comment = getComment(member, post);
+        RequestCommentUpdate req = RequestCommentUpdate.builder().commentId(1L).content("update content").build();
+
+        when(memberService.findByEmail(anyString())).thenReturn(member);
+        when(commentRespository.findById(anyLong())).thenReturn(Optional.ofNullable(comment));
 
         //when
+        ResponseComment res = commentService.update(req, "test@email.com");
 
         //then
+        assertEquals(res.getContent(), "update content");
+        verify(memberService).findByEmail(anyString());
+        verify(commentRespository).findById(anyLong());
     }
     private List<Comment> getComments(Member member, Post post){
         Comment comment1 = Comment.builder().member(member).content("first comment").post(post).build();
