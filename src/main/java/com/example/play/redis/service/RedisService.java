@@ -17,7 +17,6 @@ public class RedisService {
         redisTemplate.opsForValue().set(key, value);
         //해당 키가 이미 존재한다면 기존의 값을 새로운 값으로 덮어씁니다.
     }
-
     // 만료시간 설정 -> 자동 삭제
     public void setValuesWithTimeOut(String key, String value, long timeOut){
         redisTemplate.opsForValue().set(key, value, timeOut, TimeUnit.MILLISECONDS);
