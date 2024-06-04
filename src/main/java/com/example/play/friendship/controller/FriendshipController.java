@@ -25,7 +25,6 @@ public class FriendshipController {
         ResponseFriendshipDto responseFriendship =  friendshipService.create(friendship, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseFriendship);
     }
-    // 페이징 처리해야함.
     @GetMapping("/received")
     public ResponseEntity<List<ResponseFriendshipWithImg>> getWaitingFriendship(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                                 @RequestParam(defaultValue = "0") int page){
@@ -39,7 +38,6 @@ public class FriendshipController {
         ResponseFriendshipDto responseApprove = friendshipService.approveFriendship(friendshipId, userDetails.getUsername());
         return ResponseEntity.status(HttpStatus.OK).body(responseApprove);
     }
-    // 페이징 처리해야함.
     @GetMapping("/friendList")
     public ResponseEntity<List<ResponseFriendshipWithImg>> readFriendList(@AuthenticationPrincipal CustomUserDetails userDetails){
         List<ResponseFriendshipWithImg> friendList = friendshipService.findFriendList(userDetails.getUsername());
