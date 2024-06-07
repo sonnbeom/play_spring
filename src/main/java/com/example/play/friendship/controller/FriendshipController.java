@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class FriendshipController {
     private final FriendshipService friendshipService;
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<ResponseFriendshipDto> sendFriendShipRequest(@Valid @RequestBody RequestFriendship friendship,
                                                                     @AuthenticationPrincipal CustomUserDetails userDetails){
         ResponseFriendshipDto responseFriendship =  friendshipService.create(friendship, userDetails.getUsername());
