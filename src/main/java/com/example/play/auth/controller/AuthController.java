@@ -67,12 +67,11 @@ public class AuthController {
     }
 
     /*
-    * 로그아웃 했는데 accessToken -> 접근 어케 막을 겨?
+    * 로그아웃 했는데 accessToken -> 접근 어케 막을 건지
     * 로그아웃 시에 redis black list에 올린다?
     * 장점: 로그아웃 하고 나서 accessToken을 이용해서 접근할 수 없다
     * 단점: doFilter 메소드가 실행될 때마다 redis를 확인한다.
     * */
-
     @GetMapping("/logout")
     public ResponseEntity<?> logout(@AuthenticationPrincipal CustomUserDetails userDetails){
         authService.logout(userDetails.getUsername());
