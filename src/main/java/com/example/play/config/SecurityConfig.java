@@ -4,6 +4,7 @@ import com.example.play.auth.service.CustomAuth2UserService;
 import com.example.play.jwt.filter.JwtTokenFilter;
 
 import com.example.play.jwt.service.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Collections;
 
 
 @RequiredArgsConstructor
@@ -34,6 +39,22 @@ public class SecurityConfig{
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         OAuth2LoginConfigurer<HttpSecurity> HttpSecurity;
+        http
+                .cors((cors) -> cors
+                        .configurationSource(new CorsConfigurationSource() {
+                            @Override
+                            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                                CorsConfiguration configuration = new CorsConfiguration();
+
+                                configuration.setAllowedOrigins(Collections.singletonList("http:/localhost:3000"));
+                                configuration.setAllowedMethods(Collections.singletonList("*"));
+                                configuration.setAllowCredentials(true);
+                                configuration.setAllowedHeaders(Collections.singletonList("*"));
+
+                                configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+                                return configuration;
+                            }
+                        }));
         http
                 .sessionManagement((session)->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -57,6 +78,11 @@ public class SecurityConfig{
                         .requestMatchers("/api/v1/member/admin").hasRole("ADMIN")
                         // 위에서 정의하지 않은 요청은 인증된 사용자만 접근할 수 있음
                         .anyRequest().authenticated());
+
+//        http
+//                .formLogin((auth)-> auth.loginPage("api/v1/auth/authenticate")
+//                                .loginProcessingUrl("/")
+//                                .permitAll());
 //        http
 //                .logout(logout -> logout
 //                        //로그아웃 기능을 활성화하고 로그 아웃 성공시 사용자를 해당 url로 리다이렉트한다
