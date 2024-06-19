@@ -1,6 +1,5 @@
 package com.example.play.member.entity;
 
-import com.example.play.auth.dto.SessionMember;
 import com.example.play.comment.domain.Comment;
 import com.example.play.friendship.entity.Friendship;
 import com.example.play.image.dto.ResponseMemberImg;
@@ -121,12 +120,7 @@ public class Member extends BaseEntity {
     public String getEmailForUSerDetail(){
         return email;
     }
-    public SessionMember memberToSessionMember(){
-        return SessionMember.builder()
-                .name(name)
-                .email(email)
-                .build();
-    }
+
 
     public void checkDeleteAuthority(Long memberId) {
         if (memberId != id){
