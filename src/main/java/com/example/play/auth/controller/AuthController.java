@@ -42,10 +42,7 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(tokenDto);
     }
-    /*
-    * 1. / 기존 리프레시 쿠키 지우는 거 해야함
-    * 2. 로그아웃 구현
-    * */
+
     @PostMapping("/reissue")
     public ResponseEntity<?> refreshToken(@CookieValue String refreshToken,
                                           HttpServletResponse response) throws IOException {
