@@ -27,7 +27,8 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository{
         List<Comment>list = jpaQueryFactory
                 .selectFrom(comment)
                 .where(comment.post.eq(post))
-                .orderBy(comment.parent.id.desc().nullsFirst())
+                .orderBy(comment.parent.id.desc().nullsFirst()
+                        , comment.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
