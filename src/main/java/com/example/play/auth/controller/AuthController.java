@@ -62,7 +62,6 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(null);
     }
-
     /*
     * 로그아웃 했는데 accessToken -> 접근 어케 막을 건지
     * 로그아웃 시에 redis black list에 올린다?
