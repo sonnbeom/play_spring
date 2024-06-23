@@ -76,8 +76,5 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
                 .build();
     }
-    @PostMapping
-    public ResponseEntity<?> login(){
 
-    }
 }
