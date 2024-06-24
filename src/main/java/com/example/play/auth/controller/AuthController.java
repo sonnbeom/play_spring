@@ -42,7 +42,6 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(tokenDto);
     }
-
     @PostMapping("/reissue")
     public ResponseEntity<?> refreshToken(@CookieValue String refreshToken,
                                           HttpServletResponse response) throws IOException {
