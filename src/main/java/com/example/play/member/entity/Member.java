@@ -12,6 +12,7 @@ import com.example.play.member.role.Role;
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.post.entity.Post;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,12 +26,15 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @EqualsAndHashCode
+@AllArgsConstructor
+@Builder
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
     private String name;
+    private String socialUserId;
     @Column(unique = true)
     private String email;
     private String password;
@@ -52,7 +56,7 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Comment> commentList = new ArrayList<>();
     @Builder
-    public Member(String name, String email, String picture, Role role, Integer isActive, String nickname, String password){
+    public Member(String name, String email, Role role, Integer isActive, String nickname, String password){
         this.name = name;
         this.email = email;
         this.role = role;
@@ -61,13 +65,13 @@ public class Member extends BaseEntity {
         this.password = password;
     }
     @Builder
-    public Member(String name, String email, String picture, Role role, Integer isActive){
+    public Member(String name, String email, Role role, String socialUserId){
         this.name = name;
         this.email = email;
         this.role = role;
-        this.isActive = isActive;
-
+        this.socialUserId = socialUserId;
     }
+
 
     public Member update(String name){
         this.name = name;
@@ -83,6 +87,9 @@ public class Member extends BaseEntity {
 
     public void changeEmail(String email) {
         this.email = email;
+    }
+    private void changeName(String name) {
+        this.name = name;
     }
     public int changeStatus(){
         this.isActive = 0;
@@ -134,4 +141,8 @@ public class Member extends BaseEntity {
         }
     }
 
+    public void updateByOAuth(String email, String name) {
+        changeEmail(email);
+        changeName(name);
+    }
 }

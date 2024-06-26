@@ -54,6 +54,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final ListPath<com.example.play.friendship.entity.Friendship, com.example.play.friendship.entity.QFriendship> sentFriendships = this.<com.example.play.friendship.entity.Friendship, com.example.play.friendship.entity.QFriendship>createList("sentFriendships", com.example.play.friendship.entity.Friendship.class, com.example.play.friendship.entity.QFriendship.class, PathInits.DIRECT2);
 
+    public final StringPath socialUserId = createString("socialUserId");
+
     public QMember(String variable) {
         super(Member.class, forVariable(variable));
     }

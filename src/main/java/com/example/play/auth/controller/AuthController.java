@@ -75,5 +75,9 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
                 .build();
     }
+    @GetMapping()
+    public String socialLogin(){
+        return "login";
+    }
 
 }

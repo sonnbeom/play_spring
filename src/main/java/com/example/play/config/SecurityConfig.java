@@ -1,6 +1,7 @@
 package com.example.play.config;
 
 
+import com.example.play.auth.service.CustomOAuth2UserService;
 import com.example.play.jwt.filter.JwtTokenFilter;
 import com.example.play.jwt.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,6 +30,7 @@ import java.util.Collections;
 public class SecurityConfig{
 
     private final JwtService jwtService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfiguration) throws Exception {
@@ -60,6 +63,14 @@ public class SecurityConfig{
                 .csrf(csrf -> csrf.disable());
         http
                 .headers(headers -> headers.disable());
+        http.
+                formLogin((auth)-> auth.disable());
+        http
+                .httpBasic((auth) -> auth.disable());
+        http
+                .oauth2Login((oauth2) -> oauth2
+                        .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService))));
         http
                 .authorizeRequests(auth -> auth
                         // 루트(/) , css, 이미지 ,자바스크립트 파일, h2 콘솔 경로에 대한 요청은 인증 없이 접근을 허용
