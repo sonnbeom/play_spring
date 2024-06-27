@@ -42,10 +42,6 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(tokenDto);
     }
-    /*
-    * 1. / 기존 리프레시 쿠키 지우는 거 해야함
-    * 2. 로그아웃 구현
-    * */
     @PostMapping("/reissue")
     public ResponseEntity<?> refreshToken(@CookieValue String refreshToken,
                                           HttpServletResponse response) throws IOException {
@@ -65,7 +61,6 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(null);
     }
-
     /*
     * 로그아웃 했는데 accessToken -> 접근 어케 막을 건지
     * 로그아웃 시에 redis black list에 올린다?
@@ -80,4 +75,9 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
                 .build();
     }
+    @GetMapping()
+    public String socialLogin(){
+        return "login";
+    }
+
 }
