@@ -57,8 +57,10 @@ public class CommentServiceImpl implements CommentService{
         Post post = postService.findById(postId);
         Pageable pageable = PageRequest.of(page, COMMENT_PAGE_SIZE);
         Page<Comment> commentList = customCommentRepository.getComments(post, pageable);
+
         Map<Long, ResponseComment> map = new HashMap<>();
         List<ResponseComment> result = new ArrayList<>();
+
         commentList.stream().forEach(comment -> {
             ResponseComment dto = comment.toDto();
             map.put(dto.getId(), dto);

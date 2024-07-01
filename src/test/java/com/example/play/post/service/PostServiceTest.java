@@ -119,7 +119,7 @@ class PostServiceTest {
         Mockito.verify(customPostRepository).findBySearch(Mockito.any(Pageable.class), Mockito.anyString(), Mockito.anyString());
         Mockito.verify(postMapper).pageEntityToDto(Mockito.any(Page.class));
     }
-    @DisplayName("서비스 레이어에서 게시글이 성공적으로 업데이트되는지 테스트")
+    @DisplayName("포스트 서비스: 게시글이 업데이트 테스트")
     @Test
     void testPostUpdate(){
         //given

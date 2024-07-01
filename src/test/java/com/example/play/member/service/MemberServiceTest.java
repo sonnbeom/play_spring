@@ -133,7 +133,7 @@ class MemberServiceTest {
 
     }
     @Test
-    @DisplayName("서비스: 멤버 삭제 테스트")
+    @DisplayName("멤버 서비스: 삭제 테스트")
     void deleteMemberTest(){
         //given
         String testEmail = "test@email.com";

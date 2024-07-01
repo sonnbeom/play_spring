@@ -51,7 +51,7 @@ class PostControllerTest {
     }
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @DisplayName("게시글 컨트롤러: 게시글이 성공적으로 생성되는지 테스트")
+    @DisplayName("포스트 컨트롤러: 게시글이 성공적으로 생성되는지 테스트")
     @Test
     @WithCustomMockUser
     void postCreateTest() throws Exception {
@@ -94,7 +94,7 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.responseImgList[1].url").value("test/path/2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt").value(time.format(DateTimeFormatter.ISO_DATE_TIME)));
     }
-    @DisplayName("게시글 컨트롤러: 단일 게시글을 성공적으로 가져오는지 테스트")
+    @DisplayName("포스트 컨트롤러: 단일 게시글을 성공적으로 가져오는지 테스트")
     @Test
     @WithCustomMockUser
     void getPostTest() throws Exception {
@@ -118,7 +118,7 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.createdAt").value(time.format(DateTimeFormatter.ISO_DATE_TIME)));
 
     }
-    @DisplayName("게시글 컨트롤러: 검색 조건에 맞는 게시글을 성공적으로 검색하는지 테스트")
+    @DisplayName("포스트 컨트롤러: 검색 조건에 맞는 게시글을 성공적으로 검색하는지 테스트")
     @Test
     @WithCustomMockUser
     void getPostsBySearch() throws Exception {
@@ -148,7 +148,7 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].likeCount").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].url").value("second url"));
     }
-    @DisplayName("게시글 컨트롤러: 정렬 조건에 맞는 게시글을 성공적으로 검색하는지 테스트")
+    @DisplayName("포스트 컨트롤러: 정렬 조건에 맞는 게시글을 성공적으로 검색하는지 테스트")
     @Test
     @WithCustomMockUser
     void getPostsBySort() throws Exception {
@@ -178,7 +178,7 @@ class PostControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].likeCount").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.postListDto[1].url").value("second url"));
     }
-    @DisplayName("게시글 컨트롤러: 좋아요한 게시글을 성공적으로 검색하는지 테스트")
+    @DisplayName("포스트 컨트롤러: 좋아요한 게시글을 성공적으로 검색하는지 테스트")
     @Test
     @WithCustomMockUser
     void getLikedPosts() throws Exception {

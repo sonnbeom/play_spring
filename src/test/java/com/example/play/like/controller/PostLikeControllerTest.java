@@ -52,7 +52,7 @@ public class PostLikeControllerTest {
                 .apply(springSecurity())
                 .build();
     }
-    @DisplayName("좋아요 컨트롤러: 좋아요 생성 테스트")
+    @DisplayName("게시글 좋아요 컨트롤러: 좋아요 생성 테스트")
     @Test
     @WithCustomMockUser
     void testPostLikeCreate() throws Exception {

@@ -87,7 +87,7 @@ class MemberControllerTest {
     }
     @Test
     @WithCustomMockUser
-    @DisplayName("컨트롤러 단일 멤버 불러오기")
+    @DisplayName("멤버 컨트롤러: 단일 멤버 불러오기")
     void testGetMember() throws Exception {
         //given
         ResponseMemberDto dto = new ResponseMemberDto(1L, "test name", "test@email.com", "test nickname", new ResponseMemberImg(ResponseMemberImg.Status.DEFAULT));
@@ -106,7 +106,7 @@ class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.img.status").value("DEFAULT"));
     }
     @Test
-    @DisplayName("컨트롤러 멤버 정보 수정하기")
+    @DisplayName("멤버 컨트롤러: 멤버 정보 수정하기")
     @WithCustomMockUser
     void testMemberUpdate() throws Exception {
         //given
@@ -139,7 +139,7 @@ class MemberControllerTest {
 
     }
     @Test
-    @DisplayName("컨트롤러 멤버 정보 삭제하기")
+    @DisplayName("멤버 컨트롤러: 삭제하기")
     @WithCustomMockUser
     void testMemberDelete() throws Exception {
         //given
