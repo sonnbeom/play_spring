@@ -100,10 +100,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         List<ChatMessage> chatList = chatMessageService.findByRoomChatRoomList(chatRoomList);
 
         for (ChatMessage chatMessage : chatList){
-            Optional<ChatRoomsWithChatsDto> optionalChatRoomsWithChatsDto = chatMessage.findMatchingCharRoom(map);
-            if (optionalChatRoomsWithChatsDto.isPresent()){
-                optionalChatRoomsWithChatsDto.get().insertChatMessage(chatMessage.toDto());
-            }
+            Optional<ChatRoomsWithChatsDto> optionalChatRoomsWithChatsDto = chatMessage.findMatchingChatRoom(map);
+            optionalChatRoomsWithChatsDto.ifPresent(chatRoomsWithChatsDto -> chatRoomsWithChatsDto.insertChatMessage(chatMessage.toDto()));
         }
         return new ArrayList<>(map.values());
     }
