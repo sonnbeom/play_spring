@@ -4,7 +4,7 @@ import com.example.play.auth.dto.RequestLoginDto;
 import com.example.play.jwt.dto.TokenDto;
 import com.example.play.jwt.exception.RefreshTokenReissueException;
 import com.example.play.jwt.service.JwtService;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.member.service.MemberService;
 import com.example.play.redis.service.RedisService;
 import jakarta.servlet.http.HttpServletResponse;

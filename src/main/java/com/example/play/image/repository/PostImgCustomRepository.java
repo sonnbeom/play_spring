@@ -1,7 +1,7 @@
 package com.example.play.image.repository;
 
-import com.example.play.image.entity.PostImage;
-import com.example.play.post.entity.Post;
+import com.example.play.image.domain.PostImage;
+import com.example.play.post.domain.Post;
 
 import java.util.List;
 

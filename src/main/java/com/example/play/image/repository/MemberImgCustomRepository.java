@@ -1,10 +1,9 @@
 package com.example.play.image.repository;
 
-import com.example.play.image.entity.MemberImage;
-import com.example.play.member.entity.Member;
+import com.example.play.image.domain.MemberImage;
+import com.example.play.member.domain.Member;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface MemberImgCustomRepository {
     List<MemberImage> findByMember(Member member);

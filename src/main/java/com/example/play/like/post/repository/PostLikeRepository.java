@@ -1,6 +1,6 @@
 package com.example.play.like.post.repository;
 
-import com.example.play.like.post.entity.PostLike;
+import com.example.play.like.post.domain.PostLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

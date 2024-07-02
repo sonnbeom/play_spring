@@ -7,17 +7,15 @@ import com.example.play.comment.dto.RequestCommentUpdate;
 import com.example.play.comment.dto.ResponseComment;
 import com.example.play.comment.repository.CommentRespository;
 import com.example.play.comment.repository.CustomCommentRepository;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.member.service.MemberService;
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import com.example.play.post.service.PostService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

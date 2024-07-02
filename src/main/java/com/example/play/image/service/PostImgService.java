@@ -1,7 +1,7 @@
 package com.example.play.image.service;
 
 import com.example.play.image.dto.ResponseImg;
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

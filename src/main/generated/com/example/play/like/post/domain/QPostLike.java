@@ -1,4 +1,4 @@
-package com.example.play.image.entity;
+package com.example.play.like.post.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QPostImage is a Querydsl query type for PostImage
+ * QPostLike is a Querydsl query type for PostLike
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QPostImage extends EntityPathBase<PostImage> {
+public class QPostLike extends EntityPathBase<PostLike> {
 
-    private static final long serialVersionUID = 167130092L;
+    private static final long serialVersionUID = 347091618L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QPostImage postImage = new QPostImage("postImage");
+    public static final QPostLike postLike = new QPostLike("postLike");
 
     public final com.example.play.global.common.entity.QBaseEntity _super = new com.example.play.global.common.entity.QBaseEntity(this);
 
@@ -34,29 +34,30 @@ public class QPostImage extends EntityPathBase<PostImage> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
-    public final com.example.play.post.entity.QPost post;
+    public final com.example.play.member.domain.QMember member;
 
-    public final StringPath url = createString("url");
+    public final com.example.play.post.domain.QPost post;
 
-    public QPostImage(String variable) {
-        this(PostImage.class, forVariable(variable), INITS);
+    public QPostLike(String variable) {
+        this(PostLike.class, forVariable(variable), INITS);
     }
 
-    public QPostImage(Path<? extends PostImage> path) {
+    public QPostLike(Path<? extends PostLike> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QPostImage(PathMetadata metadata) {
+    public QPostLike(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QPostImage(PathMetadata metadata, PathInits inits) {
-        this(PostImage.class, metadata, inits);
+    public QPostLike(PathMetadata metadata, PathInits inits) {
+        this(PostLike.class, metadata, inits);
     }
 
-    public QPostImage(Class<? extends PostImage> type, PathMetadata metadata, PathInits inits) {
+    public QPostLike(Class<? extends PostLike> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.post = inits.isInitialized("post") ? new com.example.play.post.entity.QPost(forProperty("post"), inits.get("post")) : null;
+        this.member = inits.isInitialized("member") ? new com.example.play.member.domain.QMember(forProperty("member")) : null;
+        this.post = inits.isInitialized("post") ? new com.example.play.post.domain.QPost(forProperty("post"), inits.get("post")) : null;
     }
 
 }

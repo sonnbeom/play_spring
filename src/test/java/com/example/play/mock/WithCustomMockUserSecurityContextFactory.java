@@ -1,17 +1,11 @@
 package com.example.play.mock;
 
 import com.example.play.jwt.dto.CustomUserDetails;
-import com.example.play.member.entity.Member;
-import com.example.play.member.role.Role;
+import com.example.play.member.domain.Member;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
-
-import java.util.List;
 
 import static com.example.play.member.role.Role.ROLE_USER;
 

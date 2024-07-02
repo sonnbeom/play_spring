@@ -4,7 +4,7 @@ import com.example.play.member.dto.RequestCreateMemberDto;
 import com.example.play.member.dto.RequestUpdateMemberDto;
 import com.example.play.member.dto.ResponseDeleteMemberDto;
 import com.example.play.member.dto.ResponseMemberDto;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface MemberService {

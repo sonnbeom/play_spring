@@ -1,8 +1,8 @@
 package com.example.play.friendship.repository;
 
 
-import com.example.play.friendship.entity.Friendship;
-import com.example.play.member.entity.Member;
+import com.example.play.friendship.domain.Friendship;
+import com.example.play.member.domain.Member;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.example.play.friendship.constant.FriendshipStatus.*;
-import static com.example.play.friendship.entity.QFriendship.*;
+import static com.example.play.friendship.domain.QFriendship.*;
 
 @Repository
 @Slf4j

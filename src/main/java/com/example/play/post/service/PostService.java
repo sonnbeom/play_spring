@@ -1,7 +1,7 @@
 package com.example.play.post.service;
 
 import com.example.play.post.dto.*;
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

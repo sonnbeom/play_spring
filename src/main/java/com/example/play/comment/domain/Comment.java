@@ -5,14 +5,12 @@ import com.example.play.comment.dto.ResponseComment;
 import com.example.play.comment.exception.CommentDeleteAuthorizationException;
 import com.example.play.comment.exception.CommentUpdateAuthorizationException;
 import com.example.play.global.common.entity.BaseEntity;
-import com.example.play.member.entity.Member;
-import com.example.play.post.entity.Post;
+import com.example.play.member.domain.Member;
+import com.example.play.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;

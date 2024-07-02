@@ -1,8 +1,8 @@
 package com.example.play.image.service;
 
 import com.example.play.image.dto.ResponseMemberImg;
-import com.example.play.image.entity.MemberImage;
-import com.example.play.member.entity.Member;
+import com.example.play.image.domain.MemberImage;
+import com.example.play.member.domain.Member;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

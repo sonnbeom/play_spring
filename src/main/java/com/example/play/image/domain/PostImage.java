@@ -1,12 +1,11 @@
-package com.example.play.image.entity;
+package com.example.play.image.domain;
 
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.image.dto.ResponseImg;
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Optional;

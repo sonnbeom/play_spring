@@ -1,7 +1,7 @@
 package com.example.play.post.repository;
 
-import com.example.play.member.entity.Member;
-import com.example.play.post.entity.Post;
+import com.example.play.member.domain.Member;
+import com.example.play.post.domain.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

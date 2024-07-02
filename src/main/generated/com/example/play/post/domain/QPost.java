@@ -1,4 +1,4 @@
-package com.example.play.post.entity;
+package com.example.play.post.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -33,7 +33,7 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<com.example.play.image.entity.PostImage, com.example.play.image.entity.QPostImage> imageList = this.<com.example.play.image.entity.PostImage, com.example.play.image.entity.QPostImage>createList("imageList", com.example.play.image.entity.PostImage.class, com.example.play.image.entity.QPostImage.class, PathInits.DIRECT2);
+    public final ListPath<com.example.play.image.domain.PostImage, com.example.play.image.domain.QPostImage> imageList = this.<com.example.play.image.domain.PostImage, com.example.play.image.domain.QPostImage>createList("imageList", com.example.play.image.domain.PostImage.class, com.example.play.image.domain.QPostImage.class, PathInits.DIRECT2);
 
     public final NumberPath<Integer> isActive = createNumber("isActive", Integer.class);
 
@@ -42,9 +42,9 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
 
-    public final com.example.play.member.entity.QMember member;
+    public final com.example.play.member.domain.QMember member;
 
-    public final ListPath<com.example.play.like.post.entity.PostLike, com.example.play.like.post.entity.QPostLike> postLikes = this.<com.example.play.like.post.entity.PostLike, com.example.play.like.post.entity.QPostLike>createList("postLikes", com.example.play.like.post.entity.PostLike.class, com.example.play.like.post.entity.QPostLike.class, PathInits.DIRECT2);
+    public final ListPath<com.example.play.like.post.domain.PostLike, com.example.play.like.post.domain.QPostLike> postLikes = this.<com.example.play.like.post.domain.PostLike, com.example.play.like.post.domain.QPostLike>createList("postLikes", com.example.play.like.post.domain.PostLike.class, com.example.play.like.post.domain.QPostLike.class, PathInits.DIRECT2);
 
     public final StringPath title = createString("title");
 
@@ -66,7 +66,7 @@ public class QPost extends EntityPathBase<Post> {
 
     public QPost(Class<? extends Post> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.example.play.member.entity.QMember(forProperty("member")) : null;
+        this.member = inits.isInitialized("member") ? new com.example.play.member.domain.QMember(forProperty("member")) : null;
     }
 
 }

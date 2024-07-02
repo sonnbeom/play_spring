@@ -1,7 +1,7 @@
 package com.example.play.comment.repository;
 
 import com.example.play.comment.domain.Comment;
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

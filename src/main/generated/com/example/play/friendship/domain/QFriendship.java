@@ -1,4 +1,4 @@
-package com.example.play.friendship.entity;
+package com.example.play.friendship.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -32,9 +32,9 @@ public class QFriendship extends EntityPathBase<Friendship> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
-    public final com.example.play.member.entity.QMember receiver;
+    public final com.example.play.member.domain.QMember receiver;
 
-    public final com.example.play.member.entity.QMember sender;
+    public final com.example.play.member.domain.QMember sender;
 
     public final EnumPath<com.example.play.friendship.constant.FriendshipStatus> status = createEnum("status", com.example.play.friendship.constant.FriendshipStatus.class);
 
@@ -56,8 +56,8 @@ public class QFriendship extends EntityPathBase<Friendship> {
 
     public QFriendship(Class<? extends Friendship> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.receiver = inits.isInitialized("receiver") ? new com.example.play.member.entity.QMember(forProperty("receiver")) : null;
-        this.sender = inits.isInitialized("sender") ? new com.example.play.member.entity.QMember(forProperty("sender")) : null;
+        this.receiver = inits.isInitialized("receiver") ? new com.example.play.member.domain.QMember(forProperty("receiver")) : null;
+        this.sender = inits.isInitialized("sender") ? new com.example.play.member.domain.QMember(forProperty("sender")) : null;
     }
 
 }

@@ -1,9 +1,9 @@
-package com.example.play.like.post.entity;
+package com.example.play.like.post.domain;
 
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.like.post.dto.ResponseLike;
-import com.example.play.member.entity.Member;
-import com.example.play.post.entity.Post;
+import com.example.play.member.domain.Member;
+import com.example.play.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

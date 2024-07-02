@@ -34,9 +34,9 @@ public class QChatRoom extends EntityPathBase<ChatRoom> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
-    public final com.example.play.member.entity.QMember member;
+    public final com.example.play.member.domain.QMember member;
 
-    public final com.example.play.member.entity.QMember other;
+    public final com.example.play.member.domain.QMember other;
 
     public QChatRoom(String variable) {
         this(ChatRoom.class, forVariable(variable), INITS);
@@ -56,8 +56,8 @@ public class QChatRoom extends EntityPathBase<ChatRoom> {
 
     public QChatRoom(Class<? extends ChatRoom> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.example.play.member.entity.QMember(forProperty("member")) : null;
-        this.other = inits.isInitialized("other") ? new com.example.play.member.entity.QMember(forProperty("other")) : null;
+        this.member = inits.isInitialized("member") ? new com.example.play.member.domain.QMember(forProperty("member")) : null;
+        this.other = inits.isInitialized("other") ? new com.example.play.member.domain.QMember(forProperty("other")) : null;
     }
 
 }

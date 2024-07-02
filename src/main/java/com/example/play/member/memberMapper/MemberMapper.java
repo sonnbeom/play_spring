@@ -3,7 +3,7 @@ package com.example.play.member.memberMapper;
 
 import com.example.play.member.dto.RequestCreateMemberDto;
 import com.example.play.member.dto.ResponseDeleteMemberDto;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

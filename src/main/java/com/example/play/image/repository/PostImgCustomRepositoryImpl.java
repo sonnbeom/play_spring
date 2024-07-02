@@ -1,8 +1,7 @@
 package com.example.play.image.repository;
 
-import com.example.play.image.entity.PostImage;
-import com.example.play.image.entity.QPostImage;
-import com.example.play.post.entity.Post;
+import com.example.play.image.domain.PostImage;
+import com.example.play.post.domain.Post;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.example.play.image.entity.QPostImage.postImage;
+import static com.example.play.image.domain.QPostImage.postImage;
 
 @Repository
 public class PostImgCustomRepositoryImpl implements PostImgCustomRepository {

@@ -1,11 +1,11 @@
-package com.example.play.friendship.entity;
+package com.example.play.friendship.domain;
 
 import com.example.play.friendship.constant.FriendshipStatus;
 import com.example.play.friendship.dto.ResponseFriendshipDto;
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.image.dto.ResponseMemberImg;
-import com.example.play.image.entity.MemberImage;
-import com.example.play.member.entity.Member;
+import com.example.play.image.domain.MemberImage;
+import com.example.play.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

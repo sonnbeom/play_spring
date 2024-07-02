@@ -1,7 +1,7 @@
 package com.example.play.auth.service;
 
 import com.example.play.auth.dto.*;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.member.repository.MemberRepository;
 import com.example.play.member.role.Role;
 import lombok.extern.slf4j.Slf4j;

@@ -1,9 +1,8 @@
 package com.example.play.like.post.mapper;
 
-import com.example.play.like.post.dto.ResponseLike;
-import com.example.play.like.post.entity.PostLike;
-import com.example.play.member.entity.Member;
-import com.example.play.post.entity.Post;
+import com.example.play.like.post.domain.PostLike;
+import com.example.play.member.domain.Member;
+import com.example.play.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
