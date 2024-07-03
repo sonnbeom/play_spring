@@ -1,4 +1,4 @@
-package com.example.play.image.entity;
+package com.example.play.image.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QMemberImage extends EntityPathBase<MemberImage> {
 
-    private static final long serialVersionUID = 614718962L;
+    private static final long serialVersionUID = -1027963565L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -34,7 +34,7 @@ public class QMemberImage extends EntityPathBase<MemberImage> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
-    public final com.example.play.member.entity.QMember member;
+    public final com.example.play.member.domain.QMember member;
 
     public final StringPath url = createString("url");
 
@@ -56,7 +56,7 @@ public class QMemberImage extends EntityPathBase<MemberImage> {
 
     public QMemberImage(Class<? extends MemberImage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.example.play.member.entity.QMember(forProperty("member")) : null;
+        this.member = inits.isInitialized("member") ? new com.example.play.member.domain.QMember(forProperty("member")) : null;
     }
 
 }

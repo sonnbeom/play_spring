@@ -5,6 +5,7 @@ import com.example.play.like.post.dto.RequestLike;
 import com.example.play.like.post.dto.ResponsePostLikeDto;
 
 import com.example.play.like.post.service.PostLikeService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class PostLikeController {
     private final PostLikeService postLikeService;
 
+    @Operation(summary = "게시글 좋아요 생성 혹은 삭제", description = "좋아요가 존재한다면 삭제, 없다면 생성하는 API입니다.")
     @PostMapping()
     public ResponseEntity<ResponsePostLikeDto> createLike(@RequestBody RequestLike likeRequest,
                                                           @AuthenticationPrincipal CustomUserDetails userDetails){

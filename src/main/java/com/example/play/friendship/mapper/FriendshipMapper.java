@@ -1,12 +1,8 @@
 package com.example.play.friendship.mapper;
 
 
-import com.example.play.friendship.dto.ResponseFriendshipDto;
-import com.example.play.friendship.dto.ResponseFriendListDto;
-import com.example.play.friendship.entity.Friendship;
-import com.example.play.image.constant.ImgConstant;
-import com.example.play.jwt.constant.HeaderConstant;
-import com.example.play.member.entity.Member;
+import com.example.play.friendship.domain.Friendship;
+import com.example.play.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

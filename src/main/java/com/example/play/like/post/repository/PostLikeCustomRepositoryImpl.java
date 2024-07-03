@@ -1,16 +1,15 @@
 package com.example.play.like.post.repository;
 
-import com.example.play.like.post.entity.PostLike;
-import com.example.play.like.post.entity.QPostLike;
-import com.example.play.member.entity.Member;
-import com.example.play.post.entity.Post;
+import com.example.play.like.post.domain.PostLike;
+import com.example.play.member.domain.Member;
+import com.example.play.post.domain.Post;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.example.play.like.post.entity.QPostLike.*;
+import static com.example.play.like.post.domain.QPostLike.*;
 
 @Repository
 public class PostLikeCustomRepositoryImpl implements PostLikeCustomRepository{

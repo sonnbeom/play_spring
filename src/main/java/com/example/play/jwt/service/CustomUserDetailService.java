@@ -1,18 +1,14 @@
 package com.example.play.jwt.service;
 
 import com.example.play.jwt.dto.CustomUserDetails;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.member.exception.MemberNotFoundException;
 import com.example.play.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service

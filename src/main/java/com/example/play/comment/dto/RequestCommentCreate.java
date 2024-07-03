@@ -1,8 +1,8 @@
 package com.example.play.comment.dto;
 
 import com.example.play.comment.domain.Comment;
-import com.example.play.member.entity.Member;
-import com.example.play.post.entity.Post;
+import com.example.play.member.domain.Member;
+import com.example.play.post.domain.Post;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,12 +1,10 @@
 package com.example.play.post.postMapper;
 
-import com.example.play.image.dto.ResponseImg;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.post.dto.RequestPostDto;
 import com.example.play.post.dto.ResponsePostPageDto;
 import com.example.play.post.dto.ResponsePostDTo;
-import com.example.play.post.dto.ResponsePostOne;
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

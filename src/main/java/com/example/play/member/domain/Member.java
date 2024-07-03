@@ -1,16 +1,16 @@
-package com.example.play.member.entity;
+package com.example.play.member.domain;
 
 import com.example.play.comment.domain.Comment;
-import com.example.play.friendship.entity.Friendship;
+import com.example.play.friendship.domain.Friendship;
 import com.example.play.image.dto.ResponseMemberImg;
-import com.example.play.image.entity.MemberImage;
-import com.example.play.like.post.entity.PostLike;
+import com.example.play.image.domain.MemberImage;
+import com.example.play.like.post.domain.PostLike;
 import com.example.play.member.dto.ResponseMemberDto;
 import com.example.play.member.exception.MemberDeleteAuthorityException;
 import com.example.play.member.exception.MemberGetAuthorityException;
 import com.example.play.member.role.Role;
 import com.example.play.global.common.entity.BaseEntity;
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -136,6 +136,11 @@ public class Member extends BaseEntity {
     }
 
     public void checkGetAuthority(Long memberId) {
+        if (memberId != memberId){
+            throw new MemberGetAuthorityException("해당 아이디가 로그인한 멤버의 아이디와 일치하지 않습니다. 열람 시도 아이디"+ memberId, HttpStatus.FORBIDDEN);
+        }
+    }
+    public void checkUpdateAuthority(Long memberId) {
         if (memberId != memberId){
             throw new MemberGetAuthorityException("해당 아이디가 로그인한 멤버의 아이디와 일치하지 않습니다. 열람 시도 아이디"+ memberId, HttpStatus.FORBIDDEN);
         }

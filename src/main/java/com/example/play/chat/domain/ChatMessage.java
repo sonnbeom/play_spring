@@ -49,7 +49,7 @@ public class ChatMessage extends BaseEntity {
         return this.id;
     }
 
-    public Optional<ChatRoomsWithChatsDto> findMatchingCharRoom(Map<ChatRoom, ChatRoomsWithChatsDto> map) {
+    public Optional<ChatRoomsWithChatsDto> findMatchingChatRoom(Map<ChatRoom, ChatRoomsWithChatsDto> map) {
         if (map.containsKey(chatRoom)){
             return Optional.of(map.get(chatRoom));
         }

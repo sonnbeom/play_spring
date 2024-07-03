@@ -1,12 +1,10 @@
 package com.example.play.post.repository;
 
-import com.example.play.like.post.entity.QPostLike;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.post.constant.PostSearchType;
 import com.example.play.post.constant.PostSortType;
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -20,9 +18,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.example.play.like.post.entity.QPostLike.*;
-import static com.example.play.member.entity.QMember.*;
-import static com.example.play.post.entity.QPost.*;
+import static com.example.play.like.post.domain.QPostLike.*;
+import static com.example.play.member.domain.QMember.*;
+import static com.example.play.post.domain.QPost.*;
 
 @Repository
 public class CustomPostRepositoryImpl implements CustomPostRepository {

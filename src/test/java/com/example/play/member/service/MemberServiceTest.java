@@ -6,7 +6,7 @@ import com.example.play.member.dto.RequestCreateMemberDto;
 import com.example.play.member.dto.RequestUpdateMemberDto;
 import com.example.play.member.dto.ResponseDeleteMemberDto;
 import com.example.play.member.dto.ResponseMemberDto;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.member.memberMapper.MemberMapper;
 import com.example.play.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;

@@ -36,11 +36,11 @@ public class QComment extends EntityPathBase<Comment> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedAt = _super.lastModifiedAt;
 
-    public final com.example.play.member.entity.QMember member;
+    public final com.example.play.member.domain.QMember member;
 
     public final QComment parent;
 
-    public final com.example.play.post.entity.QPost post;
+    public final com.example.play.post.domain.QPost post;
 
     public QComment(String variable) {
         this(Comment.class, forVariable(variable), INITS);
@@ -60,9 +60,9 @@ public class QComment extends EntityPathBase<Comment> {
 
     public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.member = inits.isInitialized("member") ? new com.example.play.member.entity.QMember(forProperty("member")) : null;
+        this.member = inits.isInitialized("member") ? new com.example.play.member.domain.QMember(forProperty("member")) : null;
         this.parent = inits.isInitialized("parent") ? new QComment(forProperty("parent"), inits.get("parent")) : null;
-        this.post = inits.isInitialized("post") ? new com.example.play.post.entity.QPost(forProperty("post"), inits.get("post")) : null;
+        this.post = inits.isInitialized("post") ? new com.example.play.post.domain.QPost(forProperty("post"), inits.get("post")) : null;
     }
 
 }

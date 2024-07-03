@@ -3,7 +3,7 @@ package com.example.play.chatroom.domain;
 import com.example.play.chat.domain.ChatMessage;
 import com.example.play.chatroom.dto.ChatRoomDto;
 import com.example.play.global.common.entity.BaseEntity;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

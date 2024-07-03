@@ -4,7 +4,7 @@ import com.example.play.auth.exception.PasswordNotMatchException;
 import com.example.play.image.dto.ResponseMemberImg;
 import com.example.play.image.service.MemberImgService;
 import com.example.play.member.dto.*;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.member.exception.DuplicateMemberEmailException;
 import com.example.play.member.exception.DuplicateMemberNicknameException;
 import com.example.play.member.exception.MemberNotFoundException;
@@ -62,6 +62,7 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public ResponseMemberDto updateMember(String email, RequestUpdateMemberDto updateDto, MultipartFile profile, Long deleteFile) {
         Member member = findByEmail(email);
+        member.checkUpdateAuthority(updateDto.getMemberId());
         if (updateDto.isUpdateNicknamePresent()){
             updateDto.sendNicknameToMember(member);
         }

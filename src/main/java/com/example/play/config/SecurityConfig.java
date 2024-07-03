@@ -82,6 +82,7 @@ public class SecurityConfig{
                         .requestMatchers("/api/v1/auth/reissue").permitAll()
                         .requestMatchers(HttpMethod.GET,"api/v1/comment").permitAll()
                         .requestMatchers("/api/v1/member/admin").hasRole("ADMIN")
+                        .requestMatchers("/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
                         // 위에서 정의하지 않은 요청은 인증된 사용자만 접근할 수 있음
                         .anyRequest().authenticated());
 

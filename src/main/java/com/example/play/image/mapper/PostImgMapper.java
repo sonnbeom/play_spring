@@ -1,7 +1,7 @@
 package com.example.play.image.mapper;
 
 import com.example.play.image.dto.ResponseImg;
-import com.example.play.image.entity.PostImage;
+import com.example.play.image.domain.PostImage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.example.play.post.dto;
 
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

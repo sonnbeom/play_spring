@@ -1,10 +1,10 @@
-package com.example.play.post.entity;
+package com.example.play.post.domain;
 
 import com.example.play.global.common.entity.BaseEntity;
 import com.example.play.image.dto.ResponseImg;
-import com.example.play.image.entity.PostImage;
-import com.example.play.like.post.entity.PostLike;
-import com.example.play.member.entity.Member;
+import com.example.play.image.domain.PostImage;
+import com.example.play.like.post.domain.PostLike;
+import com.example.play.member.domain.Member;
 import com.example.play.post.dto.ResponseDeletePostDTo;
 import com.example.play.post.dto.ResponsePostOne;
 import com.example.play.post.dto.ResponsePostPageDto;

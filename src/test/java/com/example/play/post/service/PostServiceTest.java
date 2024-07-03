@@ -2,14 +2,13 @@ package com.example.play.post.service;
 
 import com.example.play.image.dto.ResponseImg;
 import com.example.play.image.service.PostImgService;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.member.service.MemberService;
 import com.example.play.post.dto.*;
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import com.example.play.post.postMapper.PostMapper;
 import com.example.play.post.repository.CustomPostRepository;
 import com.example.play.post.repository.PostRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,11 +18,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

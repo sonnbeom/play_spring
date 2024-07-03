@@ -9,7 +9,7 @@ import com.example.play.chatroom.dto.RequestChatRoomDto;
 import com.example.play.chatroom.repository.ChatRoomRepository;
 import com.example.play.chatroom.repository.CustomChatRoomRepository;
 import com.example.play.chat.service.ChatMessageService;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

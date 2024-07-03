@@ -1,6 +1,6 @@
 package com.example.play.jwt.dto;
 
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

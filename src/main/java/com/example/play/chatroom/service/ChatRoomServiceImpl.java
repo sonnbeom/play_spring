@@ -4,7 +4,6 @@ import com.example.play.chat.domain.ChatMessage;
 import com.example.play.chat.service.ChatMessageService;
 import com.example.play.chatroom.domain.ChatRoom;
 import com.example.play.chat.dto.*;
-import com.example.play.chatroom.exception.ChatRoomException;
 import com.example.play.chatroom.exception.ChatRoomNotFoundException;
 import com.example.play.chatroom.repository.ChatRoomRepository;
 import com.example.play.chatroom.repository.CustomChatRoomRepository;
@@ -12,7 +11,7 @@ import com.example.play.chatroom.dto.ChatRoomDto;
 import com.example.play.chatroom.dto.ChatRoomWithMessageDto;
 import com.example.play.chatroom.dto.ChatRoomsWithChatsDto;
 import com.example.play.chatroom.dto.RequestChatRoomDto;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -101,10 +100,8 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         List<ChatMessage> chatList = chatMessageService.findByRoomChatRoomList(chatRoomList);
 
         for (ChatMessage chatMessage : chatList){
-            Optional<ChatRoomsWithChatsDto> optionalChatRoomsWithChatsDto = chatMessage.findMatchingCharRoom(map);
-            if (optionalChatRoomsWithChatsDto.isPresent()){
-                optionalChatRoomsWithChatsDto.get().insertChatMessage(chatMessage.toDto());
-            }
+            Optional<ChatRoomsWithChatsDto> optionalChatRoomsWithChatsDto = chatMessage.findMatchingChatRoom(map);
+            optionalChatRoomsWithChatsDto.ifPresent(chatRoomsWithChatsDto -> chatRoomsWithChatsDto.insertChatMessage(chatMessage.toDto()));
         }
         return new ArrayList<>(map.values());
     }

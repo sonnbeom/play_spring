@@ -1,10 +1,7 @@
 package com.example.play.member.dto;
 
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import lombok.*;
-import org.springframework.util.ObjectUtils;
-
-import java.util.List;
 
 @NoArgsConstructor
 @Data
@@ -14,6 +11,7 @@ public class RequestUpdateMemberDto {
     private String nickname;
     private String email;
     private String password;
+    private Long memberId;
     public boolean isUpdateNicknamePresent(){
         return nickname != null && !nickname.trim().isEmpty();
     }

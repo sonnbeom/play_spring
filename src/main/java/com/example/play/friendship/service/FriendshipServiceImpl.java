@@ -1,7 +1,7 @@
 package com.example.play.friendship.service;
 
 import com.example.play.friendship.dto.*;
-import com.example.play.friendship.entity.Friendship;
+import com.example.play.friendship.domain.Friendship;
 import com.example.play.friendship.exception.FriendshipApproveException;
 import com.example.play.friendship.exception.FriendshipDeleteException;
 import com.example.play.friendship.exception.FriendshipNotFoundException;
@@ -9,9 +9,9 @@ import com.example.play.friendship.mapper.FriendshipMapper;
 import com.example.play.friendship.repository.FriendshipCustomRepository;
 import com.example.play.friendship.repository.FriendshipRepository;
 import com.example.play.image.dto.ResponseMemberImg;
-import com.example.play.image.entity.MemberImage;
+import com.example.play.image.domain.MemberImage;
 import com.example.play.image.service.MemberImgService;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 
 
 import com.example.play.member.service.MemberService;

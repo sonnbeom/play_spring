@@ -2,11 +2,11 @@ package com.example.play.post.service;
 
 import com.example.play.image.dto.ResponseImg;
 import com.example.play.image.service.PostImgService;
-import com.example.play.member.entity.Member;
+import com.example.play.member.domain.Member;
 import com.example.play.member.service.MemberService;
 import com.example.play.post.constant.PageSize;
 import com.example.play.post.dto.*;
-import com.example.play.post.entity.Post;
+import com.example.play.post.domain.Post;
 import com.example.play.post.exception.PostDeleteException;
 import com.example.play.post.exception.PostNotFoundException;
 import com.example.play.post.exception.PostUpdateException;
