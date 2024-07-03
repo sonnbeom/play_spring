@@ -140,6 +140,11 @@ public class Member extends BaseEntity {
             throw new MemberGetAuthorityException("해당 아이디가 로그인한 멤버의 아이디와 일치하지 않습니다. 열람 시도 아이디"+ memberId, HttpStatus.FORBIDDEN);
         }
     }
+    public void checkUpdateAuthority(Long memberId) {
+        if (memberId != memberId){
+            throw new MemberGetAuthorityException("해당 아이디가 로그인한 멤버의 아이디와 일치하지 않습니다. 열람 시도 아이디"+ memberId, HttpStatus.FORBIDDEN);
+        }
+    }
 
     public void updateByOAuth(String email, String name) {
         changeEmail(email);

@@ -62,6 +62,7 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public ResponseMemberDto updateMember(String email, RequestUpdateMemberDto updateDto, MultipartFile profile, Long deleteFile) {
         Member member = findByEmail(email);
+        member.checkUpdateAuthority(updateDto.getMemberId());
         if (updateDto.isUpdateNicknamePresent()){
             updateDto.sendNicknameToMember(member);
         }

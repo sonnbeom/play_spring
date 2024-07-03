@@ -11,6 +11,7 @@ public class RequestUpdateMemberDto {
     private String nickname;
     private String email;
     private String password;
+    private Long memberId;
     public boolean isUpdateNicknamePresent(){
         return nickname != null && !nickname.trim().isEmpty();
     }

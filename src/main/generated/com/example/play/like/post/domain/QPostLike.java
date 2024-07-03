@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QPostLike extends EntityPathBase<PostLike> {
 
-    private static final long serialVersionUID = 347091618L;
+    private static final long serialVersionUID = -191582495L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
