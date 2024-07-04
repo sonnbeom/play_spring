@@ -86,8 +86,7 @@ public class FriendshipServiceImpl implements FriendshipService{
         Member member = memberService.findByEmail(email);
         List<Friendship> friendshipList = friendshipCustomRepository.findFriendListByMember(member);
         Map<Member, MemberImage> friendImg = findFriendImg(friendshipList);
-        List<ResponseFriendshipWithImg> dtoList = mappingFriendshipWithImg(friendshipList, friendImg);
-        return dtoList;
+        return mappingFriendshipWithImg(friendshipList, friendImg);
     }
     private  Map<Member, MemberImage> findFriendImg(List<Friendship> friendshipList){
         List<Member> memberListBySend = new ArrayList<>();

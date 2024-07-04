@@ -50,11 +50,12 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
+
+    @Operation(summary = "멤버 정보 수정", description = "이메일, 패스워드, 닉네임, 프로필 사진 등을 업데이트하는 API입니다.")
     @ApiResponse(responseCode = "200", description = "멤버 정보 수정에 성공하였습니다.", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "403", description = "멤버에게 업데이트 권한이 없습니다.", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "500", description = "사진 등록에 실패하였습니다.", content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "400", description = "등록하려는 프로필 사진이 규격에 적합하지 않습니다.", content = @Content(mediaType = "application/json"))
-    @Operation(summary = "멤버 정보 수정", description = "이메일, 패스워드, 닉네임, 프로필 사진 등을 업데이트하는 API입니다.")
     @PatchMapping("/{memberId}")
     public ResponseEntity<ResponseMemberDto> updateMember(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                           @RequestPart(value = "updateDto", required = false) RequestUpdateMemberDto updateDto,
@@ -64,6 +65,9 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(updatedDto);
     }
     @Operation(summary = "멤버 삭제", description = "id를 기반으로 회원삭제하는 API입니다.")
+    @ApiResponse(responseCode = "200", description = "멤버 삭제에 성공하였습니다.", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "403", description = "멤버에게 삭제 권한이 없습니다.", content = @Content(mediaType = "application/json"))
+    @ApiResponse(responseCode = "400", description = "삭제하려는 프로필 사진이 1개 이상입니다.", content = @Content(mediaType = "application/json"))
     @DeleteMapping("/{memberId}")
     public ResponseEntity<ResponseDeleteMemberDto> deleteMember(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                                 @PathVariable Long memberId){
