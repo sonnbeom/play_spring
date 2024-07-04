@@ -115,41 +115,60 @@
 
 # 🌟 프로젝트 진행 중 고려사항
 
-### JWT의 무상태성의 이점과 보안에서의 단점을 보완
-### Spring Security + JWT 3번의 로직 개선, Redis 사용 이유
+## <code> JWT 3번의 로직 개선, Redis 사용 이유 </code>
+### JWT의 무상태성의 이점과 보안에서의 단점 보완 
+
 
 jwt 기반 로그인을 구현하면서 무상태성의 이점과 보안에서의 단점을 보완하기 위해 총 3번의 모델 변화가 있었습니다.
 
-1차 모델
+### 1차 모델
 ![image](https://github.com/sonnbeom/play_spring/assets/127067296/f2a17167-1cce-4916-a1e6-6016a1f26bfb)
 ### 1차 모델 장점
 - Access Token의 만료 기한을 짧게 설정하여 보안성 증가
 
 ### 1차 모델 단점
+>
 1. Refresh Token을 발급하고 인증할 때 유저 정보를 DB에서 조회 → 네트워크 사용량 증가 및 응답 속도 저하 -> JWT의 이점인 무상태성을 활용할 수 없음.
 2. Access Token과 Refresh Token을 동시에 탈취시 보안상 위험 존재
 
+### 2차 모델
 ![image](https://github.com/sonnbeom/play_spring/assets/127067296/aebc50d8-0b08-4dc1-b588-7fb8089b56b4)
 
 ### 2차 모델 장점
-1. DB를 조회하던 방식에 비해 성능상 이점 존재
-2. Refresh Token 만료 시간이 지나면 자동으로 Redis에서 삭제
-3. 블랙리스트 유저의 강제 로그아웃 기능
+-  DB를 조회하던 방식에 비해 성능상 이점 존재
+-  Refresh Token 만료 시간이 지나면 자동으로 Redis에서 삭제
+-  블랙리스트 유저의 강제 로그아웃 기능
 
 ### 2차 모델 단점
-1. Access Token과 Refresh Token을 동시에 탈취시 보안상 위험 존재 Refresh Token 만료기간 전까지 재발급 가능
+- Access Token과 Refresh Token을 동시에 탈취시 보안상 위험 존재 Refresh Token 만료기간 전까지 재발급 가능
 
-- #### Refresh Token을 DB에서 조회한다면 JWT의 무상태성의 이점을 살릴 수 없다고 판단했습니다.
-- #### 이를 해결하기 위해 Refresh Token을 Redis에 저장하며 응답 속도를 개선시키고자 했습니.
-- #### RDB에 저장하게 된다면 만료시간에 대한 로직을 구현해야 했지만 Redis를 사용 시에는 이러한 로직을 직접 구현할 필요가 없었습니다.
+-  Refresh Token을 DB에서 조회한다면 JWT의 무상태성의 이점을 살릴 수 없다고 판단
+-  -> Refresh Token을 1차 캐시인 Redis에 저장하여 응답 속도를 개선
+-  RDB에 저장하게 된다면 만료시간에 대한 로직을 구현해야 했지만 Redis를 사용 시에는 이러한 로직을 직접 구현할 필요가 없음
 
 ![image](https://github.com/sonnbeom/play_spring/assets/127067296/800b09d7-8541-4804-9910-1c39d6c18dd0)
-- #### Access Token, Refresh Token 동시에 탈취되었을 때 문제방지를 위해 Access Token이 재발급될 때마다 Refresh Token도 재발급하는 방법을 택했습니다.
+- #### Access Token, Refresh Token 동시에 탈취되었을 때 문제방지를 위해 Access Token이 재발급될 때마다 Refresh Token도 재발급하는 방법 선택
 
 
 
+### Access Token과 Refresh Token을 어디에 저장해야 하는지에 대한 사고 과정
+## <code> JWT Access Token과 Refresh Token을 저장 위치 이슈 </code>
+JWT는 무상태성이라는 이점이 있지만 보안 방식에서 단점이 있다고 생각했습니다.
 
-## 👩‍💻 리팩토링
+그렇기에 JWT를 어디에 보관해야하는지에 대한 고민했고 다음과 같은 내용을 기반으로 블로그에 기술했습니다.
+   [블로그](https://velog.io/@devson_42/JWT-Access-Token%EA%B3%BC-Refresh-Token%EC%9D%84-%EC%96%B4%EB%94%94%EC%97%90-%EC%A0%80%EC%9E%A5%ED%95%B4%EC%95%BC-%ED%95%A0%EA%B9%8C)
+
+1. Access Token과 Refresh Token의 저장소가 같으면 안된다.
+2. 각 저장 위치에 저장했을 시에 어떠한 장단점 작성
+3. CSRF, XSS 공격 취약성 고려
+
+## <code> 결합도와 캡슐화 고려하여 코드 작성 </code>
+도메인 내 getter, setter를 사용하게 된다면 결합도를 낮추고 캡슐화를 약화시킬 수 있다고 생각합니다.
+
+왜 getter, setter를 사용하게 되면 결합도가 낮아지고 캡슐화는 약해지는지, 어떠한 방법으로 코드를 작성해야 하는지 등을 블로그에 기술하였습니다.
+
+   [getter, setter를 왜 지양해야하는가](https://velog.io/@devson_42/setter-getter%EB%A5%BC-%EC%99%9C-%EC%A7%80%EC%96%91%ED%95%B4%EC%95%BC-%ED%95%98%EB%82%98%EC%9A%94) [그렇다면 어떻게 코드를 작성해야하는가?](https://velog.io/@devson_42/%EB%8B%98%EC%95%84-%EA%B7%B8-getter-setter%EB%A5%BC-%EC%93%B0%EC%A7%80-%EB%A7%88%EC%98%A4...%EC%BA%A1%EC%8A%90%ED%99%94%EC%99%80-%EA%B2%B0%ED%95%A9%EB%8F%84%EB%A5%BC-%EA%B3%A0%EB%A0%A4%ED%95%B4%EB%B3%B4%EC%9E%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81-%ED%95%98%EA%B8%B0)
+
 
 
 
