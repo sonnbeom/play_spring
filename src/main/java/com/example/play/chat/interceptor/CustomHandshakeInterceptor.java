@@ -29,7 +29,6 @@ public class CustomHandshakeInterceptor implements HandshakeInterceptor {
         attributes.put("userName", userName);
         return true;
     }
-
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
         log.info("Handshake complete");

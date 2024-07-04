@@ -61,7 +61,7 @@ public class AuthController {
     public ResponseEntity<?> refreshToken(@CookieValue String refreshToken,
                                           HttpServletResponse response) throws IOException {
         TokenDto tokenDto = null;
-        Optional<TokenDto> optionalTokenDto = authService.regenerateToken(refreshToken, response);
+        Optional<TokenDto> optionalTokenDto = authService.regenerateToken(refreshToken);
         if (optionalTokenDto.isPresent()){
             tokenDto = optionalTokenDto.get();
 

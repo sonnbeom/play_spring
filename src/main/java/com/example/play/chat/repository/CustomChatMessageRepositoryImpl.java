@@ -24,9 +24,6 @@ public class CustomChatMessageRepositoryImpl implements CustomChatMessageReposit
         this.jpaQueryFactory = new JPAQueryFactory(entityManager);
     }
 
-
-
-
     @Override
     public Page<ChatMessage> getChats(Pageable pageable, Long chatRoomId) {
 

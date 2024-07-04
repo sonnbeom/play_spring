@@ -46,30 +46,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String socialUserId = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
         Member existMember = memberRepository.findBySocialUserId(socialUserId);
-        Optional<Member> m1 = memberRepository.findByEmail(oAuth2Response.getEmail());
-
-//        if (m1.isPresent()){
-////            existMember.updateByOAuth(oAuth2Response.getEmail(), oAuth2Response.getName());
-//            Member member = m1.get();
-//            member.updateByOAuth(oAuth2Response.getEmail(), oAuth2Response.getName());
-//        }
-//        else {
-//            Member member = Member.builder()
-//                    .email(oAuth2Response.getEmail())
-//                    .name(oAuth2Response.getName())
-//                    .role(Role.ROLE_USER)
-//                    .socialUserId(socialUserId)
-//                    .build();
-//
-//
-//            memberRepository.save(member);
-//        }
-//        UserDto userDto = UserDto.builder().socialUserId(socialUserId).name(oAuth2Response.getName()).role("ROLE_USER").build();
-//        return new CustomOAuth2User(userDto);
-
 
         if (existMember == null){
-            log.info("if문 들어오나? ");
             Member member = Member.builder()
                     .email(oAuth2Response.getEmail())
                     .name(oAuth2Response.getName())
@@ -78,10 +56,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .build();
 
             memberRepository.save(member);
-
         }
         else {
-            log.info("else문 들어오나? ");
             existMember.updateByOAuth(oAuth2Response.getEmail(), oAuth2Response.getName());
         }
         UserDto userDto = UserDto.builder().socialUserId(socialUserId).name(oAuth2Response.getName()).role("ROLE_USER").build();

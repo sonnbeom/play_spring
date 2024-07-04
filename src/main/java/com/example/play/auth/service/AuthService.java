@@ -35,7 +35,7 @@ public class AuthService {
         return tokenDto;
     }
 
-    public Optional<TokenDto> regenerateToken(String refreshToken, HttpServletResponse response) {
+    public Optional<TokenDto> regenerateToken(String refreshToken) {
         TokenDto tokenDto = null;
         // cookie에서 가져온 refreshToken 체크
         if (ObjectUtils.isEmpty(refreshToken)){
@@ -56,7 +56,7 @@ public class AuthService {
         tokenDto = jwtService.provideToken(email, member.getRoleForToken());
         saveRefreshToken(email, tokenDto);
 
-        return tokenDto == null? Optional.empty() : Optional.of(tokenDto);
+        return Optional.of(tokenDto);
     }
     private void saveRefreshToken(String email, TokenDto tokenDto){
         redisService.setValuesWithTimeOut(

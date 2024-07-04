@@ -69,9 +69,6 @@ public class JwtService {
 
     private Claims extractClaims(String token) {
         try {
-            //if (redisService.getValues(accessToken) != null // NPE 방지
-            //                    && redisService.getValues(accessToken).equals("logout")) { // 로그아웃 했을 경우
-            //                return false;
             return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
         } catch (SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");

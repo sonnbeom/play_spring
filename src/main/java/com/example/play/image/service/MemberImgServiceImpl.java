@@ -34,7 +34,7 @@ public class MemberImgServiceImpl implements MemberImgService{
     public ResponseMemberImg findByMember(Member member) {
         List<MemberImage> img = memberImgCustomRepository.findByMember(member);
         if (img.isEmpty() && img.size() != 1){
-            return new ResponseMemberImg().builder()
+            return ResponseMemberImg.builder()
                     .status(ResponseMemberImg.Status.DEFAULT)
                     .build();
         }
@@ -83,7 +83,7 @@ public class MemberImgServiceImpl implements MemberImgService{
         if (deleteFileId != null){
             changeStatus(deleteFileId, updateMember);
         }
-        return new ResponseMemberImg().builder()
+        return ResponseMemberImg.builder()
                 .status(ResponseMemberImg.Status.DEFAULT)
                 .build();
     }
