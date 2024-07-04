@@ -49,21 +49,17 @@ public class ChatRoomServiceImpl implements ChatRoomService{
 
             ChatRoomDto roomDto = chatRoom.toDto();
 
-            ChatRoomWithMessageDto chatRoomWithMessageDto = ChatRoomWithMessageDto.builder()
+            return ChatRoomWithMessageDto.builder()
                     .chatRoomDto(roomDto)
                     .chatMessage(chatMessage)
                     .build();
-
-            return chatRoomWithMessageDto;
         }else {
             ChatRoom chatRoom = createRoom(member, other);
             ChatRoomDto chatRoomDto = chatRoom.toDto();
 
-            ChatRoomWithMessageDto chatRoomWithMessageDto = ChatRoomWithMessageDto.builder()
+            return ChatRoomWithMessageDto.builder()
                     .chatRoomDto(chatRoomDto)
                     .build();
-
-            return chatRoomWithMessageDto;
         }
     }
     public ChatRoom findById(Long id){
