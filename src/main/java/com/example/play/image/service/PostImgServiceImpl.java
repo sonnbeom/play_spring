@@ -31,7 +31,6 @@ public class PostImgServiceImpl implements PostImgService{
     private final PostImgCustomRepositoryImpl customRepository;
     private final PostImgMapper postImgMapper;
 
-
     @Override
     public List<ResponseImg> savePostImage(List<MultipartFile> fileList, Post post){
         List<PostImage> postImages = new ArrayList<>();

@@ -12,6 +12,13 @@ public class RequestUpdateMemberDto {
     private String email;
     private String password;
     private Long memberId;
+
+    public RequestUpdateMemberDto(String nickname, String email, String password) {
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+    }
+
     public boolean isUpdateNicknamePresent(){
         return nickname != null && !nickname.trim().isEmpty();
     }

@@ -45,7 +45,7 @@ public class MinioServiceProvider {
 
             minioClient.putObject(args);
 
-            return new ImageDto().builder()
+            return ImageDto.builder()
                     .status(UPLOADED)
                     .path(path)
                     .build();
@@ -54,7 +54,7 @@ public class MinioServiceProvider {
             // 미니오 exception을 만들어서 그걸 던지자!
             log.info("fileUploadException{}", e.getMessage());
             e.printStackTrace();
-            return new ImageDto().builder()
+            return ImageDto.builder()
                     .status(FAIL)
                     .build();
         }
