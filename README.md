@@ -163,11 +163,264 @@ JWT는 무상태성이라는 이점이 있지만 보안 방식에서 단점이 �
 3. CSRF, XSS 공격 취약성 고려
 
 ## <code> 결합도와 캡슐화 고려하여 코드 작성 </code>
-도메인 내 getter, setter를 사용하게 된다면 결합도를 낮추고 캡슐화를 약화시킬 수 있다고 생각합니다.
+도메인 내 getter, setter를 사용하게 된다면 캡슐화를 약화시키고 높은 결합도를 야기할 수 있다고 생각합니다.
 
-왜 getter, setter를 사용하게 되면 결합도가 낮아지고 캡슐화는 약해지는지, 어떠한 방법으로 코드를 작성해야 하는지 등을 블로그에 기술하였습니다.
+getter, setter를 사용하게 되면 왜 결합도가 높아지고 캡슐화는 약해지는지, 어떠한 방법으로 코드를 작성해야 하는지 등을 블로그에 기술하였습니다.
 
-   [getter, setter를 왜 지양해야하는가](https://velog.io/@devson_42/setter-getter%EB%A5%BC-%EC%99%9C-%EC%A7%80%EC%96%91%ED%95%B4%EC%95%BC-%ED%95%98%EB%82%98%EC%9A%94) [그렇다면 어떻게 코드를 작성해야하는가?](https://velog.io/@devson_42/%EB%8B%98%EC%95%84-%EA%B7%B8-getter-setter%EB%A5%BC-%EC%93%B0%EC%A7%80-%EB%A7%88%EC%98%A4...%EC%BA%A1%EC%8A%90%ED%99%94%EC%99%80-%EA%B2%B0%ED%95%A9%EB%8F%84%EB%A5%BC-%EA%B3%A0%EB%A0%A4%ED%95%B4%EB%B3%B4%EC%9E%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81-%ED%95%98%EA%B8%B0)
+
+   [getter, setter를 왜 지양해야하는가](https://velog.io/@devson_42/setter-getter%EB%A5%BC-%EC%99%9C-%EC%A7%80%EC%96%91%ED%95%B4%EC%95%BC-%ED%95%98%EB%82%98%EC%9A%94) <br> [해결방법](https://velog.io/@devson_42/%EB%8B%98%EC%95%84-%EA%B7%B8-getter-setter%EB%A5%BC-%EC%93%B0%EC%A7%80-%EB%A7%88%EC%98%A4...%EC%BA%A1%EC%8A%90%ED%99%94%EC%99%80-%EA%B2%B0%ED%95%A9%EB%8F%84%EB%A5%BC-%EA%B3%A0%EB%A0%A4%ED%95%B4%EB%B3%B4%EC%9E%90-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81-%ED%95%98%EA%B8%B0)
+
+
+
+
+<table>
+  	<tr>
+  		<td align="center">
+      			Before
+    		</td>
+		<td>
+      			도메인 내의 정보가 다른 계층에서 은닉되지 않아 객체 간의 결합도가 높아져 모듈화와 재사용성이 저하되는 상황
+    		</td>
+  	</tr>
+	<tr>
+		<td align="center">
+			After
+		</td>
+		<td>
+   			도메인 내의 정보를 다른 계층에서 활용 못하게 도메인 내에 DTO로 변환하는 코드 작성
+    		</td>
+	</tr>
+</table>
+
+<pre>
+<code>
+ [Before]
+    @Override
+    public List<ChatMessageResponseDto> findByRoom(ChatRoom chatRoom) {
+        List<ChatMessage> chatMessage = customChatMessageRepository.findByRoomNumber(chatRoom);
+        List<ChatMessageResponseDto> dtoList = new ArrayList<>();
+        for (ChatMessage c : chatMessage){
+        ChatMessageResponseDto dto = ChatMessageResponseDto.builder()
+        	.id(c.getId())
+            .msg(c.getMessage())
+            ..생략
+ 			.build();
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
+</code>
+</pre>
+
+<pre>
+<code>
+ [After]
+   @Override
+    public List<ChatMessageResponseDto> findByRoom(ChatRoom chatRoom) {
+        List<ChatMessage> chatMessage = customChatMessageRepository.findByRoomNumber(chatRoom);
+        List<ChatMessageResponseDto> dtoList = new ArrayList<>();
+        for (ChatMessage c : chatMessage){
+            ChatMessageResponseDto chatDto = c.toDto();
+            dtoList.add(chatDto);
+        }
+        return dtoList;
+    }
+    
+    //도메인 내 메소드
+    public ChatMessageResponseDto toDto(){
+        return ChatMessageResponseDto.builder()
+                .id(id)
+                .msg(msg)
+                .dateTime(getCreatedAt())
+                .build();
+    }
+ 
+</code>
+</pre>
+
+<hr/>
+
+<table>
+  	<tr>
+  		<td align="center">
+      			Before
+    		</td>
+		<td>
+      			도메인 내 setter를 사용함으로써 무결성이 위반되는 상황
+    		</td>
+  	</tr>
+	<tr>
+		<td align="center">
+			After
+		</td>
+		<td>
+   			도메인 내 메소드를 만들어 다른 계층에서 임의로 도메인 내의 정보를 변경할 수 없음
+    		</td>
+	</tr>
+</table>
+
+<pre>
+<code>
+ [Before]
+    @Override
+    public ResponseComment update(RequestCommentUpdate commentUpdate, String email) {
+        Member member = memberService.findByEmail(email);
+        Comment comment = findById(commentUpdate.getCommentId());
+        //업데이트 권한 확인
+        comment.checkUpdateAuthorization(member);
+        comment.setContent(commentUpdate.getContent());
+        return comment.toDto();
+    }
+</code>
+</pre>
+
+<pre>
+<code>
+ [After]
+    @Override
+    public ResponseComment update(RequestCommentUpdate commentUpdate, String email) {
+        Member member = memberService.findByEmail(email);
+        Comment comment = findById(commentUpdate.getCommentId());
+        //업데이트 권한 확인
+        comment.checkUpdateAuthorization(member);
+        comment.update(commentUpdate);
+        return comment.toDto();
+    }
+    
+ //comment 도메인 내 메소드
+    public void update(RequestCommentUpdate commentUpdate) {
+        this.content = commentUpdate.getContent();
+    }
+ 
+</code>
+</pre>
+
+
+
+<details>
+<summary>코드 확인:  권한 체크 로직 구현시 결합도 증가 개선 </summary>
+<table>
+  	<tr>
+  		<td align="center">
+      			Before
+    		</td>
+		<td>
+      			권한이 있는지 체크하는 로직 구현시, 도메인 내의 정보를 다른 계층에서 호출하여 유지보수 및 수정의 어려움이 있다고 판단
+    		</td>
+  	</tr>
+	<tr>
+		<td align="center">
+			After
+		</td>
+		<td>
+   			다른 계층에서 도메인 내의 정보를 알지 못하게 도메인 내 로직 구현  
+    		</td>
+	</tr>
+</table>
+
+<pre>
+<code>
+ [Before]
+  @Override
+  public void delete(RequestCommentDelete commentDelete, String email) {
+      Member member = memberService.findByEmail(email);
+      Comment comment = findById(commentDelete.getCommentId());
+      if (comment.getMember().equals(member)){
+          comment.checkDeleteAuthorization(member);
+          commentRespository.delete(comment);
+      }
+  }
+</code>
+</pre>
+
+<pre>
+<code>
+ [After]
+  @Override
+  public void delete(RequestCommentDelete commentDelete, String email) {
+      Member member = memberService.findByEmail(email);
+      Comment comment = findById(commentDelete.getCommentId());
+      comment.checkDeleteAuthorization(member);
+      commentRespository.delete(comment);
+  }
+
+//댓글 도메인 내에 메소드
+   public void checkDeleteAuthorization(Member member) {
+        if (!this.member.equals(member)){
+            throw new CommentDeleteAuthorizationException("권한이 없는 멤버가 댓글 삭제를 시도합니다.", HttpStatus.FORBIDDEN);
+        }
+    }
+
+</code>
+</pre>
+
+</details>
+
+
+
+
+
+<details>
+<summary>코드 확인하기: 다른 객체들로 책임이 분산되어 코드 리팩토링</summary>
+
+<table>
+  	<tr>
+  		<td align="center">
+      			Before
+    		</td>
+		<td>
+      		다른 객체들로 책임이 분산되어 객체지향의 적합하지 않은 코드 작성
+    </td>
+  	</tr>
+	<tr>
+		<td align="center">
+			After
+		</td>
+		<td>
+   			도메인 내 로직 작성
+    		</td>
+	</tr>
+</table>
+
+<pre>
+<code>
+ [Before]
+  for(ChatMessage chatMessage : chatList){
+        if (map.containsKey(chatMessage.getChatRoom())){
+            ChatRoomsWithChatsDto chatRoomsWithChatsDto = map.get(chatMessage.getChatRoom());
+        }
+      }
+</code>
+</pre>
+
+<pre>
+<code>
+ [After]
+  private List<ResponseFriendshipWithImg> mappingFriendshipWithImg(List<Friendship> friendshipList, Map<Member, MemberImage> map){
+        List<ResponseFriendshipWithImg> friendshipWithImgList = new ArrayList<>();
+        //이미지가 존재하는 멤버라면 이미지를 포함해서 dto로 변환 이미지가 없다면 이미지 디폴트 값으로 dto로 변환
+        for (Friendship friendship : friendshipList){
+
+            Optional<ResponseMemberImg> img =  friendship.isExistSenderImg(map);
+            
+ //도메인 내에 메소드
+     public Optional<ResponseMemberImg> isExistSenderImg(Map<Member, MemberImage> map) {
+        if (map.containsKey(sender)){
+            return Optional.of(map.get(sender).toDto());
+        }
+        else return Optional.empty();
+    }
+ 
+</code>
+</pre>
+
+</details>
+
+
+
+
+
+<hr/>
 
 
 
