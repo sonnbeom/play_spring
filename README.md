@@ -37,8 +37,7 @@
 
 # 🔨 시스템 아키텍처
 
-![image](https://github.com/SesacAcademy/SesacAnimal/assets/55624470/1ffa4dcf-22c2-4451-a8e0-f7458b4f53b1)
-
+![image (1)](https://github.com/user-attachments/assets/3ac5876d-c5c4-415c-beeb-2b6f713350ca)
 <br/>
 
 # 🗒️ ERD 설계
@@ -206,7 +205,7 @@ getter, setter를 사용하게 되면 왜 결합도가 높아지고 캡슐화는
             dtoList.add(dto);
         }
         return dtoList;
-    }
+    }}
 </code>
 </pre>
 
