@@ -1,33 +1,89 @@
 version: '3'
 services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx-container
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - spring-boot-app1
+      - spring-boot-app2
+      - spring-boot-app3
+
   db:
     image: mysql:8.0.27
     container_name: mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: heart4245@@
+      MYSQL_ROOT_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}  # .env 파일에서 가져오기
       MYSQL_DATABASE: play
     ports:
       - "3306:3306"
     command: --init-file /docker-entrypoint-initdb.d/init.sql
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  spring-boot-app:
+
+  spring-boot-app1:
     build:
       dockerfile: Dockerfile
     image: spring-image
-    container_name: spring-container
+    container_name: spring-container1
     ports:
-      - "8080:8080"
+      - "8081:8080"
     links:
       - db
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/play
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=heart4245@@
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}  # .env 파일에서 가져오기
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}  # .env 파일에서 가져오기
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}  # .env 파일에서 가져오기
+
+  spring-boot-app2:
+    build:
+      dockerfile: Dockerfile
+    image: spring-image
+    container_name: spring-container2
+    ports:
+      - "8082:8080"
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+
+  spring-boot-app3:
+    build:
+      dockerfile: Dockerfile
+    image: spring-image
+    container_name: spring-container3
+    ports:
+      - "8083:8080"
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+
   redis:
     image: redis
     container_name: redis-container
     ports:
       - "6379:6379"
+
+  minio:
+    image: minio/minio
+    container_name: minio-container
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}  # .env 파일에서 가져오기
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}  # .env 파일에서 가져오기
+    command: server /data
