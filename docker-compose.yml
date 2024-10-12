@@ -1,0 +1,33 @@
+version: '3'
+services:
+  db:
+    image: mysql:8.0.27
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: heart4245@@
+      MYSQL_DATABASE: play
+    ports:
+      - "3306:3306"
+    command: --init-file /docker-entrypoint-initdb.d/init.sql
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  spring-boot-app:
+    build:
+      dockerfile: Dockerfile
+    image: spring-image
+    container_name: spring-container
+    ports:
+      - "8080:8080"
+    links:
+      - db
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/play
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=heart4245@@
+  redis:
+    image: redis
+    container_name: redis-container
+    ports:
+      - "6379:6379"
